@@ -1,9 +1,13 @@
 import React from 'react';
+import Head from 'next/head';
 import Me from '../components/Me';
 import Social from '../components/Social';
 
 const Frontpage: React.FC<{}> = () => (
   <>
+    <Head>
+      <title>Morten Olsen</title>
+    </Head>
     <Me />
     <Social
       sites={[{
