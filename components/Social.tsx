@@ -38,7 +38,6 @@ const ItemWrapper = styled.a`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  background: #fff;
   margin: 20px;
   width: 220px;
   height: 100px;
