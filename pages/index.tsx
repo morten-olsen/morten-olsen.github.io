@@ -1,40 +1,20 @@
-import React, { useEffect } from 'react';
-import styled from 'styled-components';
+import React from 'react';
 import Head from 'next/head';
+import Background from '../components/Background';
 import Me from '../components/Me';
 import Social from '../components/Social';
 
-const Canvas = styled.canvas`
-  position: fixed;
-  top: 0;
-  left: 0;
-  widht: 100%;
-  height: 100%;
-  z-index: -1;
-`;
-
 const Frontpage: React.FC<{}> = () => {
-  useEffect(() => {
-    const run = async () => {
-      const { default: Particles } = await import('particlesjs');
-      Particles.init({
-        selector: '.background',
-        connectParticles: true,
-        color: '#dddddd',
-        maxParticles: 200,
-      });
-      console.log(Particles);
-    };
-    run();
-  });
-
   return (
     <>
       <Head>
         <title>Morten Olsen</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300&display=swap" rel="stylesheet" />
       </Head>
+      <Background />
       <Me />
-      <Canvas className="background" />
       <Social
         sites={[{
           title: 'Github',

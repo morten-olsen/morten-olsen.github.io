@@ -21,8 +21,8 @@ const Image = styled.div<{ src: string }>`
   background: url('${({ src }) => src}');
   background-size: cover;
   margin-right: 10px;
-  filter: grayscale(100%);
   transition: all .8s;
+  filter: grayscale(100%) invert();
 `;
 
 const Wrapper = styled.div`
@@ -42,15 +42,19 @@ const ItemWrapper = styled.a`
   width: 220px;
   height: 100px;
   text-decoration: none;
-  color: #000;
+  font-weight: bold;
+  color: #fff;
+  font-family: 'Source Code Pro', monospace;
+  text-transform: uppercase;
+  text-shadow: 0 0 5px rgba(255, 255, 255, .5);
 
   &:hover > div {
-    background: #000;
-    color: #fff;
+    background: #fff;
+    color: #000;
     box-shadow: 0 0 35px rgba(0, 0, 0, .3);
 
     &> div {
-      filter: grayscale(100%) invert();
+      filter: grayscale(100%);
     }
   }
 `;
