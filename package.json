@@ -3,11 +3,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "build:a4": "./scripts/build-latex.sh a4",
+    "build:a5": "./scripts/build-latex.sh a5",
+    "build:a6": "./scripts/build-latex.sh a6"
   },
   "dependencies": {
+    "@react-three/fiber": "^7.0.6",
     "next": "^11.1.0",
-    "particlesjs": "^2.2.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "styled-components": "^5.3.1",

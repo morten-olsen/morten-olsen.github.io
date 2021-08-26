@@ -5,7 +5,7 @@ interface Props {
   sites: {
     title: string,
     link: string,
-    logo: string,
+    logo: any,
   }[];
 }
 
@@ -75,7 +75,7 @@ const Social: React.FC<Props> = ({ sites }) => (
       {sites.map(({ title, link, logo }) => (
         <ItemWrapper target="_blank" href={link} key={link}>
           <InnerWrapper>
-            <Image src={`/images/logos/${logo}`} />
+            <Image src={logo.src} />
             {title}
           </InnerWrapper>
         </ItemWrapper>

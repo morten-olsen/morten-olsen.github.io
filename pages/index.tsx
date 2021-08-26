@@ -3,6 +3,10 @@ import Head from 'next/head';
 import Background from '../components/Background';
 import Me from '../components/Me';
 import Social from '../components/Social';
+import htbLogo from '../public/images/logos/htb.svg';
+import githubLogo from '../public/images/logos/github.svg';
+import linkedinLogo from '../public/images/logos/linkedin.svg';
+import stackOverflowLogo from '../public/images/logos/stackoverflow.svg';
 
 const Frontpage: React.FC<{}> = () => {
   return (
@@ -19,19 +23,19 @@ const Frontpage: React.FC<{}> = () => {
         sites={[{
           title: 'Github',
           link: 'https://github.com/morten-olsen',
-          logo: 'github.svg',
+          logo: githubLogo,
         }, {
           title: 'HackTheBox',
           link: 'https://app.hackthebox.eu/profile/174098',
-          logo: 'htb.svg',
+          logo: htbLogo,
         }, {
           title: 'Stack Overflow',
           link: 'https://stackoverflow.com/users/1689055/morten-olsen',
-          logo: 'stackoverflow.svg',
+          logo: stackOverflowLogo,
         }, {
           title: 'Linkedin',
           link: 'https://www.linkedin.com/in/mortenolsendk',
-          logo: 'linkedin.svg',
+          logo: linkedinLogo,
         }]}
       />
     </>

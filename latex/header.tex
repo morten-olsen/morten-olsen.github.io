@@ -1,0 +1,162 @@
+%\usepackage{showframe}
+\usepackage{tex4ebook}
+\usepackage{pagecolor}
+\usepackage{paracol}
+\usepackage{kantlipsum}
+\usepackage{multicol}
+\usepackage{xifthen}
+\usepackage{tcolorbox}
+\usepackage{wrapfig}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{luacode}
+%\pagecolor{yellow!5!orange!2!white}
+\setlength{\columnseprule}{0.1pt}
+\newcommand{\ifequals}[3]{\ifthenelse{\equal{#1}{#2}}{#3}{}}
+\newcommand{\case}[2]{#1 #2}
+\newenvironment{switch}[1]{\renewcommand{\case}{\ifequals{#1}}}{}
+\usepackage{markdown}
+\markdownSetup{
+  footnotes = true,
+  renderers = {
+    link     =       {#1},  % Render a link as the link label.
+    emphasis = {\emph{#1}}, % Render emphasis using `\emph`.
+  }
+}
+
+\newenvironment{columns}{
+	\ifnum\columncount>1
+		\begin{multicols}{\columncount}
+	\fi
+}{
+	\ifnum\columncount>1
+		\end{multicols}
+	\fi
+	\vspace{0.5cm}
+	\hrule
+}
+
+\newenvironment{cvskills}{
+	\noindent\begin{minipage}{\textwidth}
+		\ifnum\skillcolumncount>1
+			\begin{multicols}{\skillcolumncount}
+		\fi
+}{
+	\ifnum\skillcolumncount>1
+		\end{multicols}
+	\fi
+	\vspace{0.5cm}
+	\hrule
+	\end{minipage}
+}
+
+\newenvironment{cvtitle}[2]{
+	\noindent\begin{minipage}{\textwidth}
+		%{\Huge Curriculum Vitae\newline\large #1}	\hfill{\large \mbox{#1} \includegraphics[height=3cm]{#2}}\\\\
+
+		\noindent\begin{minipage}{\textwidth - 3.2cm}
+			\Huge Curriculum Vitae\newline\large #1
+		\end{minipage}
+		\noindent\begin{minipage}{3cm}
+			\begin{flushright}
+				\includegraphics[height=3cm]{#2}
+			\end{flushright}
+		\end{minipage}
+		\vspace{0.5cm}
+		\hrule
+		\vspace{0.5cm}
+		\ifnum\skillcolumncount>1
+			\begin{multicols}{\skillcolumncount}
+		\fi
+}{
+	\ifnum\skillcolumncount>1
+		\end{multicols}
+	\fi
+	\end{minipage}
+	\hfill
+	\begin{minipage}{\textwidth/3-2cm}
+	\end{minipage}
+	\vspace{1cm}
+	\hrule
+}
+
+\newenvironment{cvbox}[3]
+{
+	\noindent
+	%\begin{minipage}{\textwidth}
+
+		%\hrule
+		\begin{columns}
+			\noindent{\Large \textbf{#1}} \hfill {\small #2} \\
+			\textit{#3}
+			\ifnum\columncount>2
+				\vfill\null\columnbreak
+			\else
+				\\\\
+			\fi
+}
+{
+		\end{columns}
+	%\end{minipage}
+	\vspace{0.5cm}
+}
+
+\newcommand{\cvinfo}[2]{
+	\noindent \textbf{#1}\dotfill#2\\
+}
+
+\newcommand{\cvskill}[2]{
+	\textbf{#1}\dotfill
+	\textit{\begin{switch}{#2}
+		\case{1}{Needs refresh}
+		\case{2}{Needs refresh}
+		\case{3}{Comfortable}
+		\case{4}{Prefered}
+		\case{5}{Prefered}
+	\end{switch}}\\
+}
+
+\newenvironment{cvexp}[4]
+{ \begin{cvbox}{#1}{#2 - #3}{#4} }
+{\end{cvbox}}
+
+%\newenvironment{cvproj}[3]
+%{\begin{cvbox}{#1}{#2}{#3}}
+%{\end{cvbox}}
+
+\newenvironment{cvproj}[3]
+{
+	\noindent
+	%\begin{minipage}{\textwidth}
+
+	%\hrule
+	\begin{columns}
+		\noindent{\Large \textbf{#1}} \\ {\small #3} \\
+		{\tiny\textit{https://#2}}
+		\ifnum\columncount>2
+			\vfill\null\columnbreak
+		\else
+			\\\\
+		\fi
+	}
+	{
+	\end{columns}
+	%\end{minipage}
+	\vspace{0.5cm}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Morten Olsen \today}
+\lhead{Curriculum Vitae}
+\rfoot{Page \thepage}
+
+\directlua{dofile("header.lua")}
+\newcommand*{\addHeader}{\directlua{addHeader()}}
+\addHeader
+
+\begin{document}
+\directlua{dofile("document.lua")}
+\newcommand*{\render}{\directlua{render()}}
+\render
+\end{document}
