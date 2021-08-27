@@ -8,6 +8,8 @@ import htbLogo from '../public/images/logos/htb.svg';
 import githubLogo from '../public/images/logos/github.svg';
 import linkedinLogo from '../public/images/logos/linkedin.svg';
 import stackOverflowLogo from '../public/images/logos/stackoverflow.svg';
+import codinGameLogo from '../public/images/logos/codingame.svg';
+import resumeLogo from '../public/images/logos/resume.svg';
 
 const Globals = createGlobalStyle`
   body {
@@ -45,6 +47,14 @@ const Frontpage: React.FC<{}> = () => {
           title: 'Stack Overflow',
           link: 'https://stackoverflow.com/users/1689055/morten-olsen',
           logo: stackOverflowLogo,
+        }, {
+          title: 'Codingame',
+          link: 'https://www.codingame.com/profile/8b34b1812baa75715c972bfe190c0aed4552622',
+          logo: codinGameLogo,
+        }, {
+          title: 'Resumè',
+          link: 'https://github.com/morten-olsen/morten-olsen.github.io/releases/',
+          logo: resumeLogo,
         }, {
           title: 'Linkedin',
           link: 'https://www.linkedin.com/in/mortenolsendk',
