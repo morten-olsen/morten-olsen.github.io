@@ -20,8 +20,6 @@ const ImageWrapper = styled.div<{loaded: boolean}>`
   position: relative;
   transition: all .6s;
   transform: rotateY(180deg);
-  opacity: ${({ loaded }) => loaded ? '1' : '0'};
-  transform: ${({ loaded }) => loaded ? 'rotateY(180deg)' : 'rotateY(90deg) translateX(-300px)'};
 `;
 
 const Spacer = styled.div`
@@ -80,8 +78,8 @@ const Me: React.FC<{}> = () => {
   const imgRef = useRef<HTMLImageElement>();
   const [loaded, setLoaded] = useState(false);
   useEffect(() => {
-    if (imgRef.current) {
-      setLoaded(imgRef.current.complete);
+    if (imgRef.current && imgRef.current.complete) {
+      setLoaded(true);
     }
   }, [imgRef]);
   return (
