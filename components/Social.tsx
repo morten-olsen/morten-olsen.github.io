@@ -31,7 +31,7 @@ const Wrapper = styled.div`
   align-items: center;
   height: 100%;
   flex-wrap: wrap;
-  max-width: 1000px;
+  max-width: 1600px;
 `;
 
 const ItemWrapper = styled.a`
