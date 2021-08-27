@@ -18,9 +18,10 @@ const ImageWrapper = styled.div<{loaded: boolean}>`
   width: 100%;
   max-width: 300px;
   position: relative;
-  transition: opacity 1s;
+  transition: all .6s;
   transform: rotateY(180deg);
   opacity: ${({ loaded }) => loaded ? '1' : '0'};
+  transform: ${({ loaded }) => loaded ? 'rotateY(180deg)' : 'rotateY(90deg) translateX(-300px)'};
 `;
 
 const Spacer = styled.div`
@@ -78,7 +79,6 @@ const Image = styled.img<{blurDataURL: string}>`
 const Me: React.FC<{}> = () => {
   const imgRef = useRef<HTMLImageElement>();
   const [loaded, setLoaded] = useState(false);
-  console.log('l', loaded);
   useEffect(() => {
     if (imgRef.current) {
       setLoaded(imgRef.current.complete);
