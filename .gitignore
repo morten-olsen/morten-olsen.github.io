@@ -2,3 +2,8 @@
 /*.log
 /out
 /.next
+/latex/**/*.aux
+/latex/**/*.log
+/latex/**/*.in
+/latex/**/*.pdf
+/latex/_markdown_*

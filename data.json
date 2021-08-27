@@ -2,7 +2,7 @@
   "type": "info",
   "data": {
     "name": "Morten Olsen",
-    "image": "assets/me.jpg",
+    "image": "public/images/me.jpg",
     "info": [{
       "name": "E-mail",
       "value": "hello@buy-me.coffee"

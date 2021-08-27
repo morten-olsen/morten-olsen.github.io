@@ -13,8 +13,8 @@ const Wrapper = styled.div`
 
 const ImageWrapper = styled.div`
   border-radius: 50%;
-  border: solid 30px rgba(255, 255, 255, .5);
-  box-shadow: 0 0 35px rgba(255, 255, 255, .5);
+  border: solid 10px rgba(255, 255, 255, .5);
+  box-shadow: 0 0 35px rgba(0, 0, 0, .5);
   overflow: hidden;
   width: 100%;
   max-width: 360px;
@@ -60,7 +60,7 @@ const Divider = styled.div`
 const Me: React.FC<{}> = () => (
   <Wrapper>
     <ImageWrapper>
-      <Image layout="fill" {...image} />
+      <Image layout="fill" src={image.src} blurDataURL={image.blurDataURL} />
       <Spacer />
     </ImageWrapper>
     <Title>Morten Olsen</Title>
