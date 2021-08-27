@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import Image from 'next/image'
 import image from '../public/images/me.jpg';
 
 const Wrapper = styled.div`
@@ -57,10 +56,20 @@ const Divider = styled.div`
   box-shadow: 0 0 30px rgba(255, 255, 255, .7);
 `;
 
+const Image = styled.img<{blurDataURL: string}>`
+  background: url("${({ blurDataURL }) => blurDataURL}");
+  position: absolute;
+  background-size: cover;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+`
+
 const Me: React.FC<{}> = () => (
   <Wrapper>
     <ImageWrapper>
-      <Image layout="fill" src={image.src} blurDataURL={image.blurDataURL} />
+      <Image src={image.src} blurDataURL={image.blurDataURL} />
       <Spacer />
     </ImageWrapper>
     <Title>Morten Olsen</Title>
