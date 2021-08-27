@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import image from '../public/images/me.jpg';
 
@@ -10,14 +10,17 @@ const Wrapper = styled.div`
   padding: 80px;
 `;
 
-const ImageWrapper = styled.div`
+const ImageWrapper = styled.div<{loaded: boolean}>`
   border-radius: 50%;
   border: solid 10px rgba(255, 255, 255, .5);
   box-shadow: 0 0 35px rgba(0, 0, 0, .5);
   overflow: hidden;
   width: 100%;
-  max-width: 360px;
+  max-width: 300px;
   position: relative;
+  transition: opacity 1s;
+  transform: rotateY(180deg);
+  opacity: ${({ loaded }) => loaded ? '1' : '0'};
 `;
 
 const Spacer = styled.div`
@@ -34,6 +37,12 @@ const Title = styled.h1`
     0 0 5px rgba(255, 255, 255, .5);
     0 0 10px rgba(0, 0, 0, .5);
   margin-bottom: 0px;
+  letter-spacing: 1px;
+  letter-spacing: 7px;
+
+  &::first-letter {
+    font-size: 36px;
+  }
 `;
 
 const SubTitle = styled.h2`
@@ -66,16 +75,31 @@ const Image = styled.img<{blurDataURL: string}>`
   height: 100%;
 `
 
-const Me: React.FC<{}> = () => (
-  <Wrapper>
-    <ImageWrapper>
-      <Image src={image.src} blurDataURL={image.blurDataURL} />
-      <Spacer />
-    </ImageWrapper>
-    <Title>Morten Olsen</Title>
-    <SubTitle>“...One part genius, one part crazy”</SubTitle>
-    <Divider />
-  </Wrapper>
-);
+const Me: React.FC<{}> = () => {
+  const imgRef = useRef<HTMLImageElement>();
+  const [loaded, setLoaded] = useState(false);
+  console.log('l', loaded);
+  useEffect(() => {
+    if (imgRef.current) {
+      setLoaded(imgRef.current.complete);
+    }
+  }, [imgRef]);
+  return (
+    <Wrapper>
+      <ImageWrapper loaded={loaded}>
+        <Image
+          ref={imgRef}
+          src={image.src}
+          blurDataURL={image.blurDataURL}
+          onLoad={() => setLoaded(true)}
+        />
+        <Spacer />
+      </ImageWrapper>
+      <Title>Morten Olsen</Title>
+      <SubTitle>“...One part genius, one part crazy”</SubTitle>
+      <Divider />
+    </Wrapper>
+  );
+};
 
 export default Me;

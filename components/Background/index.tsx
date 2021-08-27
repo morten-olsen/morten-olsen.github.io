@@ -28,12 +28,16 @@ const setup = () => {
     renderer.domElement.style.width = '100%';
     renderer.domElement.style.height = '100%';
     renderer.domElement.style.zIndex = -1;
-    renderer.domElement.style.opacity = 1;
+    renderer.domElement.style.animationName = 'fadein';
+    renderer.domElement.style.animationDuration = '2s';
 
     document.body.appendChild(renderer.domElement);
     addParticles();
     addLights();
     render();
+    requestAnimationFrame(() => {
+      //renderer.domElement.style.opacity = 1;
+    })
   }
 
   const addParticles = () => {

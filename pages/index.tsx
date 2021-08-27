@@ -1,4 +1,5 @@
 import React from 'react';
+import { createGlobalStyle } from 'styled-components';
 import Head from 'next/head';
 import Background from '../components/Background';
 import Me from '../components/Me';
@@ -7,6 +8,17 @@ import htbLogo from '../public/images/logos/htb.svg';
 import githubLogo from '../public/images/logos/github.svg';
 import linkedinLogo from '../public/images/logos/linkedin.svg';
 import stackOverflowLogo from '../public/images/logos/stackoverflow.svg';
+
+const Globals = createGlobalStyle`
+  body {
+    background: #03544e;
+  }
+
+  @keyframes fadein {
+    from {opacity: 0}
+    to {opacity: 1}
+  }
+`;
 
 const Frontpage: React.FC<{}> = () => {
   return (
@@ -17,6 +29,7 @@ const Frontpage: React.FC<{}> = () => {
         <link rel="preconnect" href="https://fonts.gstatic.com" />
         <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300&display=swap" rel="stylesheet" />
       </Head>
+      <Globals />
       <Background />
       <Me />
       <Social
