@@ -80,8 +80,8 @@ const Me: React.FC<{}> = () => {
   const imgRef = useRef<HTMLImageElement>();
   const [loaded, setLoaded] = useState(false);
   useEffect(() => {
-    if (imgRef.current) {
-      setLoaded(imgRef.current.complete);
+    if (imgRef.current && imgRef.current.complete) {
+      setLoaded(true);
     }
   }, [imgRef]);
   return (
