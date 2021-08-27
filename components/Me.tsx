@@ -14,12 +14,10 @@ const ImageWrapper = styled.div<{loaded: boolean}>`
   border-radius: 50%;
   border: solid 10px rgba(255, 255, 255, .5);
   box-shadow: 0 0 35px rgba(0, 0, 0, .5);
-  overflow: hidden;
   width: 100%;
   max-width: 300px;
   position: relative;
   transition: all .6s;
-  transform: rotateY(180deg);
   opacity: ${({ loaded }) => loaded ? '1' : '0'};
   transform: ${({ loaded }) => loaded ? 'rotateY(180deg)' : 'rotateY(90deg) translateX(-300px)'};
 `;
@@ -70,6 +68,7 @@ const Image = styled.img<{blurDataURL: string}>`
   background: url("${({ blurDataURL }) => blurDataURL}");
   position: absolute;
   background-size: cover;
+  border-radius: 50%;
   top: 0;
   left: 0;
   width: 100%;
@@ -80,8 +79,8 @@ const Me: React.FC<{}> = () => {
   const imgRef = useRef<HTMLImageElement>();
   const [loaded, setLoaded] = useState(false);
   useEffect(() => {
-    if (imgRef.current) {
-      setLoaded(imgRef.current.complete);
+    if (imgRef.current && imgRef.current.complete) {
+      setLoaded(true);
     }
   }, [imgRef]);
   return (
