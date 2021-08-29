@@ -12,6 +12,9 @@
     },{
       "name": "Github",
       "value": "https://github.com/morten-olsen"
+    }, {
+      "name": "Homepage",
+      "value": "https://mortenolsen.pro"
     }]
 }
 }, {
@@ -158,20 +161,25 @@
     "title": "Projects of interest",
     "description": "A list of projects I have worked with or am working on, for which the source is publicly available. Keep in mind that some of these projects are in early stages, and some are merely created for the training, and may not represent the actual way I think production code should be structured",
     "projects": [{
-      "name": "Clash of Robots",
-      "tagline": "AI vs AI game enginge and IDE",
-      "url": "github.com/clash-of-robots/core",
-      "description": "A game engine for creating AI vs. AI turn-based games, including an IDE (still work in progress). The project is built to be the base for a space drone vs. space drone AI game. Players are given control over a set of drones and have to traverse the solar system, fighting to prosper as selles bots, pirate bots, communication relays or whatever the player decides to do within the confines of the sandbox."
+      "name": "Todoma",
+      "tagline": "GTD meets kanban in this mobile and web task manager",
+      "url": "github.com/morten-olsen/todoma",
+      "description": "A task manager that merges GTD and Kanban into a system that I use for organising my day. The app is written in React Native and runs both on iOS, Android and web, all with the same codebase"
     }, {
       "name": "Curriculum Vitae",
       "tagline": "Automated CV building",
       "url": "github.com/morten-olsen/curriculum-vitae",
       "description": " Another small fun project is this resume, as it is created in \\LaTeX, versioned using _Git_ on _Github_ and set to automatically build and create multiple release versions using _Travis CI_ and _Docker "
     }, {
-      "name": "LifeFlow Mind",
-      "tagline": "Evernote meets \\LaTeX meets Jupyter",
-      "url": "github.com/lifeflow-mind",
-      "description": "I love Evernote simple digital note storages, but as a developer and general nerd, its features often come up short. Which is why I am working on a project named Mind, which attempts to bridge the best aspect of Evernote, with a dynamic view system, so new views (for instance a calendar or a contact view) can be introduced. Also, it can render mathematical formulas using \\LaTeX and execute code snippets, to test and present code directly inside documents. A somewhat working demo can be found at https://morten-olsen.github.io/mind"
+      "name": "React Native Debug Console",
+      "tagline": "Easily debug in-the-wild React Native apps",
+      "url": "github.com/morten-olsen/react-native-debug-console",
+      "description": "I needed a tool that allowed me to easily debug the JavaScript and network asspect of a React Native app after it has been push to testers. This tool adds a development menu inspired by Chrome Dev Tools to a React Native app, allowing for an easier debugging experience"
+    }, {
+      "name": "IoT (Name TBD)",
+      "tagline": "Developer focused IoT platform",
+      "url": "https://iot.mortenolsen.pro",
+      "description": "A lot of IoT platforms tries to be user friendly, sacrificing customizability and still staying to complicated for the general user. This project creates a developer focus that does not trade control for user friendliness, retaining focus on 'coding' your own home setup"
     }, {
       "name": "Redux App State",
       "tagline": "Advanced app like navigation on the web",
