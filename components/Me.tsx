@@ -19,7 +19,7 @@ const ImageWrapper = styled.div<{loaded: boolean}>`
   position: relative;
   transition: all 1.2s;
   opacity: ${({ loaded }) => loaded ? '1' : '0'};
-  transform: rotateY(180deg);
+  transform: rotateY(180deg) translateZ(0);
 `;
 
 const Spacer = styled.div`
@@ -55,15 +55,6 @@ const SubTitle = styled.h2`
     0 0 10px rgba(0, 0, 0, .5);
 `;
 
-const Divider = styled.div`
-  margin-top: 70px;
-  width: 100%;
-  max-width: 800px;
-  height: 1px;
-  background: rgba(255, 255, 255, .5);
-  box-shadow: 0 0 30px rgba(255, 255, 255, .7);
-`;
-
 const Image = styled.img<{blurDataURL: string}>`
   background: url("${({ blurDataURL }) => blurDataURL}");
   position: absolute;
@@ -96,7 +87,6 @@ const Me: React.FC<{}> = () => {
       </ImageWrapper>
       <Title>Morten Olsen</Title>
       <SubTitle>“...One part genius, one part crazy”</SubTitle>
-      <Divider />
     </Wrapper>
   );
 };

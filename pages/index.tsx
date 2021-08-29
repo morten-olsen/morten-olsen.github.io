@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 import { createGlobalStyle } from 'styled-components';
 import Head from 'next/head';
 import Background from '../components/Background';
@@ -12,6 +13,10 @@ import codinGameLogo from '../public/images/logos/codingame.svg';
 import resumeLogo from '../public/images/logos/resume.svg';
 
 const Globals = createGlobalStyle`
+  html, body, #__next {
+    height: 90%;
+    margin: 0;
+  }
   body {
     background: #03544e;
   }
@@ -22,9 +27,17 @@ const Globals = createGlobalStyle`
   }
 `;
 
+const Wrapper = styled.div`
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`
+
 const Frontpage: React.FC<{}> = () => {
   return (
-    <>
+    <Wrapper>
       <Head>
         <title>Morten Olsen</title>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -61,7 +74,7 @@ const Frontpage: React.FC<{}> = () => {
           logo: linkedinLogo,
         }]}
       />
-    </>
+    </Wrapper>
   );
 };
 

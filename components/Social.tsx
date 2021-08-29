@@ -15,11 +15,9 @@ const Outer = styled.div`
   align-items: center;
 `;
 
-const Image = styled.div<{ src: string }>`
+const Image = styled.img<{ src: string }>`
   width: 50px;
   height: 50px;
-  background: url('${({ src }) => src}');
-  background-size: cover;
   margin-right: 10px;
   transition: all .8s;
   filter: grayscale(100%) invert();
@@ -53,7 +51,7 @@ const ItemWrapper = styled.a`
     color: #000;
     box-shadow: 0 0 35px rgba(0, 0, 0, .3);
 
-    &> div {
+    &> img {
       filter: grayscale(100%);
     }
   }
