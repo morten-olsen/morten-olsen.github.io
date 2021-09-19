@@ -41,11 +41,14 @@ Platforms and languages which I have worked with. The list is a shortened down v
 ### [Sampension](https://www.sampension.dk)
 **Senior Frontend Developer** _(2018 - Present)_
 
-Sampension is a danish pension fund and my work has been to design and help to build a frontend architecture that would run natively on iOS and Android as well as on the web on both desktop and mobile devices.
+Sampension is a danish pension fund.
+Initially, I was hired to help build the frontend and the architecture of their new digital self-service product ("Sampension" on Apple App Store or Google Play Store).
 
-It was important to ensure that the project felt at home on all platforms and that it was maintainable by a small team of developers.
+The project was to create a single code base that could handle both iOS, Android and web and be responsive/adaptive to be able to give a great UX on both mobile, tablets as well as desktop computers. The product is created using React Native and React Native Web and currently has around 96% shared code between the different platforms.
 
-To achieve this we used React Native and React Native for Web to create a unified codebase for all platforms, as well as create a component library which would deal with ensuring the best UX on all platforms.
+Additionally, I have been working on CI/CD and various DevOps related tasks to build up the tooling around the product (AWS S3, AWS Lambda, AWS Cloudfront, Github, Github Actions, Azure DevOps, Azure, etc.)
+
+I am also currently working with some initial project analysis for new projects and I have begun maintaining some of our backend code (C#)
 
 
 ### [Trendsales](https://www.trendsales.dk)
@@ -114,6 +117,12 @@ This list of frameworks is a curated list of frameworks I have been using recent
 * **Styled-Components**: 5 
 * **GraphQL**: 3 
 * **Babel**: 5 
+  
+------
+
+## What am I looking for in a job position?
+
+I am a person who likes a challenge, and therefore I also very much expect a company to provide tasks that challenge me and allows me to learn more and ideally from people smarter than me. I prefer the entrepreneurial spirit and to be in a company that does not wait to adjust to the market until the last minute, but a company that likes to see what new technologies can do for them. I prefer an informal office tone and a flat team structure (Or at least flat enough that anyone regardless of seniority can have their voice heard).
   
 ------
 
