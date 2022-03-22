@@ -1,0 +1,22 @@
+name: Morten Olsen
+tagline: “...One part genius, one part crazy”
+avatar: me.jpg
+email: hello@buy-me.coffee
+location: Copenhagen, DK
+social:
+  - name: Github
+    link: https://github.com/morten-olsen
+    logo: logos/github.svg
+  - name: HackTheBox
+    link: https://app.hackthebox.eu/profile/174098
+    logo: logos/htb.svg
+  - name: Stack Overflow
+    link: https://stackoverflow.com/users/1689055/morten-olsen
+    logo: logos/stackoverflow.svg
+  - name: Codingame
+    link: https://www.codingame.com/profile/8b34b1812baa75715c972bfe190c0aed4552622
+    logo: logos/codingame.svg
+  - name: Linkedin
+    link: https://www.linkedin.com/in/mortenolsendk
+    logo: logos/linkedin.svg
+
