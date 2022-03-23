@@ -5,6 +5,7 @@ import Head from 'next/head';
 import "@fontsource/merriweather";
 import "@fontsource/pacifico";
 import "@fontsource/fredoka";
+import { Transition } from '../components/animations/transition';
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -42,7 +43,9 @@ export default function App({ Component, pageProps }: AppProps) {
       <Head>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
-      <Component {...pageProps} />
+      <Transition>
+        <Component {...pageProps} />
+      </Transition>
     </>
   );
 };

@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import React from 'react';
 import { Content } from '../components/content';
 import { Experiences } from '../components/experiences';
@@ -17,6 +18,9 @@ type Props = {
 
 const Home: React.FC<Props> = ({ articles, profile, experiences }) => (
   <>
+    <Head>
+      <title>{profile.name} - {profile.tagline}</title>
+    </Head>
     <Hero profile={profile} />
     <Content>
       <Featured title="Latest articles">

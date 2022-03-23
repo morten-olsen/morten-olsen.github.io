@@ -1,0 +1,25 @@
+title: Creating a hyper connectivity framework
+parts:
+  - title: definition
+    file: definition.md
+  - title: reason
+  - title: target
+  - title: design
+    notes: |
+      onion based stream
+      4 way streams
+  - title: connection
+    notes: |
+      peerjs, tcp, ble(?)
+      session id
+  - title: reconnection
+  - title: authentication
+    file: authentication.md
+    notes: |
+      passport service
+  - title: security
+    notes: |
+      diff-hellman
+  - title: transport-nodes
+  - title: proof-of-concept
+  - title: conclusion

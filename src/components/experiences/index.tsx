@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import styled from "styled-components";
 import { Experience } from "../../data/experiences"
+import { SlideIn } from '../animations/slide-in';
 
 type Props = {
   experiences: Experience[];
@@ -44,7 +45,7 @@ const ExperienceWrapper = styled.div`
   }
 `;
 
-const Inner = styled.div`
+const Inner = styled(SlideIn)`
   border: solid 1px #eee;
   padding: 20px;
 `;
@@ -73,25 +74,31 @@ const More = styled.div`
   margin-top: 10px;
 `;
 
+const Hidden = styled.div`
+  overflow: hidden;
+  transition: all 0.3s ease-out;
+`;
+
 const ExperienceRow = ({ experience }) => {
   const [visible, setVisible] = useState(false);
   return (
     <Outer>
-      <ExperienceWrapper key={experience.id}>
+      <ExperienceWrapper>
         <Inner>
           <CompanyName>{experience.company.name}</CompanyName>
           <JobTitle>{experience.title}</JobTitle>
           <Time>{experience.startDate} - {experience.endDate}</Time>
-          {visible ? (
-            <>
-              <ReactMarkdown>
-                {experience.content}
-              </ReactMarkdown>
-              <More onClick={() => setVisible(false)}>Show less</More>        
-            </>
-          ) : (
-            <More onClick={() => setVisible(true)}>Show more</More>        
-          )}
+          <Hidden 
+            style={{
+              maxHeight: visible ? 1000 : 0,
+              opacity: visible ? 1 : 0,
+            }}
+          >
+            <ReactMarkdown>
+              {experience.content}
+            </ReactMarkdown>
+          </Hidden>
+          <More onClick={() => setVisible(!visible)}>Show {visible ? 'less' : 'more'}</More>        
         </Inner>
       </ExperienceWrapper>
     </Outer>

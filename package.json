@@ -30,6 +30,7 @@
     "@types/yaml": "^1.9.7",
     "babel-plugin-styled-components": "^2.0.6",
     "file-loader": "^6.2.0",
+    "framer-motion": "^6.2.8",
     "fs-extra": "^10.0.1",
     "marked": "^4.0.12",
     "next-compose-plugins": "^2.2.1",

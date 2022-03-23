@@ -4,15 +4,19 @@ import { Article, articleDB } from '../../data/articles';
 import { Content } from '../../components/content';
 import ReactMarkdown, { Components } from 'react-markdown';
 import { Navigation } from '../../components/navigation';
+import Head from 'next/head';
+import { Profile, profileDB } from '../../data/profile';
 
 type Props = {
   article: Article;
+  profile: Profile;
 };
 
 const Image = styled.img`
 `;
 
-const ImageWrapper = styled.div`
+const ImageWrapper = styled.span`
+  display: block;
   text-align: center;
 `;
 
@@ -67,10 +71,14 @@ const components: Components = {
 
 const ArticleView: React.FC<Props> = ({
   article,
+  profile,
 }) => {
   return (
     <>
-      <Navigation />
+      <Head>
+        <title>{profile.name} - {article.title}</title>
+      </Head>
+      <Navigation name={profile.name} />
       <Content>
         <Wrapper>
           <h1>{article.title}</h1>
@@ -96,9 +104,11 @@ export async function getStaticPaths() {
 export async function getStaticProps({ params }: any) {
   const { id } = params;
   const article = await articleDB.get(id); 
+  const profile = await profileDB.get();
   return {
     props: {
       article,
+      profile,
     }
   }
 }

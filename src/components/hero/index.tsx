@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Profile } from '../../data/profile';
 import { HeroBackground } from './background';
+import { SlideIn } from '../animations/slide-in';
 
 type Props = {
   profile: Profile;
@@ -101,10 +102,12 @@ const Hero: React.FC<Props> = ({ profile }) => (
     <Tagline>{profile.tagline}</Tagline>
     <Social>
       {profile.social.map((social) => (
-        <SocialItem href={social.link} target="_blank">
+        <SlideIn key={social.name}>
+        <SocialItem key={social.name} href={social.link} target="_blank">
           <SocialLogo src={social.logo} />
           <SocialText>{social.name}</SocialText>
         </SocialItem>
+        </SlideIn>
       ))}
     </Social>
     <HeroBackground />

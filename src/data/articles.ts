@@ -5,6 +5,7 @@ import { remark } from 'remark';
 import remarkHtml from 'remark-html';
 import behead from 'remark-behead';
 import { visit } from 'unist-util-visit';
+import { config } from '../config';
 
 const imageModules = (require as any).context(
   '../../articles',
@@ -18,7 +19,6 @@ const images = imageModules.keys().map((key) => ({
 
 const replaceImages = ({ id }) => (tree: any) => {
   visit(tree, 'image', (node) => {
-    console.log(id);
     if (!node.url.startsWith('./')) return;
     const correctedUrl = `.${path.resolve('/', id, node.url)}`;
     const image = images.find((i: any) => i.key === correctedUrl);
@@ -113,7 +113,10 @@ export class Articles {
     const articles = await Promise.all(articleLocations.map(
       (location) => this.#loadArticle(path.join(rootLocation, location)),
     ));
-    return articles;
+    return articles
+      .sort((a, b) => new Date(b.published || 0).getTime() - new Date(a.published || 0).getTime())
+      .filter(a => a.published || config.dev)
+
   }
 
   public getImage = (article: string, name: string) => {

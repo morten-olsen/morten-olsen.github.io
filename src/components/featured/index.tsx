@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
+import { SlideIn } from '../animations/slide-in';
 
 type Props = {
   title: string;

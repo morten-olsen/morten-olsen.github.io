@@ -44,7 +44,6 @@ export class ProfileDB {
       structure.avatar = image.url;
     }
     structure.social = structure.social.map((social) => {
-      console.log(social.logo, images)
       const image = images.find((i: any) => i.key === `.${path.resolve('/', social.logo)}`)
       return {
         ...social,

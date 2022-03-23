@@ -18,7 +18,6 @@ const images = imageModules.keys().map((key) => ({
 
 const replaceImages = ({ id }) => (tree: any) => {
   visit(tree, 'image', (node) => {
-    console.log(id);
     if (!node.url.startsWith('./')) return;
     const correctedUrl = `.${path.resolve('/', id, node.url)}`;
     const image = images.find((i: any) => i.key === correctedUrl);

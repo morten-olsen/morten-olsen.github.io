@@ -1,6 +1,6 @@
 import React, { Suspense, useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame, useLoader } from '@react-three/fiber';
-import { Euler, Vector3 } from 'three';
+import { Clock, Euler, Vector3 } from 'three';
 import { TextureLoader } from 'three/src/loaders/TextureLoader'
 import styled from 'styled-components';
 const { default: smoke } = require('./smoke.png');
@@ -14,6 +14,24 @@ const Wrapper = styled.div`
   z-index: -1;
 `;
 
+const FrameLimiter = () => {
+  const [clock] = React.useState(new Clock());
+  const [fps] = React.useState(10);
+
+  useFrame((state: any) => {
+    state.ready = false;
+    const timeUntilNextFrame = (1000 / fps) - clock.getDelta();
+
+    setTimeout(() => {
+      state.ready = true;
+      state.invalidate();
+    }, Math.max(0, timeUntilNextFrame));
+
+  });
+
+  return <></>;
+};
+
 const Cloud = ({ texture }) => {
   const ref = useRef<any>();
   const width = window.innerWidth / 2;
@@ -21,7 +39,7 @@ const Cloud = ({ texture }) => {
 
   useFrame(() => {
     if (!ref.current) return;
-    ref.current.rotation.z -= 0.001;
+    ref.current.rotation.z -= 0.003;
   });
 
   return (
@@ -45,7 +63,7 @@ const Clouds = () => {
   return (
     <>
       {items.map((_, i) => (
-        <Cloud texture={colorMap} />
+        <Cloud key={i} texture={colorMap} />
       ))}
     </>
   )
@@ -69,6 +87,7 @@ const Scene = () => {
         rotation: [1.16, -0.12, 0.27],
       }}
     >
+      <FrameLimiter />
       <scene>
       <perspectiveCamera
         args={[60,window.innerWidth / window.innerHeight,1,1000]}

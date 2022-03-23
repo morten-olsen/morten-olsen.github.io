@@ -2,12 +2,13 @@ import Link from 'next/link';
 import React from 'react';
 import styled from 'styled-components';
 import { Article } from '../../../data/articles';
+import { SlideIn } from '../../animations/slide-in';
 
 type Props = {
   article: Article;
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled(SlideIn)`
   cursor: pointer;
   display: flex;
   padding: 15px;
@@ -58,11 +59,13 @@ const ArticleTile: React.FC<Props> = ({ article }) => (
         <Header>
           {article.title}
         </Header>
-        <Published>3 days ago</Published>
+        <Published>{article.published}</Published>
       </Inner>
-      <ImageWrapper>
-        <Image src={article.cover} />
-      </ImageWrapper>
+      {article.cover && (
+        <ImageWrapper>
+          <Image src={article.cover} />
+        </ImageWrapper>
+      )}
     </Wrapper>
   </Link>
 );
