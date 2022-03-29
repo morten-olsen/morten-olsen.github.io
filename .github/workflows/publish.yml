@@ -19,8 +19,16 @@ jobs:
           args: yarn install
       - name: Build 🔧
         uses: docker://ghcr.io/morten-olsen/node-latex:main
+        env:
+          NODE_ENV: production
         with:
-          args: NODE_ENV=production yarn next build && yarn next export
+          args: yarn next build
+      - name: Export 🔧
+        uses: docker://ghcr.io/morten-olsen/node-latex:main
+        env:
+          NODE_ENV: production
+        with:
+          args: yarn next export
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@4.0.0
         with:
