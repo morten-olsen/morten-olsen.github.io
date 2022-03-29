@@ -56,7 +56,7 @@ Now comes the part I have feared, where I need to draw a diagram.
 ...sorry
 
 
-![Image description](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/nhzfqbddv4otq6h4zprf.png)
+![Image description](./graph.png)
 
 So this shows our final setup.
 

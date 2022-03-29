@@ -1,11 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Article, articleDB } from '../../data/articles';
+import { formatDistanceToNow } from 'date-fns';
 import { Content } from '../../components/content';
 import ReactMarkdown, { Components } from 'react-markdown';
 import { Navigation } from '../../components/navigation';
 import Head from 'next/head';
-import { Profile, profileDB } from '../../data/profile';
+import { Article, ArticleDB } from '../../data/repos/articles';
+import { Profile, ProfileDB } from '../../data/repos/profile';
+import Container from 'typedi';
+import { AssetResolver } from '../../data/assets';
+import { WebpackAssetResolver } from '../../data/assets/WebpackAssets';
 
 type Props = {
   article: Article;
@@ -51,8 +55,11 @@ const Wrapper = styled.article`
   }
 `;
 
-const Published = styled.time`
+const Meta = styled.div`
   font-size: 0.8rem;
+`;
+
+const Published = styled.time`
 `;
 
 const Cover = styled.img`
@@ -82,7 +89,13 @@ const ArticleView: React.FC<Props> = ({
       <Content>
         <Wrapper>
           <h1>{article.title}</h1>
-          <Published>3 days ago</Published>
+          <Meta>
+            <Published>{formatDistanceToNow(new Date(article.published || 0), { addSuffix: true })}</Published>
+            {' '} - {article.stats.minutes.toFixed(0)} minute read
+            {' '} - {article.pdfs.a4 &&(
+              <a href={article.pdfs.a4} target="_blank">Download as PDF</a>
+            )}
+          </Meta>
           <Cover src={article.cover} />
           <ReactMarkdown components={components}>
             {article.content}
@@ -94,6 +107,8 @@ const ArticleView: React.FC<Props> = ({
 };
 
 export async function getStaticPaths() {
+  Container.set(AssetResolver, new WebpackAssetResolver());
+  const articleDB = Container.get(ArticleDB);
   const articles = await articleDB.list();
   return {
     paths: articles.map(a => `/articles/${a.id}`),
@@ -103,6 +118,9 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }: any) {
   const { id } = params;
+  Container.set(AssetResolver, new WebpackAssetResolver());
+  const articleDB = Container.get(ArticleDB);
+  const profileDB = Container.get(ProfileDB);
   const article = await articleDB.get(id); 
   const profile = await profileDB.get();
   return {

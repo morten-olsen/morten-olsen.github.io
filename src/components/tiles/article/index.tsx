@@ -1,8 +1,9 @@
 import Link from 'next/link';
 import React from 'react';
 import styled from 'styled-components';
-import { Article } from '../../../data/articles';
+import { Article } from '../../../data/repos/articles';
 import { SlideIn } from '../../animations/slide-in';
+import { formatDistanceToNow } from 'date-fns';
 
 type Props = {
   article: Article;
@@ -33,10 +34,13 @@ const Header = styled.h3`
   font-weight: 600;
 `;
 
-const Published = styled.time`
+const Meta = styled.time`
   display: block;
   font-size: 0.8rem;
   padding-bottom: 1rem;
+`;
+
+const Published = styled.time`
 `;
 
 const Image = styled.div<{
@@ -56,10 +60,15 @@ const ArticleTile: React.FC<Props> = ({ article }) => (
   <Link href={`/articles/${article.id}`}>
     <Wrapper>
       <Inner>
+        <Meta>
+          <Published>{formatDistanceToNow(new Date(article.published || 0), { addSuffix: true })}</Published>
+        </Meta>
         <Header>
           {article.title}
         </Header>
-        <Published>{article.published}</Published>
+        <Meta>
+          <br />{article.stats.minutes.toFixed(0)} min read
+        </Meta>
       </Inner>
       {article.cover && (
         <ImageWrapper>

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Profile } from '../../data/profile';
+import { Profile } from '../../data/repos/profile';
 import { HeroBackground } from './background';
 import { SlideIn } from '../animations/slide-in';
 

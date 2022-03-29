@@ -1,0 +1,3 @@
+data: 
+  structure: ./index.yml
+generator: article

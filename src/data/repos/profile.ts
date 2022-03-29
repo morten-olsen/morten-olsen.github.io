@@ -1,17 +1,9 @@
 
 import fs from 'fs-extra';
 import path from 'path';
+import { Service } from 'typedi';
 import yaml from 'yaml';
-
-const imageModules = (require as any).context(
-  '../../profile',
-  true,
-  /\.(png|jpe?g|svg)$/,
-)
-const images = imageModules.keys().map((key) => ({
-  key,
-  url: imageModules(key).default,
-}));
+import { AssetResolver } from '../assets';
 
 export type Profile = {
   name: string;
@@ -27,27 +19,35 @@ export type Profile = {
   }[]
 }
 
+@Service()
 export class ProfileDB {
   #profile: Promise<Profile>;
+  #assets: AssetResolver;
 
-  constructor() {
+  constructor(
+    assets: AssetResolver,
+  ) {
+    this.#assets = assets;
     this.#profile = this.#load();
   }
 
   #load = async () => {
-    const rootLocation = path.join(process.cwd(), 'profile');
+    const rootLocation = path.join(process.cwd(), 'content', 'profile');
     const structureLocation = path.join(rootLocation, 'index.yml');
     const structureContent = await fs.readFile(structureLocation, 'utf-8');
     const structure = yaml.parse(structureContent) as Profile; 
     if (structure.avatar) {
-      const image = images.find((i: any) => i.key === `.${path.resolve('/', structure.avatar)}`)
-      structure.avatar = image.url;
+      const image = this.#assets.getPath(
+        'profile',
+        structure.avatar,
+      )
+      structure.avatar = image || null;
     }
     structure.social = structure.social.map((social) => {
-      const image = images.find((i: any) => i.key === `.${path.resolve('/', social.logo)}`)
+      const image = this.#assets.getPath('profile', social.logo);
       return {
         ...social,
-        logo: image?.url || null,
+        logo: image || null,
       };
     })
     return structure;
@@ -58,5 +58,3 @@ export class ProfileDB {
     return profile;
   };
 }
-
-export const profileDB = new ProfileDB();

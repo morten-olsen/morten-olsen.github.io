@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import Document from 'next/document';
 import { ServerStyleSheet } from 'styled-components';
 

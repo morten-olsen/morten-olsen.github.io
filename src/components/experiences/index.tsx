@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import styled from "styled-components";
-import { Experience } from "../../data/experiences"
+import { Experience } from "../../data/repos/experiences"
 import { SlideIn } from '../animations/slide-in';
 
 type Props = {
