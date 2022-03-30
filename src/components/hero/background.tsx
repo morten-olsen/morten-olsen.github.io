@@ -1,4 +1,4 @@
-import React, { Suspense, useMemo, useRef, useState } from 'react';
+import React, { Suspense, useMemo, useRef, useState, useEffect } from 'react';
 import { Canvas, useFrame, useLoader } from '@react-three/fiber';
 import { Clock, Euler, Vector3 } from 'three';
 import { TextureLoader } from 'three/src/loaders/TextureLoader'
@@ -36,11 +36,18 @@ const Cloud = ({ texture }) => {
   const ref = useRef<any>();
   const width = window.innerWidth / 2;
   const height = window.innerHeight / 2;
+  const [ready, setReady] = useState(false);
 
   useFrame(() => {
-    if (!ref.current) return;
+    if (!ref.current || !ready) return;
     ref.current.rotation.z -= 0.003;
   });
+  
+  useEffect(() => {
+    setTimeout(() => {
+      setReady(true);
+    }, 500)
+  }, []);
 
   return (
     <mesh
