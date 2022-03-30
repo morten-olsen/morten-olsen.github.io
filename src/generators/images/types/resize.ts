@@ -1,11 +1,11 @@
+
 import { loadImage, CanvasRenderingContext2D, Image, createCanvas } from 'canvas';
 import path from 'path';
 import Container from "typedi";
-import { AssetResolver } from "../../data/assets";
-import { ArticleDB } from "../../data/repos/articles";
-import { ImageGenerator } from "./Generator";
-import drawMultiLine from 'canvas-multiline-text';
-import { ProfileDB } from '../../data/repos/profile';
+import { AssetResolver } from "../../../data/assets";
+import { ArticleDB } from "../../../data/repos/articles";
+import { ImageGenerator } from "./types";
+import { ProfileDB } from '../../../data/repos/profile';
 
 const assets = {
   getPath: (...source: string[]) => {
@@ -70,61 +70,17 @@ function drawImageProp(
     ctx.drawImage(img, cx, cy, cw, ch,  x, y, w, h);
 }
 
-const shareGenerator: ImageGenerator = async (data, location, canvas) => {
+const resizeGenerator: ImageGenerator = async (data, location, canvas) => {
   const dir = path.dirname(location);
-  const id = path.basename(dir);
+  const src = path.join(dir, data.src);
   Container.set(AssetResolver, assets)
-  const articleDB = Container.get(ArticleDB);
-  const profileDB = Container.get(ProfileDB);
-  const article = await articleDB.get(id);
-  const profile = await profileDB.get();
   const ctx = canvas.getContext('2d');
   ctx.antialias = 'subpixel';
-  const cover = await loadImage(article.cover);
+  const cover = await loadImage(src);
   drawImageProp(
     ctx,
     cover,
   )
-  const author = `by ${profile.name}`;
-  ctx.font = '30px sans';
-  const titleSize = ctx.measureText(article.title);
-
-  ctx.font = '16px sans';
-  const authorSize = ctx.measureText(author);
-  const titleHeight = titleSize.actualBoundingBoxDescent + titleSize.actualBoundingBoxAscent;
-  const authorHeight = authorSize.actualBoundingBoxDescent + authorSize.actualBoundingBoxAscent;
-
-  const offset = 10;
-  ctx.fillStyle = '#222';
-  ctx.fillRect(
-    20, 
-    offset,
-    Math.min(canvas.width - 60, titleSize.width + 20),
-    titleHeight + 20,
-  )
-
-  const authorOffset = offset + titleHeight + 20 + 20;
-
-  ctx.fillRect(
-    20, 
-    authorOffset,
-    Math.min(canvas.width - 60, authorSize.width + 20),
-    authorHeight + 20,
-  )
-  ctx.fillStyle = '#fff';
-  ctx.font = '30px sans';
-  ctx.fillText(
-    article.title,
-    30,
-    30 + titleSize.actualBoundingBoxAscent / 2,
-  )
-
-  ctx.font = '16px sans';
-  ctx.fillText(
-    author,
-    30,
-    authorOffset + 10 + authorSize.actualBoundingBoxAscent / 2,
-  )
 };
 
-export { shareGenerator };
+export { resizeGenerator };

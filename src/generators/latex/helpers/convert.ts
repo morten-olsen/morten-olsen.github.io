@@ -63,7 +63,6 @@ const renderer = (outerDepth: number) =>  ({
     return `\\texttt{${sanitize(code)}}`
   },
   image: (link: string) => {
-    console.log('link', link);
     if (!existsSync(link)) {
       return 'Online image not supported';
     }

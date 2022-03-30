@@ -1,6 +1,5 @@
 title: My home runs Redux
 cover: cover.png
 published: 2022-03-15
-shareImage: ./share.png.yml
 parts:
   - main.md

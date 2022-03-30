@@ -1,9 +1,9 @@
 import path from 'path';
 import { LatexGenerator } from "../Generator";
 import Container from 'typedi';
-import { AssetResolver } from '../../../data/assets';
-import { ProfileDB } from '../../../data/repos/profile';
-import { ExperienceDB } from '../../../data/repos/experiences';
+import { AssetResolver } from '../../../../data/assets';
+import { ProfileDB } from '../../../../data/repos/profile';
+import { ExperienceDB } from '../../../../data/repos/experiences';
 import { fromMarkdown } from '../../helpers/convert';
 
 const assets = {
@@ -20,9 +20,8 @@ const resume: LatexGenerator<Data> = async (data, location) => {
   const experienceDB = Container.get(ExperienceDB);
 
   const profile = await profileDB.get();
-  const avatar = profile.avatar;
+  const avatar = profile.resumeImage;
   const experiences = await experienceDB.list();
-  console.log('a', avatar);
 
   return `
 \\documentclass[10pt, a4paper]{article}

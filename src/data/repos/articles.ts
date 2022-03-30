@@ -72,8 +72,8 @@ export class ArticleDB {
       stats,
       pdfs: {
         a4: this.#assets.getPath(
-          path.resolve('/', 'articles', id, 'a4.tex.yml'),
-        ) || null,
+          path.resolve('/', 'articles', id, 'a4.gen.yml'),
+        )?.url || null,
       }
     };
 

@@ -36,19 +36,12 @@ const Cloud = ({ texture }) => {
   const ref = useRef<any>();
   const width = window.innerWidth / 2;
   const height = window.innerHeight / 2;
-  const [ready, setReady] = useState(false);
 
   useFrame(() => {
-    if (!ref.current || !ready) return;
+    if (!ref.current) return;
     ref.current.rotation.z -= 0.003;
   });
   
-  useEffect(() => {
-    setTimeout(() => {
-      setReady(true);
-    }, 500)
-  }, []);
-
   return (
     <mesh
       ref={ref}
@@ -138,3 +131,4 @@ const HeroBackground = () => {
 }
 
 export { HeroBackground };
+export default HeroBackground;

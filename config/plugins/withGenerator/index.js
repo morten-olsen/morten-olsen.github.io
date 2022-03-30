@@ -10,9 +10,9 @@ const withLatex = (nextConfig = {}) => {
         outputPath = "../../";
       }
       config.module.rules.push({
-        test: /\.png.yml$/,
+        test: /\.gen.yml$/,
         use: [{
-          loader: 'file-loader', 
+          loader: require.resolve('./webpack.js'),
           options: {
 
             publicPath: `${nextConfig.assetPrefix || nextConfig.basePath || ''}/_next/static/images/`,
@@ -27,8 +27,6 @@ const withLatex = (nextConfig = {}) => {
             },
             esModule: nextConfig.esModule || false,
           },
-        }, {
-          loader: require.resolve('./webpack.js'),
         }],
       });
       if (typeof nextConfig.webpack === "function") {

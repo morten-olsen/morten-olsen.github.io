@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Profile } from '../../data/repos/profile';
-import { HeroBackground } from './background';
 import { SlideIn } from '../animations/slide-in';
 
 type Props = {
@@ -91,31 +90,44 @@ const SocialLogo = styled.div<{ src: string }>`
   background-size: cover;
 `
 
-const Hero: React.FC<Props> = ({ profile }) => (
-  <Wrapper>
-    <Avatar src={profile.avatar}>
-      <AvatarSpacer />
-    </Avatar>
-    <Name>
-      {profile.name}
-    </Name>
-    <Tagline>{profile.tagline}</Tagline>
-    <Social>
-      <SlideIn>
-        <SocialItem href={profile.resume} target="_blank">
-          <SocialText>Resumé</SocialText>
-        </SocialItem>
-      </SlideIn>
-      {profile.social.map((social) => (
-        <SlideIn key={social.name}>
-        <SocialItem key={social.name} href={social.link} target="_blank">
-          <SocialLogo src={social.logo} />
-          <SocialText>{social.name}</SocialText>
-        </SocialItem>
+const Hero: React.FC<Props> = ({ profile }) => {
+  const [background, setBackground] = useState<any>();
+  useEffect(
+    () => {
+      import('./background').then(({ default: HeroBackground }) => {
+        console.log('goo', typeof HeroBackground);
+        setBackground(<HeroBackground />);
+      })
+    },
+    [],
+  )
+  return (
+    <Wrapper>
+      <Avatar src={profile.avatar}>
+        <AvatarSpacer />
+      </Avatar>
+      <Name>
+        {profile.name}
+      </Name>
+      <Tagline>{profile.tagline}</Tagline>
+      <Social>
+        <SlideIn>
+          <SocialItem href={profile.resume} target="_blank">
+            <SocialText>Resumé</SocialText>
+          </SocialItem>
         </SlideIn>
-      ))}
-    </Social>
-  </Wrapper>
-);
+        {profile.social.map((social) => (
+          <SlideIn key={social.name}>
+          <SocialItem key={social.name} href={social.link} target="_blank">
+            <SocialLogo src={social.logo} />
+            <SocialText>{social.name}</SocialText>
+          </SocialItem>
+          </SlideIn>
+        ))}
+      </Social>
+      {background}
+    </Wrapper>
+  );
+}
 
 export { Hero };

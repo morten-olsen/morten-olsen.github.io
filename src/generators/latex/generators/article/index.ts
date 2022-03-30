@@ -1,7 +1,7 @@
-import type { Article } from "../../../data/repos/articles";
+import type { Article } from "../../../../data/repos/articles";
 import fs from 'fs-extra';
 import { LatexGenerator } from "../Generator";
-import { generate } from '../../../data/helpers/markdown';
+import { generate } from '../../../../data/helpers/markdown';
 import path from 'path';
 import yaml from 'yaml';
 import { fromMarkdown } from "../../helpers/convert";

@@ -1,6 +1,6 @@
 title: How to hire engineers, by an engineer
 cover: cover.png
 published: 2022-03-16
-shareImage: ./share.png.yml
+shareImage: ./share.gen.yml
 parts:
   - main.md

@@ -1,0 +1,7 @@
+generator: image
+data:
+  type: resize
+  width: 780
+  height: 780
+  src: ./me.jpg
+  output: image/jpeg

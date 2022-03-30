@@ -1,0 +1,5 @@
+generator: image
+data:
+  type: share
+  width: 450
+  height: 300

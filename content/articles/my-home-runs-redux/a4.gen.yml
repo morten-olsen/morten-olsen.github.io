@@ -1,0 +1,4 @@
+data: 
+  type: article
+  structure: ./index.yml
+generator: latex 

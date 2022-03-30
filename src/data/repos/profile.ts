@@ -18,7 +18,8 @@ export type Profile = {
     value: string;
     link: string;
     logo: string;
-  }[]
+  }[];
+  resumeImage?: string;
   platforms: {
     name: string;
     level: number;
@@ -50,8 +51,15 @@ export class ProfileDB {
       const image = this.#assets.getPath(
         'profile',
         structure.avatar,
-      )
+      )?.url
       structure.avatar = image || null;
+    }
+    if (structure.resumeImage) {
+      const image = this.#assets.getPath(
+        'profile',
+        structure.resumeImage,
+      )
+      structure.resumeImage = image || null;
     }
     structure.social = structure.social.map((social) => {
       const image = this.#assets.getPath('profile', social.logo);
@@ -62,8 +70,8 @@ export class ProfileDB {
     })
     structure.resume = this.#assets.getPath(
       'profile',
-      'a4.tex.yml',
-    );
+      'a4.gen.yml',
+    )?.url || null;
     return structure;
   }
 
