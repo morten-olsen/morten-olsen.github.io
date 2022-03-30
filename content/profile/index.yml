@@ -2,10 +2,12 @@ name: Morten Olsen
 tagline: “...One part genius, one part crazy”
 avatar: me.jpg
 email: hello@buy-me.coffee
+github: morten-olsen
 location: Copenhagen, DK
 social:
   - name: Github
     link: https://github.com/morten-olsen
+    value: morten-olsen
     logo: logos/github.svg
   - name: HackTheBox
     link: https://app.hackthebox.eu/profile/174098
@@ -19,4 +21,32 @@ social:
   - name: Linkedin
     link: https://www.linkedin.com/in/mortenolsendk
     logo: logos/linkedin.svg
+platforms:
+  - name: JavaScript
+    level: 5
+  - name: NodeJS
+    level: 5
+  - name: React Native
+    level: 5
+  - name: Typescript
+    level: 5
+  - name: Docker
+    level: 4
+  - name: Linux
+    level: 4
+  - name: CSharp
+    level: 4
+skills:
+  - name: React
+    level: 5
+  - name: Redux
+    level: 5
+  - name: Webpack
+    level: 5
+  - name: RxJS
+    level: 3
+  - name: Styled-Components
+    level: 5
+  - name: GraphQL
+    level: 4
 

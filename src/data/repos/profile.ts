@@ -9,14 +9,24 @@ export type Profile = {
   name: string;
   avatar?: string | null;
   email?: string;
+  github?: string;
   location?: string;
   tagline?: string;
+  resume: string;
   social: {
     name: string;
     value: string;
     link: string;
     logo: string;
   }[]
+  platforms: {
+    name: string;
+    level: number;
+  }[];
+  skills: {
+    name: string;
+    level: number;
+  }[];
 }
 
 @Service()
@@ -50,6 +60,10 @@ export class ProfileDB {
         logo: image || null,
       };
     })
+    structure.resume = this.#assets.getPath(
+      'profile',
+      'a4.tex.yml',
+    );
     return structure;
   }
 

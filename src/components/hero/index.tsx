@@ -101,6 +101,11 @@ const Hero: React.FC<Props> = ({ profile }) => (
     </Name>
     <Tagline>{profile.tagline}</Tagline>
     <Social>
+      <SlideIn>
+        <SocialItem href={profile.resume} target="_blank">
+          <SocialText>Resumé</SocialText>
+        </SocialItem>
+      </SlideIn>
       {profile.social.map((social) => (
         <SlideIn key={social.name}>
         <SocialItem key={social.name} href={social.link} target="_blank">
