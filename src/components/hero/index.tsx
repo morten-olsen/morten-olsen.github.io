@@ -115,7 +115,6 @@ const Hero: React.FC<Props> = ({ profile }) => (
         </SlideIn>
       ))}
     </Social>
-    <HeroBackground />
   </Wrapper>
 );
 
