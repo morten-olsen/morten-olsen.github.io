@@ -23,6 +23,7 @@ export type Article = {
   published?: string;
   content: string;
   stats: ReturnType<typeof readingTime>;
+  shareImage?: string;
   pdfs: {
     a4: string;
   };
@@ -57,6 +58,9 @@ export class ArticleDB {
     const cover = structure.cover
       ? this.#assets.getPath(path.resolve('/', location, structure.cover))
       : null;
+    const shareImage = structure.shareImage
+      ? this.#assets.getPath(path.resolve('/', location, structure.shareImage))
+      : null;
     const stats = readingTime(articleContent.join('\n'));
 
     const article: Article = {
@@ -64,6 +68,7 @@ export class ArticleDB {
       id,
       cover,
       content: articleContent.join('\n'),
+      shareImage,
       stats,
       pdfs: {
         a4: this.#assets.getPath(

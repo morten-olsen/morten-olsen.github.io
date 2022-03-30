@@ -1,3 +1,4 @@
+const path = require('path');
 const withLatex = (nextConfig = {}) => {
   return Object.assign({}, nextConfig, {
     webpack(config, options) {
@@ -9,13 +10,21 @@ const withLatex = (nextConfig = {}) => {
         outputPath = "../../";
       }
       config.module.rules.push({
-        test: /\.tex.yml$/,
+        test: /\.png.yml$/,
         use: [{
           loader: 'file-loader', 
           options: {
+
             publicPath: `${nextConfig.assetPrefix || nextConfig.basePath || ''}/_next/static/images/`,
             outputPath: `${outputPath}static/images/`,
-            name: "[name]-[hash].pdf",
+            name: (name) => {
+              const fileName = path.basename(name);
+              const parts = fileName.split('.');
+              parts.pop();
+              const ext = parts.pop();
+
+              return `${parts.join('.')}.[hash].${ext}`;
+            },
             esModule: nextConfig.esModule || false,
           },
         }, {

@@ -4,7 +4,7 @@ import { AssetResolver } from './';
 const assetModules = (require as any).context(
   '../../../content',
   true,
-  /\.(png|jpe?g|svg|gif|tex\.yml)$/,
+  /\.(png|jpe?g|svg|gif|tex\.yml|png\.yml)$/,
 )
 const assets = assetModules.keys().reduce((output, key: string) => ({
   ...output,

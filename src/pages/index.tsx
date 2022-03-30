@@ -13,15 +13,13 @@ import { Experience, ExperienceDB } from '../data/repos/experiences';
 import { Profile, ProfileDB } from '../data/repos/profile';
 
 type Props = {
-  resume: string;
   articles: Article[];
   profile: Profile;
   experiences: Experience[];
 };
 
 
-const Home: React.FC<Props> = ({ resume, articles, profile, experiences }) => {
-  console.log('resume', resume);
+const Home: React.FC<Props> = ({ articles, profile, experiences }) => {
   return (
     <>
       <Head>
@@ -45,14 +43,11 @@ export async function getStaticProps() {
   const articleDB = Container.get(ArticleDB);
   const profileDB = Container.get(ProfileDB);
   const experienceDB = Container.get(ExperienceDB);
-  const assets = Container.get(AssetResolver);
   const articles = await articleDB.list(); 
   const profile = await profileDB.get();
   const experiences = await experienceDB.list();
-  const resume = assets.getPath('profile', 'a4.tex.yml');
   return {
     props: {
-      resume,
       profile,
       articles,
       experiences,
