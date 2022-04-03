@@ -2,3 +2,5 @@ generator: html-image
 data:
   name: 'article/hiring/share'
   template: ./share.ejs
+  width: 780
+  height: 780
