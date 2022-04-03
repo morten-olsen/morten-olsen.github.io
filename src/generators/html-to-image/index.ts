@@ -1,8 +1,22 @@
 import { Generator } from '../types';
-import htmlToImage from 'node-html-to-image';
 import path from 'path';
 import fs from 'fs-extra';
 import ejs from 'ejs';
+import puppeteer from 'puppeteer';
+
+const generateImage = async (html: string, width: number, height: number) => {
+  const browser = await puppeteer.launch({
+     args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  });
+  const page = await browser.newPage();
+  await page.setViewport({
+    width,
+    height,
+  })
+  await page.setContent(html);
+  const image = await page.screenshot();
+  return image;
+}
 
 export const generateHtmlImage: Generator = async ({
   data,
@@ -10,7 +24,7 @@ export const generateHtmlImage: Generator = async ({
   isDev,
   addDependency,
 }) => {
-  const { template, name, ...rest } = data;
+  const { template, name, width, height, ...rest } = data;
   const dir = path.dirname(location);
   const getAsset = (a: string) => {
     const target = path.resolve(dir, a);
@@ -26,9 +40,7 @@ export const generateHtmlImage: Generator = async ({
     ...rest,
     getAsset,
   });
-  const content = isDev ? html :  await htmlToImage({
-    html,
-  });
+  const content = isDev ? html : await generateImage(html, width, height);
   return {
     default: {
       name: isDev ? `${name}.html` : `${name}.png`,
