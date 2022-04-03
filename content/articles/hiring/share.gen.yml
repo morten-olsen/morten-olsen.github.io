@@ -1,5 +1,4 @@
-generator: image
+generator: html-image
 data:
-  type: share
-  width: 450
-  height: 300
+  name: 'article/hiring/share'
+  template: ./share.ejs

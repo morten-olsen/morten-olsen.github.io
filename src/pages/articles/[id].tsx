@@ -84,6 +84,9 @@ const ArticleView: React.FC<Props> = ({
     <>
       <Head>
         <title>{profile.name} - {article.title}</title>
+        <meta property="og:title" content={article.title} />
+        {article.summery && <meta property="og:title" content={article.title} />}
+        {article.shareImage && <meta property="og:image" content={article.shareImage} />}
       </Head>
       <Navigation name={profile.name} />
       <Content>

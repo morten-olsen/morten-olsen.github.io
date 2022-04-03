@@ -14,18 +14,9 @@ const withLatex = (nextConfig = {}) => {
         use: [{
           loader: require.resolve('./webpack.js'),
           options: {
-
-            publicPath: `${nextConfig.assetPrefix || nextConfig.basePath || ''}/_next/static/images/`,
-            outputPath: `${outputPath}static/images/`,
-            name: (name) => {
-              const fileName = path.basename(name);
-              const parts = fileName.split('.');
-              parts.pop();
-              const ext = parts.pop();
-
-              return `${parts.join('.')}.[hash].${ext}`;
-            },
-            esModule: nextConfig.esModule || false,
+            isDev: dev,
+            publicPath: `${nextConfig.assetPrefix || nextConfig.basePath || ''}/_next/static/assets/`,
+            outputPath: `${outputPath}static/assets/`,
           },
         }],
       });

@@ -51,7 +51,7 @@ export class ProfileDB {
       const image = this.#assets.getPath(
         'profile',
         structure.avatar,
-      )?.url
+      );
       structure.avatar = image || null;
     }
     if (structure.resumeImage) {

@@ -21,13 +21,16 @@ const latexToPdf = (doc: string) => new Promise<Buffer>((resolve, reject) => {
   })
 });
 
-const generateLatex: Generator = async (data: any, location: string) => {
+const generateLatex: Generator = async ({
+  data,
+  location,
+}) => {
   const { type, ...rest } = data; 
   const generator = generators[type];
   const doc = await generator(rest, location);
   const content = await latexToPdf(doc);
   return {
-    url: {
+    default: {
       name: 'doc.pdf',
       content,
     }

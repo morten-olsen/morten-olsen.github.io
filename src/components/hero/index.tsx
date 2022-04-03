@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Profile } from '../../data/repos/profile';
 import { SlideIn } from '../animations/slide-in';

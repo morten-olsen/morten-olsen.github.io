@@ -12,11 +12,18 @@ module.exports = function (source) {
   const location = this.resourcePath;
   const definition = yaml.parse(source);
   const options = this.getOptions();
-  generate(definition, location)
+  generate({
+    definition,
+    location,
+    isDev: options.isDev,
+    addDependency: this.addDependency
+  })
     .then((output) => {
       const files = Object.entries(output).reduce((output, [key, value]) => {
-        const { name, content } = value;
-        const targetName = loaderUtils.interpolateName(this, `[contenthash]/${name}`, {content: content});
+        const { name, content, isStatic } = value;
+        const targetName = isStatic
+          ? `${isStatic}/${name}`
+          : loaderUtils.interpolateName(this, `[contenthash]/${name}`, {content: content});
         const location = path.join(options.outputPath, targetName);
         const publicPath = path.join(options.publicPath, targetName);
         this.emitFile(location, content);

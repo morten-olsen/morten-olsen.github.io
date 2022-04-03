@@ -1,0 +1,67 @@
+<html>
+  <head>
+    <style>
+      body, html {
+        width: 780px;
+        height: 780px;
+        overflow: hidden;
+        margin: 0;
+        background: #f0f0f0;
+      }
+      #bg {
+        position: fixed;
+        top: 30px;
+        bottom: 30px;
+        left: 30px;
+        right: 30px;
+        background-color: #fff;
+        background-image: url("<%=getAsset('./cover.png')%>");
+        background-size: cover;
+        background-position: center;
+        opacity: 0.3;
+      }
+
+      #info {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        right: 40px;
+        top: 20px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #title, #subtitle {
+        display: inline-block;
+        width: auto;
+        padding: 20px;
+        font-size: 60px;
+        background: #222;
+        color: #fff;
+        transform: rotate(-1deg);
+        text-align: center;
+      }
+
+      #subtitle {
+        transform: rotate(2deg);
+        font-size: 20px;
+        background: #fff;
+        border: solid 3px #222;
+        color: #222;
+        margin-left: 20px;
+        padding: 10px;
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="bg"></div>
+    <div id="info">
+      <div id="title">How to hire engineers, by an engineer</div>
+      <div id="subtitle">15 min read</div>
+    </div>
+  </body>
+</html>
