@@ -71,7 +71,7 @@ export class ProfileDB {
     structure.resume = this.#assets.getPath(
       'profile',
       'a4.gen.yml',
-    )?.url || null;
+    ) || null;
     return structure;
   }
 

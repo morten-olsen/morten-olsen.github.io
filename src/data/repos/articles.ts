@@ -73,7 +73,7 @@ export class ArticleDB {
       pdfs: {
         a4: this.#assets.getPath(
           path.resolve('/', 'articles', id, 'a4.gen.yml'),
-        )?.url || null,
+        ) || null,
       }
     };
 
