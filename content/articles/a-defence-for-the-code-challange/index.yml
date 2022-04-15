@@ -1,0 +1,6 @@
+title: A defence for the coding challange
+published: 2022-04-15
+cover: cover.png
+shareImage: ./share.gen.yml
+parts:
+  - main.md

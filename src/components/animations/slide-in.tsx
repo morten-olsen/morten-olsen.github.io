@@ -37,9 +37,7 @@ const SlideIn: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
       {...props as any}
       ref={ref}
       initial={{
-        y: 50,
-        opacity: 0,
-        scale: 1.3,
+        y: '100%',
       }}
       animate={controls}
     >

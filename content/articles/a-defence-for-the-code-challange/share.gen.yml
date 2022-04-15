@@ -1,9 +1,9 @@
 generator: html-image
 data:
-  name: 'article/hiring/share'
+  name: 'article/a-defence-for-the-code-challange/share'
   template: ../../images/share.ejs
   background: './cover.png'
-  title: How to hire engineers, by an engineer
+  title: A defence for the coding challange
   subtitle: 5 min read
   width: 780
   height: 780

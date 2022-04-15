@@ -25,7 +25,7 @@ const ImageWrapper = styled.span`
 `;
 
 const Wrapper = styled.article`
-  line-height: 1.8rem;
+  line-height: 2.1rem;
   background: #fff;
 
   p + p:first-letter {
@@ -52,6 +52,14 @@ const Wrapper = styled.article`
     font-size: 3rem;
     line-height: 3.8rem;
     margin-bottom: 0;
+  }
+
+  h2 {
+    margin-top: 5rem;
+  }
+
+  h3 {
+    margin-top: 3rem;
   }
 `;
 

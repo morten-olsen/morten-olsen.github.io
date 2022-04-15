@@ -51,7 +51,7 @@ export class ArticleDB {
       structure.parts.map((part) => generate(
         location,
         part,
-        2,
+        1,
         this.#assets,
       )),
     );
