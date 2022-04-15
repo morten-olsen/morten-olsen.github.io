@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createGlobalStyle } from 'styled-components';
 import type { AppProps } from 'next/app'
 import Head from 'next/head';
+import { useRouter } from 'next/router'
 import "@fontsource/merriweather";
 import "@fontsource/pacifico";
 import "@fontsource/fredoka";
 import { Transition } from '../components/animations/transition';
 
+declare var window: {
+  _paq: any;
+}
 const GlobalStyle = createGlobalStyle`
   * {
     box-sizing: border-box;
@@ -37,6 +41,21 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 export default function App({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+  useEffect(() => {
+    const handleRouteChange = (url: string) => {
+      if (window && window._paq) {
+        window._paq.push(['setCustomUrl', url]);
+        window._paq.push(['setDocumentTitle', document.title]);
+        window._paq.push(['trackPageView']);
+      }
+    }
+
+    router.events.on('routeChangeStart', handleRouteChange)
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChange);
+    };
+  }, [])
   return (
     <>
       <GlobalStyle />

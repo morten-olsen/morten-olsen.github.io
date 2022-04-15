@@ -95,7 +95,6 @@ const Hero: React.FC<Props> = ({ profile }) => {
   useEffect(
     () => {
       import('./background').then(({ default: HeroBackground }) => {
-        console.log('goo', typeof HeroBackground);
         setBackground(<HeroBackground />);
       })
     },
