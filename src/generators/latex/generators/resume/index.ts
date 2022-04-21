@@ -28,13 +28,7 @@ const resume: LatexGenerator<Data> = async (data, location) => {
 \\usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
 \\def \\columncount {3}
 \\def \\skillcolumncount {2}
-\\usepackage{pagecolor}
-\\usepackage{paracol}
-\\usepackage{kantlipsum}
 \\usepackage{multicol}
-\\usepackage{xifthen}
-\\usepackage{tcolorbox}
-\\usepackage{wrapfig}
 \\usepackage{graphicx}
 \\usepackage{fancyhdr}
 
