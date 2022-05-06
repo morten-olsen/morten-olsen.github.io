@@ -1,0 +1,9 @@
+generator: html-image
+data:
+  name: 'article/bob-the-algorithm/share'
+  template: ../../images/share.ejs
+  background: './Cover.png'
+  title: My day is being planned by an algorithm
+  subtitle: Meet bob
+  width: 780
+  height: 580
