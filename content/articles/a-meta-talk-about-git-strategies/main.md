@@ -1,3 +1,20 @@
+Let me start with a (semi) fictional story; It is Friday, and you and your team have spent the last five weeks working on this excellent new feature. You have written a bunch of unit tests to ensure that you maintain your project's impressive 100% test coverage, and both you, your product owner and the QA testers have all verified that everything is tip-top and ready to go for the launch!
+You hit the big "Deploy" button.
+3-2-1
+Success! it is released to production, and everyone gets their glass of Champagne!
+
+You go home for the weekend satisfied with the great job you did.
+
+On Monday, you open your email to find it flooded with customers screaming that nothing is working! Oh no, you must have made a mistake!!! So you set about debugging and quickly locate the error message in your monitoring, so you checkout the code from Git and start investigating. But the error that happens isn't even possible. So you spend the entire day debugging, again and again, coming to the same conclusion; This is not possible.
+
+So finally, you decide to go and read the deployment log line-by-painstakingly-line, and there, on line 13.318, you see it! One of your 12 microservices failed deployment! The deployment used a script with a pipe in it. Unfortunately, the script did not have pipefail configured. The script, therefore, did not generate a non-zero exit code, so the deployment just kept humming along, deploying the remaining 11 with success. This chain of events resulted in a broken infrastructure state and unhappy customers, and you spend the entire Monday debugging and potentially the ENTIRE EXISTANCE coming to an end!
+
+I think most developers would have a story similar to the one above, so why is getting release management right so damn hard? Modern software architecture and the tools that help us are complex machineries, which goes for our deployment tools. Therefore ensuring that every little thing is as planned means that we would have to check hundreds, if not thousands of items, each more to decipher than the last (anyone who has ever tried to solve a broken Xcode builds from an output log will know this).
+
+So is there a better way? Unfortunately, when things break, any of those thousands of items could be the reason, so when stuff does break, the answer is most likely no, but what about just answering the simple question: "Is something broken?". Well, I am glad you asked because I do believe that there is a better way, and it is a way that revolves around Git.
+
+# Git as the expected state
+
 So I am going to talk about Kubernetes, yet again - A technology I use less and less but, for some reason, ends up being part of my examples more and more often.
 
 At its core Kubernetes has two conceptually simple tasks; it stores an expected state of the resources that it is supposed to keep track of two; if any of those resources are, in fact, not in the expected state, it tries to right the wrong.
