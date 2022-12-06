@@ -1,0 +1,8 @@
+{
+  "name": "@morten-olsen/personal-webpage-articles",
+  "main": "./dist/index.js",
+  "private": true,
+  "dependencies": {
+    "@morten-olsen/goodwrites": "workspace:^"
+  }
+}

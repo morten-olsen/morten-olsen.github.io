@@ -1,0 +1,25 @@
+{
+  "name": "@morten-olsen/personal-webpage",
+  "private": true,
+  "dependencies": {
+    "@fontsource/merriweather": "^4.5.14",
+    "@fontsource/pacifico": "^4.5.9",
+    "@morten-olsen/markdown-loader": "workspace:^",
+    "@morten-olsen/personal-webpage-articles": "workspace:^",
+    "@morten-olsen/personal-webpage-profile": "workspace:^",
+    "@react-three/fiber": "^8.9.1",
+    "chroma-js": "^2.4.2",
+    "next": "^12.1.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-markdown": "^8.0.4",
+    "styled-components": "^5.3.6",
+    "three": "^0.147.0"
+  },
+  "devDependencies": {
+    "@morten-olsen/goodwrites-webpack-loader": "workspace:^",
+    "@types/chroma-js": "^2.1.4",
+    "@types/three": "^0.146.0",
+    "next-compose-plugins": "^2.2.1"
+  }
+}

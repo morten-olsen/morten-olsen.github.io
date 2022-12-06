@@ -1,0 +1,16 @@
+{
+  "name": "@morten-olsen/goodwrites",
+  "packageManager": "yarn@3.1.0",
+  "main": "./dist/index.js",
+  "dependencies": {
+    "@sinclair/typebox": "^0.25.10",
+    "fs-extra": "^11.1.0",
+    "reading-time": "^1.5.0",
+    "remark": "^13",
+    "remark-behead": "^2.3.3",
+    "unist-util-visit": "^2.0.3"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^9.0.13"
+  }
+}

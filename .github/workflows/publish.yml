@@ -1,0 +1,33 @@
+name: Build and Deploy
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2.3.1
+        with:
+          persist-credentials: false
+      - run: corepack enable
+
+      - name: Install
+        uses: docker://ghcr.io/morten-olsen/node-latex:main
+        with:
+          args: yarn install
+      - name: Build 🔧
+        uses: docker://ghcr.io/morten-olsen/node-latex:main
+        env:
+          NODE_ENV: production
+        with:
+          args: yarn build
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@4.0.0
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: webpage/out
+

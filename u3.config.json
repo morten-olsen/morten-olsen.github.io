@@ -1,0 +1,74 @@
+{
+  "paths": {
+    "": {
+      "scaffolds": {
+        "mono-repo": {},
+        "gitignore": {},
+        "typescript": {},
+        "eslint": {},
+        "commitizen": {},
+        "jest": {}
+      }
+    },
+    "packages/goodwrites": {
+      "scaffolds": {
+        "gitignore": {},
+        "typescript": {}
+      }
+    },
+    "packages/goodwrites-cli": {
+      "scaffolds": {
+        "gitignore": {},
+        "typescript": {}
+      }
+    },
+    "packages/goodwrites-webpack-loader": {
+      "scaffolds": {
+        "gitignore": {},
+        "typescript": {}
+      }
+    },
+    "packages/goodwrites-viewer": {
+      "scaffolds": {
+        "gitignore": {},
+        "typescript": {}
+      }
+    },
+    "packages/latex": {
+      "scaffolds": {
+        "gitignore": {},
+        "typescript": {}
+      }
+    },
+    "packages/goodwrites-latex": {
+      "scaffolds": {
+        "gitignore": {},
+        "typescript": {}
+      }
+    },
+    "packages/personal-webpage": {
+      "scaffolds": {
+        "gitignore": {},
+        "typescript": {}
+      }
+    },
+    "packages/articles": {
+      "scaffolds": {
+        "gitignore": {},
+        "typescript": {}
+      }
+    },
+    "profile": {
+      "scaffolds": {
+        "gitignore": {},
+        "typescript": {}
+      }
+    },
+    "packages/markdown-loader": {
+      "scaffolds": {
+        "gitignore": {},
+        "typescript": {}
+      }
+    }
+  }
+}

@@ -1,0 +1,4 @@
+{
+  "name": "@morten-olsen/personal-webpage-profile",
+  "main": "./dist/index.js"
+}

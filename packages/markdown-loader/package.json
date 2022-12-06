@@ -1,0 +1,11 @@
+{
+  "name": "@morten-olsen/markdown-loader",
+  "main": "./dist/index.js",
+  "devDependencies": {
+    "remark": "^13"
+  },
+  "dependencies": {
+    "front-matter": "^4.0.2",
+    "fs-extra": "^11.1.0"
+  }
+}

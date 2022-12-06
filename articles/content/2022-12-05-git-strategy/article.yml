@@ -1,0 +1,26 @@
+title: A meta talk about Git strategies
+cover: cover.png
+meta:
+  slug: git-strategy
+content:
+  - content:
+      - file: intro-story.md
+        state: first-draft
+
+      - file: intro-bridge.md
+        state: first-draft
+
+  - title: Declaring your expected state
+    file: expected-state.md
+    state: final-draft
+
+  - title: Git as the expected state
+    file: git-as-expected-state.md
+    state: final-draft
+
+  - file: setup.md
+    state: final-draft
+
+  - title: Conclusion
+    file: conclusion.md
+    state: first-draft 

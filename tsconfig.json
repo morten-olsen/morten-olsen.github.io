@@ -1,0 +1,45 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "outDir": "dist",
+    "declaration": true,
+    "declarationMap": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  },
+  "include": [],
+  "references": [
+    {
+      "path": "packages/markdown-loader"
+    },
+    {
+      "path": "packages/goodwrites"
+    },
+    {
+      "path": "packages/goodwrites-latex"
+    },
+    {
+      "path": "packages/goodwrites-webpack-loader"
+    },
+    {
+      "path": "packages/goodwrites-viewer"
+    },
+    {
+      "path": "packages/goodwrites-cli"
+    },
+    {
+      "path": "articles"
+    },
+    {
+      "path": "profile"
+    }
+  ]
+}
