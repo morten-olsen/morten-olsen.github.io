@@ -4,6 +4,8 @@ import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import '@fontsource/merriweather';
 import '@fontsource/pacifico';
+import '@fontsource/space-grotesk/700.css';
+import '@fontsource/black-ops-one';
 import { ThemeProvider } from '../theme/provider';
 import { createTheme } from '../theme/create';
 import chroma from 'chroma-js';
@@ -34,6 +36,7 @@ const GlobalStyle = createGlobalStyle`
 
   a {
     text-decoration: none;
+    font-weight: bold;
   }
 `;
 

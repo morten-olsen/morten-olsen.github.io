@@ -17,7 +17,7 @@ const createTheme = (options: CreateOptions = {}) => {
   const text = isBright(baseColor) ? BLACK : WHITE;
   const bg = isBright(baseColor)
     ? baseColor.luminance(0.9)
-    : baseColor.luminance(0.005);
+    : baseColor.luminance(0.01);
   const theme: Theme = {
     typography: {
       Jumbo: {

@@ -5,7 +5,8 @@ import { getArticles } from '@morten-olsen/personal-webpage-articles/dist/index'
 import { GetStaticProps } from 'next';
 import { getPositions, Position } from '@morten-olsen/personal-webpage-profile';
 import { Sheet } from '../components/sheet';
-import ArticlePreview from 'components/articles/preview';
+import { ArticleGrid } from 'components/articles/grid';
+const cover = require('./cover.png');
 
 type Props = {
   articles: ReturnType<typeof getArticles>;
@@ -25,29 +26,48 @@ const Title = styled(Jumbo)`
   color: ${({ theme }) => theme.colors.foreground};
   padding: 0 15px;
   text-transform: uppercase;
-  margin: 5px;
+  margin: 10px;
+  font-family: 'Black Ops One', sans-serif;
 
   @media only screen and (max-width: 700px) {
+    margin: 5px;
     font-size: 2rem;
     line-height: 2.1rem;
   }
 `;
 
-const ArticleList = styled.div`
+const Arrow = styled.div`
+  position: absolute;
+  bottom: 20px;
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  margin: 0 auto;
   align-items: center;
   justify-content: center;
+
+  :after {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: ${({ theme }) => theme.colors.primary};
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    content: '↓';
+    font-size: 50px;
+
+    @media only screen and (max-width: 700px) {
+      width: 40px;
+      height: 40px;
+    }
+  }
 `;
 
-const Index: FC<Props> = ({ articles, positions }) => {
+const Index: FC<Props> = ({ articles }) => {
   return (
     <>
-      <Sheet backgroundColor="red">
+      <Sheet color="#c85279" background={cover}>
+        <Arrow />
         <Hero>
-          {"Hi, I'm Morten Olsen".split(' ').map((char, index) => (
+          {"Hi, I'm Morten".split(' ').map((char, index) => (
             <Title key={index}>{char}</Title>
           ))}
         </Hero>
@@ -57,18 +77,13 @@ const Index: FC<Props> = ({ articles, positions }) => {
           ))}
         </Hero>
       </Sheet>
-      <Sheet backgroundColor="#273c75">
-        <h2>Articles</h2>
-        <ArticleList>
-          {articles.map((article) => (
-            <ArticlePreview key={article.title} article={article} />
+      <Sheet color="#ef23e2">
+        <Hero>
+          {'Table of Content'.split(' ').map((char, index) => (
+            <Title key={index}>{char}</Title>
           ))}
-        </ArticleList>
-      </Sheet>
-      <Sheet backgroundColor="red">
-        {positions.map((position) => (
-          <div>{position.attributes.title}</div>
-        ))}
+        </Hero>
+        <ArticleGrid articles={articles} />
       </Sheet>
     </>
   );
@@ -77,7 +92,6 @@ const Index: FC<Props> = ({ articles, positions }) => {
 export const getStaticProps: GetStaticProps<Props> = async () => {
   const articles = getArticles();
   const positions = getPositions();
-  console.log(articles);
   return {
     props: {
       articles,

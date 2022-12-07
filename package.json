@@ -33,7 +33,7 @@
   "scripts": {
     "cli": "yarn workspace @morten-olsen/goodwrites-cli run cli",
     "dev": "yarn workspace @morten-olsen/personal-webpage next dev",
-    "build": "yarn workspace @morten-olsen/personal-webpage next build && yarn workspace @morten-olsen/personal-webpage next export",
+    "build": "tsc --build && yarn workspace @morten-olsen/personal-webpage next build && yarn workspace @morten-olsen/personal-webpage next export",
     "postinstall": "husky install"
   },
   "private": true,

@@ -1,7 +1,9 @@
 title: A meta talk about Git strategies
 cover: cover.png
 meta:
-  slug: git-strategy
+  slug: a-meta-talk-about-git-strategies
+  published: 2022-12-05
+  color: '#01eeed'
 content:
   - content:
       - file: intro-story.md

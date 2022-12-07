@@ -1,7 +1,8 @@
 title: A defence for the coding challange
-published: 2022-04-15
 cover: cover.png
 meta:
+  published: 2022-04-15
   slug: a-defence-for-the-code-challange
+  color: "#3d91ef"
 content:
   - file: main.md

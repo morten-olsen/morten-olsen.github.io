@@ -1,7 +1,8 @@
 title: My home runs Redux
 cover: cover.png
-published: 2022-03-15
 meta:
   slug: my-home-runs-redux
+  published: 2022-03-15
+  color: '#e80ccf'
 content:
   - main.md

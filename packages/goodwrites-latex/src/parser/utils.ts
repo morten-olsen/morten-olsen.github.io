@@ -68,7 +68,6 @@ const renderer = (outerDepth: number) => ({
     return `\\item{${input}}`;
   },
   link: (href: string, text: string) => {
-    console.log('LINK TEXT', text, sanitize(href));
     if (!text || text === href) {
       return `\\url{${sanitize(href)}}`;
     }

@@ -693,6 +693,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fontsource/black-ops-one@npm:^4.5.9":
+  version: 4.5.9
+  resolution: "@fontsource/black-ops-one@npm:4.5.9"
+  checksum: 514735092abc24f1548d3acdb84f224f15977255c4fc69f3217a280d9660168e5389ce47eab26be76989c9234f824a3e7b3ef7e5ea78880b2fff08d1e3879c57
+  languageName: node
+  linkType: hard
+
 "@fontsource/merriweather@npm:^4.5.14":
   version: 4.5.14
   resolution: "@fontsource/merriweather@npm:4.5.14"
@@ -704,6 +711,20 @@ __metadata:
   version: 4.5.9
   resolution: "@fontsource/pacifico@npm:4.5.9"
   checksum: d6ee5923fdb68d9adb37fa3acf081e9bdeac6694be51b9238d35edbe1f42fec5bbb5fce28de41ce146c56d5307e3894ccce60addb6502546a748534671767946
+  languageName: node
+  linkType: hard
+
+"@fontsource/space-grotesk@npm:^4.5.10":
+  version: 4.5.10
+  resolution: "@fontsource/space-grotesk@npm:4.5.10"
+  checksum: 71c05e9ce7c88b9f63bf7ed1e0460fccac1339ef679218b4d5404298b27a829e6dc7fe1f4de99105dddbff57b5902dfce901b252d466795f51051339fd931ad8
+  languageName: node
+  linkType: hard
+
+"@fontsource/vt323@npm:^4.5.10":
+  version: 4.5.10
+  resolution: "@fontsource/vt323@npm:4.5.10"
+  checksum: 99f6a1d1add1d5002b3332ccc0b3d8185c635bce8129e16d084c3a4b421a13d5f96863b293e089c77291adfb032f943123b27b1080b7cc89178e52d4d2f64e91
   languageName: node
   linkType: hard
 
@@ -1205,8 +1226,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@morten-olsen/personal-webpage@workspace:webpage"
   dependencies:
+    "@fontsource/black-ops-one": ^4.5.9
     "@fontsource/merriweather": ^4.5.14
     "@fontsource/pacifico": ^4.5.9
+    "@fontsource/space-grotesk": ^4.5.10
+    "@fontsource/vt323": ^4.5.10
     "@morten-olsen/goodwrites-webpack-loader": "workspace:^"
     "@morten-olsen/markdown-loader": "workspace:^"
     "@morten-olsen/personal-webpage-articles": "workspace:^"

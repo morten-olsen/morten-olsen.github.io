@@ -2,8 +2,11 @@
   "name": "@morten-olsen/personal-webpage",
   "private": true,
   "dependencies": {
+    "@fontsource/black-ops-one": "^4.5.9",
     "@fontsource/merriweather": "^4.5.14",
     "@fontsource/pacifico": "^4.5.9",
+    "@fontsource/space-grotesk": "^4.5.10",
+    "@fontsource/vt323": "^4.5.10",
     "@morten-olsen/markdown-loader": "workspace:^",
     "@morten-olsen/personal-webpage-articles": "workspace:^",
     "@morten-olsen/personal-webpage-profile": "workspace:^",

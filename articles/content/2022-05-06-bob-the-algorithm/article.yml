@@ -1,7 +1,8 @@
 title: My day is being planned by an algorithm
 cover: ./Cover.png
-published: 2022-05-06
 meta:
   slug: bob-the-algorithm
+  published: 2022-05-06
+  color: '#e7d9ac'
 content:
   - main.md

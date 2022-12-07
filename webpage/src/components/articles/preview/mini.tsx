@@ -10,37 +10,35 @@ type Props = {
   article: ReturnType<typeof getArticles>[number];
 };
 
-const Wrapper = styled.div`
-  height: 500px;
-  border-right: 2px solid rgba(0, 0, 0, 0.1);
-  flex: 1;
-  min-width: 200px;
+const Wrapper = styled.a`
   position: relative;
   margin: 15px;
   cursor: pointer;
   display: flex;
-  flex-direction: column;
+  width: 220px;
+  height: 200px;
 
   @media only screen and (max-width: 700px) {
-    max-height: 300px;
+    width: 100%;
   }
 `;
 
 const Title = styled(Title1)`
-  background: ${({ theme }) => theme.colors.primary};
-  line-height: 40px;
+  line-height: 20px;
+  font-size: 20px;
+  padding: 5px 5px;
   font-family: 'Black Ops One', sans-serif;
-  font-size: 25px;
-  padding: 0 5px;
   margin: 5px 0;
+  background: ${({ theme }) => theme.colors.background};
 `;
 
 const MetaWrapper = styled.div`
-  top: 10px;
-  left: 10px;
-  right: 10px;
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
+  padding: 10px;
+  max-width: 220px;
+  position: absolute;
 `;
 
 const AsideWrapper = styled.aside<{
@@ -50,7 +48,7 @@ const AsideWrapper = styled.aside<{
   background-size: cover;
   background-position: center;
   ${({ image }) => (image ? `background-image: url(${image});` : '')}
-  flex: 1;
+  position: absolute;
   top: 0;
   bottom: 0;
   right: 0;
@@ -58,7 +56,7 @@ const AsideWrapper = styled.aside<{
 }
 `;
 
-const ArticlePreview: React.FC<Props> = ({ article }) => {
+const MiniArticlePreview: React.FC<Props> = ({ article }) => {
   const theme = useMemo(
     () =>
       createTheme({
@@ -82,4 +80,4 @@ const ArticlePreview: React.FC<Props> = ({ article }) => {
   );
 };
 
-export default ArticlePreview;
+export { MiniArticlePreview };

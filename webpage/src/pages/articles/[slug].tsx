@@ -1,15 +1,19 @@
 import { getArticles } from '@morten-olsen/personal-webpage-articles';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import styled from 'styled-components';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
 import { Jumbo, Overline } from 'typography';
+import { ThemeProvider } from 'theme/provider';
+import { createTheme } from 'theme/create';
 
 type Props = {
   article: ReturnType<typeof getArticles>[number];
 };
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  background: ${({ theme }) => theme.colors.background};
+`;
 
 const ArticleWrapper = styled.article`
   margin-right: 40%;
@@ -40,7 +44,6 @@ const ArticleContent = styled.div`
     float: left;
     padding: 1rem;
     margin: 0px 2rem;
-    font-weight: 100;
     margin-left: 0rem;
   }
 
@@ -73,6 +76,7 @@ const ArticleContent = styled.div`
     margin: 5px 0;
     background: ${({ theme }) => theme.colors.primary};
     color: ${({ theme }) => theme.colors.foreground};
+    font-family: 'Black Ops One', sans-serif;
 
     @media only screen and (max-width: 700px) {
       background: transparent;
@@ -92,7 +96,7 @@ const AsideWrapper = styled.aside<{
   background: ${({ theme }) => theme.colors.primary};
   background-size: cover;
   background-position: center;
-  opacity: 0.5;
+  opacity: 0.7;
   ${({ image }) => (image ? `background-image: url(${image});` : '')}
 
   @media only screen and (max-width: 700px) {
@@ -105,16 +109,23 @@ const AsideWrapper = styled.aside<{
 `;
 
 const Title = styled(Jumbo)`
-  font-size: 60px;
-  line-height: 80px;
+  font-size: 4rem;
+  line-height: 4.1rem;
   display: inline-block;
   background: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.foreground};
   padding: 0 15px;
   text-transform: uppercase;
   margin: 5px;
+  font-family: 'Black Ops One', sans-serif;
+
+  @media only screen and (max-width: 900px) {
+    font-size: 2.5rem;
+    line-height: 3.1rem;
+  }
 
   @media only screen and (max-width: 700px) {
+    padding: 5px;
     font-size: 2rem;
     line-height: 2.1rem;
   }
@@ -125,28 +136,37 @@ const Meta = styled(Overline)`
 `;
 
 const Article: React.FC<Props> = ({ article }) => {
+  const theme = useMemo(
+    () =>
+      createTheme({
+        baseColor: article.meta.color,
+      }),
+    [article.meta.color]
+  );
   return (
-    <Wrapper>
-      <ArticleWrapper>
-        <ArticleContent>
-          {article.title.split(' ').map((word, index) => (
-            <Title key={index}>{word}</Title>
-          ))}
-          <div>
-            <Meta>
-              By Morten Olsen - 5 min read{' '}
-              {article.pdf && (
-                <a href={article.pdf} target="_blank">
-                  download as PDF
-                </a>
-              )}
-            </Meta>
-          </div>
-          <AsideWrapper image={article.cover} />
-          <ReactMarkdown>{article.content}</ReactMarkdown>
-        </ArticleContent>
-      </ArticleWrapper>
-    </Wrapper>
+    <ThemeProvider theme={theme}>
+      <Wrapper>
+        <ArticleWrapper>
+          <ArticleContent>
+            {article.title.split(' ').map((word, index) => (
+              <Title key={index}>{word}</Title>
+            ))}
+            <div>
+              <Meta>
+                By Morten Olsen - {article.stats.text}{' '}
+                {article.pdf && (
+                  <a href={article.pdf} target="_blank">
+                    download as PDF
+                  </a>
+                )}
+              </Meta>
+            </div>
+            <AsideWrapper image={article.cover} />
+            <ReactMarkdown>{article.content}</ReactMarkdown>
+          </ArticleContent>
+        </ArticleWrapper>
+      </Wrapper>
+    </ThemeProvider>
   );
 };
 

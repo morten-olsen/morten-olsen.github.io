@@ -1,7 +1,8 @@
 title: How to hire engineers, by an engineer
 cover: cover.png
-published: 2022-03-16
 meta:
-  slug: hiring-by-an-engineer
+  slug: hiring
+  published: 2022-03-16
+  color: "#8bae8c"
 content:
   - main.md
