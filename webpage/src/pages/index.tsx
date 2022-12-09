@@ -6,7 +6,7 @@ import { GetStaticProps } from 'next';
 import { getPositions, Position } from '@morten-olsen/personal-webpage-profile';
 import { Sheet } from '../components/sheet';
 import { ArticleGrid } from 'components/articles/grid';
-const cover = require('./cover.png');
+const cover = require('./cover.jpg');
 
 type Props = {
   articles: ReturnType<typeof getArticles>;
@@ -31,8 +31,8 @@ const Title = styled(Jumbo)`
 
   @media only screen and (max-width: 700px) {
     margin: 5px;
-    font-size: 2rem;
-    line-height: 2.1rem;
+    font-size: 3rem;
+    line-height: 3.1rem;
   }
 `;
 
