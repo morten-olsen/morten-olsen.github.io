@@ -1244,6 +1244,7 @@ __metadata:
     react: ^18.2.0
     react-dom: ^18.2.0
     react-markdown: ^8.0.4
+    react-wrap-balancer: ^0.4.0
     styled-components: ^5.3.6
     three: ^0.147.0
   languageName: unknown
@@ -8341,6 +8342,15 @@ __metadata:
     react: ">=16.13"
     react-dom: ">=16.13"
   checksum: b8e8939229d463c3c505f7b617925c0228efae0cd6f651371f463846417b06c9170be57df51293a61027c41770f8a090fdb8a08717c4e36290ccb496e0318f1f
+  languageName: node
+  linkType: hard
+
+"react-wrap-balancer@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "react-wrap-balancer@npm:0.4.0"
+  peerDependencies:
+    react: ^18.0.0
+  checksum: c43e9ecc5737ecd67a5f38f4ed928a489dd20bf63b24bb31abc94c6e8605e1df7302196b74e5805528c7044864ac7ea1eea64117b74b8a91066f781e3239e9cc
   languageName: node
   linkType: hard
 

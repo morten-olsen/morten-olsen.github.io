@@ -3,6 +3,7 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import styled from 'styled-components';
 import React, { useMemo } from 'react';
 import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
+import Balancer from 'react-wrap-balancer';
 import { Jumbo, Overline } from 'typography';
 import { ThemeProvider } from 'theme/provider';
 import { createTheme } from 'theme/create';
@@ -30,7 +31,7 @@ const ArticleWrapper = styled.article`
 
 const ArticleContent = styled.div`
   max-width: 900px;
-  padding: 50px;
+  padding: 50px 30px;
   letter-spacing: 0.5px;
   line-height: 2.1rem;
   color: ${({ theme }) => theme.colors.foreground};
@@ -148,9 +149,11 @@ const Article: React.FC<Props> = ({ article }) => {
       <Wrapper>
         <ArticleWrapper>
           <ArticleContent>
-            {article.title.split(' ').map((word, index) => (
-              <Title key={index}>{word}</Title>
-            ))}
+            <Balancer>
+              {article.title.split(' ').map((word, index) => (
+                <Title key={index}>{word}</Title>
+              ))}
+            </Balancer>
             <div>
               <Meta>
                 By Morten Olsen - {article.stats.text}{' '}
