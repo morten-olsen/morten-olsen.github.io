@@ -5,7 +5,8 @@
     "build": "tsc --build"
   },
   "devDependencies": {
-    "remark": "^13"
+    "remark": "^13",
+    "@types/webpack": "^5.28.0"
   },
   "dependencies": {
     "front-matter": "^4.0.2",
