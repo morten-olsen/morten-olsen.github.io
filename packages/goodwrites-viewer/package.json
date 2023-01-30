@@ -1,6 +1,9 @@
 {
   "name": "@morten-olsen/goodwrites-viewer",
   "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc --build"
+  },
   "dependencies": {
     "@fontsource/merriweather": "^4.5.14",
     "@morten-olsen/goodwrites": "workspace:^",

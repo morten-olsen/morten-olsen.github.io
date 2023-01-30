@@ -1,6 +1,9 @@
 {
   "name": "@morten-olsen/markdown-loader",
   "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc --build"
+  },
   "devDependencies": {
     "remark": "^13"
   },

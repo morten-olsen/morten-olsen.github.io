@@ -1,4 +1,7 @@
 {
   "name": "@morten-olsen/personal-webpage-profile",
-  "main": "./dist/index.js"
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc --build"
+  }
 }

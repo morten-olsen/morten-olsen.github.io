@@ -21,7 +21,7 @@ exports.withImages = (nextConfig = {}) => ({
       // issuer: /\.\w+(?<!(s?c|sa)ss)$/i, // commented out because of a bug with require.context load https://github.com/webpack/webpack/issues/9309
       use: [
         {
-          loader: require.resolve("url-loader"),
+          loader: require.resolve("responsive-loader"),
           options: {
             limit: nextConfig.inlineImageLimit,
             fallback: require.resolve("file-loader"),

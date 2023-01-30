@@ -1,7 +1,9 @@
 {
   "name": "@morten-olsen/goodwrites",
-  "packageManager": "yarn@3.1.0",
   "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc --build"
+  },
   "dependencies": {
     "@sinclair/typebox": "^0.25.10",
     "fs-extra": "^11.1.0",

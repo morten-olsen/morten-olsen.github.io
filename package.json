@@ -1,6 +1,5 @@
 {
   "name": "@morten-olsen/goodwrites-repo",
-  "packageManager": "yarn@3.1.0",
   "workspaces": [
     "packages/goodwrites",
     "packages/goodwrites-webpack-loader",
@@ -23,6 +22,7 @@
     "jest": "^29.3.1",
     "prettier": "^2.8.0",
     "ts-jest": "^29.0.3",
+    "turbo": "^1.7.0",
     "typescript": "^4.9.3"
   },
   "config": {
@@ -31,9 +31,9 @@
     }
   },
   "scripts": {
-    "cli": "yarn workspace @morten-olsen/goodwrites-cli run cli",
-    "dev": "yarn workspace @morten-olsen/personal-webpage next dev",
-    "build": "tsc --build && yarn workspace @morten-olsen/personal-webpage next build && yarn workspace @morten-olsen/personal-webpage next export",
+    "cli": "turbo cli --filter=@morten-olsen/goodwrites-cli ",
+    "dev": "turbo dev --filter=@morten-olsen/personal-webpage",
+    "build": "turbo build",
     "postinstall": "husky install"
   },
   "private": true,

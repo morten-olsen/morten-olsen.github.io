@@ -2,6 +2,9 @@
   "name": "@morten-olsen/personal-webpage-articles",
   "main": "./dist/index.js",
   "private": true,
+  "scripts": {
+    "build": "tsc --build"
+  },
   "dependencies": {
     "@morten-olsen/goodwrites": "workspace:^"
   }

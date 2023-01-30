@@ -6,7 +6,8 @@ import { GetStaticProps } from 'next';
 import { getPositions, Position } from '@morten-olsen/personal-webpage-profile';
 import { Sheet } from '../components/sheet';
 import { ArticleGrid } from 'components/articles/grid';
-const cover = require('./cover.jpg');
+const cover = require('./cover.jpg?sizes[]=300,sizes[]=600,sizes[]=1024,sizes[]=2048');
+const coverWebP = require('./cover.jpg?sizes[]=300,sizes[]=600,sizes[]=1024,sizes[]=2048&format=webp');
 
 type Props = {
   articles: ReturnType<typeof getArticles>;
@@ -61,10 +62,43 @@ const Arrow = styled.div`
   }
 `;
 
+const ImageBg = styled.picture`
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: -1;
+  opacity: 0.5;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+`;
+
 const Index: FC<Props> = ({ articles }) => {
   return (
     <>
-      <Sheet color="#c85279" background={cover}>
+      <Sheet color="#c85279">
+        <ImageBg>
+          <source
+            srcSet={coverWebP.srcSet}
+            type="image/webp"
+            sizes="(min-width: 1024px) 1024px, 100vw"
+          />
+          <img
+            src={cover.src}
+            srcSet={cover.srcSet}
+            sizes="(min-width: 1024px) 1024px, 100vw"
+            loading="lazy"
+          />
+        </ImageBg>
         <Arrow />
         <Hero>
           {"Hi, I'm Morten".split(' ').map((char, index) => (

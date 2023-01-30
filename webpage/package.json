@@ -1,6 +1,10 @@
 {
   "name": "@morten-olsen/personal-webpage",
   "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build && next export"
+  },
   "dependencies": {
     "@fontsource/black-ops-one": "^4.5.9",
     "@fontsource/merriweather": "^4.5.14",
@@ -24,6 +28,8 @@
     "@morten-olsen/goodwrites-webpack-loader": "workspace:^",
     "@types/chroma-js": "^2.1.4",
     "@types/three": "^0.146.0",
-    "next-compose-plugins": "^2.2.1"
+    "next-compose-plugins": "^2.2.1",
+    "responsive-loader": "^3.1.2",
+    "sharp": "^0.31.3"
   }
 }

@@ -1,11 +1,11 @@
 {
   "name": "@morten-olsen/goodwrites-cli",
-  "packageManager": "yarn@3.1.0",
   "bin": {
     "goodwrites": "./bin/index.js"
   },
   "scripts": {
-    "cli": "./bin/index.js"
+    "cli": "./bin/index.js",
+    "main": "./dist/index.js"
   },
   "dependencies": {
     "@morten-olsen/goodwrites": "workspace:^",

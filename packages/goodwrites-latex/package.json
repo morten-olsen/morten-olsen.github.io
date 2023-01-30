@@ -1,6 +1,9 @@
 {
   "name": "@morten-olsen/goodwrites-latex",
   "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc --build"
+  },
   "devDependencies": {
     "@types/marked": "^4.0.7"
   },
