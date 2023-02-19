@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/cjs",
+    "declarationDir": "./dist/cjs/types",
+    "target": "es2018",
+    "jsx": "react-jsx",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": "src",
+    "paths": {
+      "@theme": ["ui/theme"],
+      "@typo": ["ui/typography"],
+      "@ui/*": ["ui/components/*"],
+      "@hooks/*": ["ui/hooks/*"],
+      "@data/*": ["data/*"]
+    }
+  },
+  "ts-node": {
+    "files": true,
+    "require": ["tsconfig-paths/register"]
+  },
+  "include": ["src/**/*.ts"]
+}
