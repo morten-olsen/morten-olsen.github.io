@@ -1,0 +1,36 @@
+name: Morten Olsen
+image: assets/me.jpg
+tagline: Hi, I'm Morten And I make software
+about: |
+  Hell bend on a conquest to take over
+  the digital world (and the physical,
+  should the chance arise). Am I over
+  ambitious? Perhaps, but with a
+  proven track record in most aspects
+  of things which can process 1s and
+  0s and a mind which runs at a speed
+  which can battle a well-trained race-
+  horse, I believe I am equipt to un-
+  dertake this voyage!
+info:
+  - name: E-mail
+    value: morten@olsen.pro
+  - name: Location
+    value: Copenhagen, DK
+  - name: Github
+    value: https://github.com/morten-olsen
+skills:
+  - name: Typescript
+    level: 5
+  - name: React
+    level: 5
+  - name: React Native
+    level: 4
+  - name: NodeJS
+    level: 5
+  - name: Docker
+    level: 4
+  - name: NextJS
+    level: 3
+  - name: Fastify
+    level: 3

@@ -1,0 +1,149 @@
+\documentclass[10pt, a4paper]{article}
+\usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{calc}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+
+\setlength{\columnseprule}{0.1pt}
+%\setlength{\columnsep}{1.5cm}
+\def \columncount {2}
+\def \skillcolumncount {2}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{<%-profile.name%> \today}
+\lhead{Curriculum Vitae}
+\rfoot{Page \thepage}
+
+\newenvironment{columns}{
+	\ifnum\columncount>1
+		\begin{multicols}{\columncount}
+	\fi
+}{
+	\ifnum\columncount>1
+		\end{multicols}
+	\fi
+	\vspace{0.5cm}
+	\hrule
+}
+
+\newcommand{\cvinfo}[2]{
+	\noindent \textbf{#1}\dotfill#2
+}
+
+\newenvironment{cvtitle}[3]{
+	\noindent\begin{minipage}{\textwidth}
+		\noindent\begin{minipage}{\textwidth - 3.2cm}
+			\Huge #1\newline\large #3
+		\end{minipage}
+		\noindent\begin{minipage}{3cm}
+			\begin{flushright}
+				\includegraphics[height=3cm]{#2}
+			\end{flushright}
+		\end{minipage}
+		\vspace{0.5cm}
+		\hrule
+		\vspace{0.5cm}
+		\ifnum\skillcolumncount>1
+			\begin{multicols}{\skillcolumncount}
+		\fi
+}{
+	\ifnum\skillcolumncount>1
+		\end{multicols}
+	\fi
+	\end{minipage}
+	\hfill
+	\begin{minipage}{\textwidth/3-2cm}
+	\end{minipage}
+	\vspace{1cm}
+	\hrule
+}
+
+\newenvironment{cvskills}{
+	\noindent\begin{minipage}{\textwidth}
+		\ifnum\skillcolumncount>1
+			\begin{multicols}{\skillcolumncount}
+		\fi
+}{
+	\ifnum\skillcolumncount>1
+		\end{multicols}
+	\fi
+	\vspace{0.5cm}
+	\hrule
+	\end{minipage}
+}
+
+\newenvironment{cvbox}[3]
+{
+	\noindent\begin{columns}
+		\noindent{\Large \textbf{#1}} \hfill {\small #2} \\
+		\textit{#3}
+		\ifnum\columncount>2
+			\vfill\null\columnbreak
+		\else
+			\\\\
+		\fi
+}
+{
+		\end{columns}
+	%\end{minipage}
+	\vspace{0.5cm}
+}
+
+\newcommand{\cvskill}[2]{
+	\textbf{#1}\dotfill
+	\textit{#2}
+}
+
+\newenvironment{cvexp}[4]
+{ \begin{cvbox}{#1}{#2 - #3}{#4} }
+{\end{cvbox}}
+
+\newenvironment{cvproj}[3]
+{
+	\noindent
+	\begin{columns}
+		\noindent{\Large \textbf{#1}} \\ {\small #3} \\
+		{\tiny\textit{#2}}
+		\ifnum\columncount>2
+			\vfill\null\columnbreak
+		\else
+			\\\\
+		\fi
+	}
+	{
+	\end{columns}
+	\vspace{0.5cm}
+}
+
+\begin{document}
+
+\begin{cvtitle}{<%-profile.name%>}{<%-profile.imagePath%>}{<%-profile.tagline%>}
+  <% for (let info of profile.info) { %>
+    \cvinfo{<%-info.name%>}{<%-info.value%>}
+  <% } %>
+\end{cvtitle}
+
+\begin{columns}
+  \section*{Who am I?}
+  <%-profile.about%> 
+\end{columns}
+
+\section*{Platform and languages}
+Platforms and languages which I have worked with. The list is a shortened down version\\\\
+\begin{cvskills}
+  <% for (let skill of profile.skills.sort((a, b) => b.level - a.level)) { %>
+    \cvskill{<%-skill.name%>}{<%-skill.level%>}
+  <% } %>
+\end{cvskills}
+
+\section*{Experience}
+<% for (let exp of positions.sort((a, b) => new Date(b.from) - new Date(a.from))) { %>
+	\begin{cvexp}{<%-exp.company%>}{<%-exp.from%>}{<%-exp.to%>}{<%-exp.title%>}
+		<%-exp.content%>
+	\end{cvexp}
+<% } %>
+
+\end{document}
