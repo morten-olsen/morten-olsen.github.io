@@ -15,7 +15,7 @@ jobs:
       - name: Install
         uses: docker://ghcr.io/morten-olsen/node-latex:main
         with:
-          args: pnpm install
+          args: pnpm install --no-frozen-lockfile
       - name: Build 🔧
         uses: docker://ghcr.io/morten-olsen/node-latex:main
         env:

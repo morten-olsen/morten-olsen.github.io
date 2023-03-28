@@ -21,7 +21,7 @@ const createArticles = ({ bundler, cwd, pattern }: ArticleOptions) => {
       const file = createFile({ path });
       const article = file.pipe(async (raw) => {
         const { data, content } = grayMatter(raw);
-        const { title, slug, cover, color } = data;
+        const { title, slug, cover, color, ...rest } = data;
         const cwd = dirname(path);
         const markdown = await markdownBundleImages({
           cwd,
@@ -40,6 +40,7 @@ const createArticles = ({ bundler, cwd, pattern }: ArticleOptions) => {
           bundler,
         });
         const result: Article = {
+          ...rest,
           title,
           raw: content,
           cover,

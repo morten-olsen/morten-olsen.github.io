@@ -9,7 +9,8 @@
 \setlength{\columnseprule}{0.1pt}
 %\setlength{\columnsep}{1.5cm}
 \def \columncount {2}
-\def \skillcolumncount {2}
+\def \skillcolumncount {3}
+\def \infocolumncount {2}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -46,11 +47,11 @@
 		\vspace{0.5cm}
 		\hrule
 		\vspace{0.5cm}
-		\ifnum\skillcolumncount>1
-			\begin{multicols}{\skillcolumncount}
+		\ifnum\infocolumncount>1
+			\begin{multicols}{\infocolumncount}
 		\fi
 }{
-	\ifnum\skillcolumncount>1
+	\ifnum\infocolumncount>1
 		\end{multicols}
 	\fi
 	\end{minipage}
@@ -119,7 +120,6 @@
 }
 
 \begin{document}
-
 \begin{cvtitle}{<%-profile.name%>}{<%-profile.imagePath%>}{<%-profile.tagline%>}
   <% for (let info of profile.info) { %>
     \cvinfo{<%-info.name%>}{<%-info.value%>}
@@ -131,7 +131,7 @@
   <%-profile.about%> 
 \end{columns}
 
-\section*{Platform and languages}
+\section*{Platforms and languages}
 Platforms and languages which I have worked with. The list is a shortened down version\\\\
 \begin{cvskills}
   <% for (let skill of profile.skills.sort((a, b) => b.level - a.level)) { %>
@@ -140,7 +140,7 @@ Platforms and languages which I have worked with. The list is a shortened down v
 \end{cvskills}
 
 \section*{Experience}
-<% for (let exp of positions.sort((a, b) => new Date(b.from) - new Date(a.from))) { %>
+<% for (let exp of positions.filter(p => p.resume !== false).sort((a, b) => new Date(b.from) - new Date(a.from))) { %>
 	\begin{cvexp}{<%-exp.company%>}{<%-exp.from%>}{<%-exp.to%>}{<%-exp.title%>}
 		<%-exp.content%>
 	\end{cvexp}

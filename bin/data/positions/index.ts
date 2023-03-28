@@ -18,11 +18,10 @@ const createPositions = ({ cwd, pattern, bundler }: PositionOptions) => {
     pattern,
     cwd,
     create: (path) => {
-      console.log('c', path);
       const file = createFile({ path });
       const position = file.pipe(async (raw) => {
         const { data, content } = grayMatter(raw);
-        const { title } = data;
+        const { title, ...rest } = data;
         const cwd = dirname(path);
         const markdown = await markdownBundleImages({
           cwd,
@@ -30,6 +29,7 @@ const createPositions = ({ cwd, pattern, bundler }: PositionOptions) => {
           bundler,
         });
         const result = {
+          ...rest,
           company: data.company,
           title,
           from: data.from,

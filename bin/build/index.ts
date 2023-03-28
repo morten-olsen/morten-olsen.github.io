@@ -40,10 +40,6 @@ const build = async (cwd: string, config: Config) => {
     profile: data.profile,
   });
 
-  resumeData.subscribe(() => {
-    console.log('resume');
-  });
-
   const resumeUrl = createLatex({
     bundler,
     path: '/resume',
@@ -91,9 +87,6 @@ const build = async (cwd: string, config: Config) => {
       article,
       profile: data.profile,
       pdfUrl: Observable.link([pdf.item], async () => pdf.url),
-    });
-    article.subscribe(() => {
-      console.log('updated', slug);
     });
     createPage({
       path: `/articles/${slug}`,
