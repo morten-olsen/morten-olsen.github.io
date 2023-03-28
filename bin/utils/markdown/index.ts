@@ -1,11 +1,11 @@
-import { resolve } from "path";
-import { decode } from "html-entities";
-import { marked } from "marked";
-import remark from "remark";
-import visit from "unist-util-visit";
-import { Bundler } from "../../bundler";
-import { createImage } from "../../resources/image";
-import { renderer } from "./latex";
+import { resolve } from 'path';
+import { decode } from 'html-entities';
+import { marked } from 'marked';
+import remark from 'remark';
+import visit from 'unist-util-visit';
+import { Bundler } from '../../bundler';
+import { createImage } from '../../resources/image';
+import { renderer } from './latex';
 
 type MarkdownBundleImagesOptions = {
   cwd: string;
@@ -13,15 +13,11 @@ type MarkdownBundleImagesOptions = {
   bundler: Bundler;
 };
 
-const markdownBundleImages = async ({
-  bundler,
-  cwd,
-  content,
-}: MarkdownBundleImagesOptions) => {
+const markdownBundleImages = async ({ bundler, cwd, content }: MarkdownBundleImagesOptions) => {
   const result = await remark()
     .use(() => (tree) => {
-      visit(tree, "image", (node) => {
-        if (!("url" in node)) {
+      visit(tree, 'image', (node) => {
+        if (!('url' in node)) {
           return;
         }
         const url = node.url as string;
@@ -29,7 +25,7 @@ const markdownBundleImages = async ({
         const image = createImage({
           image: path,
           bundler,
-          format: "webp",
+          format: 'avif',
         });
         const newUrl = image;
         node.url = newUrl;
@@ -46,7 +42,7 @@ type MarkdownToLatexOptions = {
 
 const markdownToLatex = ({ root, content }: MarkdownToLatexOptions) => {
   const render: any = {
-    ...renderer(0),
+    ...renderer(0, root),
   };
   const latex = marked(content, {
     renderer: render,

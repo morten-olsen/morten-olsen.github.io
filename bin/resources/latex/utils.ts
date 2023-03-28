@@ -1,5 +1,5 @@
-import latex from "node-latex";
-import { Readable } from "stream";
+import latex from 'node-latex';
+import { Readable } from 'stream';
 
 const latexToPdf = (doc: string) =>
   new Promise<Buffer>((resolve, reject) => {
@@ -8,14 +8,14 @@ const latexToPdf = (doc: string) =>
     input.push(doc);
     input.push(null);
     const latexStream = latex(input);
-    latexStream.on("data", (chunk) => {
+    latexStream.on('data', (chunk) => {
       chunks.push(Buffer.from(chunk));
     });
-    latexStream.on("finish", () => {
+    latexStream.on('finish', () => {
       const result = Buffer.concat(chunks);
       resolve(result);
     });
-    latexStream.on("error", (err) => {
+    latexStream.on('error', (err) => {
       reject(err);
     });
   });

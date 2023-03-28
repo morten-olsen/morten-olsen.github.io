@@ -1,5 +1,5 @@
-import { createFile } from "../file";
-import ejs from "ejs";
+import { createFile } from '../file';
+import ejs from 'ejs';
 
 const createEjs = (path: string) => {
   const file = createFile({ path });

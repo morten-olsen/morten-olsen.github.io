@@ -1,14 +1,10 @@
-import { Observable } from "../../observable";
+import { Observable } from '../../observable';
 
 const forEach = async <T extends Observable<any[]>>(
   observable: T,
   fn: (
-    value: T extends Observable<infer U>
-      ? U extends Array<infer A>
-      ? A
-      : never
-      : never
-  ) => Promise<void>
+    value: T extends Observable<infer U> ? (U extends Array<infer A> ? A : never) : never,
+  ) => Promise<void>,
 ) => {
   const knownValues = new Set();
   const update = async () => {

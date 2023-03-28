@@ -1,9 +1,28 @@
 \documentclass{article}
+\usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
 \usepackage{graphicx}
 \usepackage{hyperref}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{<%-profile.name%> \today}
+\lhead{<%-article.title%>}
+\rfoot{Page \thepage}
+
 \title{<%-article.title%>}
 \begin{document}
-\maketitle
-\includegraphics[width=0.5\textwidth]{<%-article.cover%>}
+
+\begin{multicols}{2}
+\noindent\begin{minipage}{\linewidth}
+\Huge{<%-article.title%>}
+\newline
+\large{By <%-profile.name%>}
+\vspace{0.5cm}\\
+\includegraphics[width=\linewidth]{<%-article.cover%>}
+\vspace{1.5cm}
+\end{minipage}
 <%-article.body%>
+\end{multicols}
 \end{document}

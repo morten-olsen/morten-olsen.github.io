@@ -1,2 +1,2 @@
-export { Observable } from "./observable";
-export { getCollectionItems } from "./utils";
+export { Observable } from './observable';
+export { getCollectionItems } from './utils';

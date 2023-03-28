@@ -1,19 +1,22 @@
-import { createGlob } from "../../resources/glob";
-import { createFile } from "../../resources/file";
-import grayMatter from "gray-matter";
-import { Article } from "../../../types/article";
-import { Bundler } from "../../bundler";
-import { markdownBundleImages } from "../../utils/markdown";
-import { dirname, resolve } from "path";
-import { createImage } from "../../resources/image";
+import { createGlob } from '../../resources/glob';
+import { createFile } from '../../resources/file';
+import grayMatter from 'gray-matter';
+import { Article } from '../../../types/article';
+import { Bundler } from '../../bundler';
+import { markdownBundleImages } from '../../utils/markdown';
+import { dirname, resolve } from 'path';
+import { createImage } from '../../resources/image';
 
 type ArticleOptions = {
+  cwd: string;
+  pattern: string;
   bundler: Bundler;
 };
 
-const createArticles = ({ bundler }: ArticleOptions) => {
+const createArticles = ({ bundler, cwd, pattern }: ArticleOptions) => {
   const files = createGlob({
-    pattern: "content/articles/**/*.md",
+    pattern,
+    cwd,
     create: (path) => {
       const file = createFile({ path });
       const article = file.pipe(async (raw) => {
@@ -27,12 +30,12 @@ const createArticles = ({ bundler }: ArticleOptions) => {
         });
         const coverUrl = createImage({
           image: resolve(cwd, cover),
-          format: "avif",
+          format: 'avif',
           bundler,
         });
         const thumbUrl = createImage({
           image: resolve(cwd, cover),
-          format: "avif",
+          format: 'avif',
           width: 400,
           bundler,
         });

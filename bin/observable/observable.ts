@@ -58,7 +58,7 @@ class Observable<T> {
   };
 
   static combine = <U extends Record<string, Observable<any>>>(
-    record: U
+    record: U,
   ): Observable<ObservableRecord<U>> => {
     const loader = () =>
       Object.entries(record).reduce(
@@ -66,12 +66,22 @@ class Observable<T> {
           ...(await accP),
           [key]: await value.data,
         }),
-        {} as any
+        {} as any,
       );
     const observable = new Observable<ObservableRecord<U>>(loader);
     Object.values(record).forEach((item) => {
       item.subscribe(async () => {
         observable.set(loader);
+      });
+    });
+    return observable;
+  };
+
+  static link = <T>(observables: Observable<any>[], generate: () => Promise<T>) => {
+    const observable = new Observable<T>(generate);
+    observables.forEach((item) => {
+      item.subscribe(() => {
+        observable.recreate();
       });
     });
     return observable;

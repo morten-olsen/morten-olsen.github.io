@@ -1,9 +1,9 @@
-import React, { useMemo } from "react";
-import styled from "styled-components";
-import ArticlePreview from "../preview";
-import { JumboArticlePreview } from "../preview/jumbo";
-import { MiniArticlePreview } from "../preview/mini";
-import { Article } from "types";
+import React, { useMemo } from 'react';
+import styled from 'styled-components';
+import ArticlePreview from '../preview';
+import { JumboArticlePreview } from '../preview/jumbo';
+import { MiniArticlePreview } from '../preview/mini';
+import { Article } from 'types';
 
 type Props = {
   articles: Article[];
@@ -47,7 +47,7 @@ const ArticleGrid: React.FC<Props> = ({ articles }) => {
     //     new Date(b.published).getTime() -
     //     new Date(a.published).getTime()
     // ),
-    [articles]
+    [articles],
   );
   const featured1 = useMemo(() => sorted.slice(0, 1)[0], [sorted]);
 

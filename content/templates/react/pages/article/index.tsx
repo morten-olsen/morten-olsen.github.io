@@ -1,9 +1,9 @@
-import styled, { createGlobalStyle } from "styled-components";
-import ReactMarkdown from "react-markdown";
-import { Jumbo } from "./typography";
-import { createTheme, ThemeProvider } from "./theme";
-import { Helmet } from "react-helmet-async";
-import { Page } from "types";
+import styled, { createGlobalStyle } from 'styled-components';
+import ReactMarkdown from 'react-markdown';
+import { Jumbo } from '../../typography';
+import { createTheme, ThemeProvider } from '../../theme';
+import { Helmet } from 'react-helmet-async';
+import { Page } from 'types';
 
 const GlobalStyle = createGlobalStyle`
   * { box-sizing: border-box; }
@@ -36,7 +36,7 @@ const ArticleTitleWord = styled(Jumbo)`
   padding: 0 15px;
   text-transform: uppercase;
   margin: 10px;
-  font-family: "Black Ops One", sans-serif;
+  font-family: 'Black Ops One', sans-serif;
   background: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.foreground};
   @media only screen and (max-width: 900px) {
@@ -57,7 +57,7 @@ const Wrapper = styled.div`
 
 const ArticleWrapper = styled.article`
   font-size: 1.1rem;
-  font-family: "Merriweather", serif;
+  font-family: 'Merriweather', serif;
 
   > p,
   ul,
@@ -82,7 +82,7 @@ const ArticleWrapper = styled.article`
   }
 
   > p:first-of-type::first-letter {
-    font-family: "Black Ops One", sans-serif;
+    font-family: 'Black Ops One', sans-serif;
     border: solid 5px ${({ theme }) => theme.colors.foreground};
     margin: 0 1rem 0 0;
     font-size: 6rem;
@@ -118,7 +118,7 @@ const ArticleWrapper = styled.article`
     padding-right: 40px;
     shape-outside: padding-box;
     position: relative;
-    font-family: "Black Ops One", sans-serif;
+    font-family: 'Black Ops One', sans-serif;
     text-transform: uppercase;
     display: flex;
     align-items: flex-start;
@@ -132,7 +132,7 @@ const ArticleWrapper = styled.article`
 
     &:after {
       position: absolute;
-      content: "";
+      content: '';
       right: 20px;
       top: 0;
       bottom: 0;
@@ -162,14 +162,14 @@ const ArticleWrapper = styled.article`
 
     &:before {
       color: ${({ theme }) => theme.colors.primary};
-      content: "\\00BB";
+      content: '\\00BB';
       float: left;
       font-size: 6rem;
     }
 
     &:after {
       position: absolute;
-      content: "";
+      content: '';
       right: 20px;
       top: 0;
       bottom: 0;
@@ -222,14 +222,14 @@ const Download = styled.a`
   text-align: center;
   padding: 1rem;
   font-size: 1rem;
-  font-family: "Black Ops One", sans-serif;
+  font-family: 'Black Ops One', sans-serif;
   text-transform: uppercase;
   text-decoration: none;
 `;
 
 const Author = styled.a`
   text-transform: uppercase;
-  font-family: "Black Ops One", sans-serif;
+  font-family: 'Black Ops One', sans-serif;
   font-size: 2rem;
   margin: 1rem;
   display: inline-block;
@@ -238,7 +238,7 @@ const Author = styled.a`
   color: ${({ theme }) => theme.colors.foreground};
 
   &:after {
-    content: "";
+    content: '';
     border-bottom: solid 15px ${({ theme }) => theme.colors.primary};
     display: block;
     width: 100%;
@@ -249,17 +249,13 @@ const Author = styled.a`
   }
 `;
 
-const ArticlePage: Page<"article"> = ({ article, profile, pdfUrl }) => {
+const ArticlePage: Page<'article'> = ({ article, profile, pdfUrl }) => {
   return (
     <ThemeProvider theme={createTheme({ baseColor: article.color })}>
       <Helmet>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
           href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Black+Ops+One&family=Merriweather:wght@400;700&display=swap"
           rel="stylesheet"
@@ -269,7 +265,7 @@ const ArticlePage: Page<"article"> = ({ article, profile, pdfUrl }) => {
       <Wrapper>
         <Content>
           <Title>
-            {article.title.split(" ").map((word, index) => (
+            {article.title.split(' ').map((word, index) => (
               <ArticleTitleWord key={index}>{word}</ArticleTitleWord>
             ))}
             <Author href="/">by {profile.name}</Author>

@@ -1,7 +1,7 @@
-import { createHash } from "crypto";
-import { Asset, Bundler } from "../../bundler";
-import { Observable } from "../../observable";
-import sharp, { FormatEnum } from "sharp";
+import { createHash } from 'crypto';
+import { Asset, Bundler } from '../../bundler';
+import { Observable } from '../../observable';
+import sharp, { FormatEnum } from 'sharp';
 
 type ImageOptions = {
   format: keyof FormatEnum;
@@ -13,8 +13,7 @@ type ImageOptions = {
 };
 
 const createImage = (options: ImageOptions) => {
-  let path =
-    options.name || createHash("sha256").update(options.image).digest("hex");
+  let path = options.name || createHash('sha256').update(options.image).digest('hex');
   if (options.width) {
     path += `-w${options.width}`;
   }

@@ -1,10 +1,10 @@
-import React, { ComponentType } from "react";
-import { renderToStaticMarkup } from "react-dom/server";
-import { HelmetProvider, FilledContext } from "react-helmet-async";
-import { Asset, Bundler } from "../../bundler";
-import { Observable } from "../../observable";
-import { ServerStyleSheet } from "styled-components";
-import { resolve } from "path";
+import React, { ComponentType } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { HelmetProvider, FilledContext } from 'react-helmet-async';
+import { Asset, Bundler } from '../../bundler';
+import { Observable } from '../../observable';
+import { ServerStyleSheet } from 'styled-components';
+import { resolve } from 'path';
 
 type PageOptions = {
   path: string;
@@ -24,8 +24,8 @@ const createPage = (options: PageOptions) => {
       React.createElement(
         HelmetProvider,
         { context: helmetContext },
-        React.createElement(template, props)
-      )
+        React.createElement(template, props),
+      ),
     );
     const bodyHtml = renderToStaticMarkup(body);
     const { helmet } = helmetContext;
@@ -40,7 +40,7 @@ const createPage = (options: PageOptions) => {
       helmet.script?.toString(),
     ]
       .filter(Boolean)
-      .join("");
+      .join('');
     const html = `<!DOCTYPE html>
 <html lang="en">
   <head>
@@ -55,7 +55,7 @@ const createPage = (options: PageOptions) => {
     return asset;
   });
 
-  const path = resolve("/", options.path, "index.html");
+  const path = resolve('/', options.path, 'index.html');
   return options.bundler.register(path, page);
 };
 

@@ -11,13 +11,9 @@ type CreateOptions = {
 const isBright = (color: chroma.Color) => color.luminance() > 0.4;
 
 const createTheme = (options: CreateOptions = {}) => {
-  const baseColor = options.baseColor
-    ? chroma(options.baseColor)
-    : chroma.random();
+  const baseColor = options.baseColor ? chroma(options.baseColor) : chroma.random();
   const text = isBright(baseColor) ? BLACK : WHITE;
-  const bg = isBright(baseColor)
-    ? baseColor.luminance(0.9)
-    : baseColor.luminance(0.01);
+  const bg = isBright(baseColor) ? baseColor.luminance(0.9) : baseColor.luminance(0.01);
   const theme: Theme = {
     typography: {
       Jumbo: {
@@ -57,4 +53,3 @@ const createTheme = (options: CreateOptions = {}) => {
 };
 
 export { createTheme };
-

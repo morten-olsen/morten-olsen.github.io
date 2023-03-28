@@ -1,9 +1,9 @@
-import React, { useMemo } from "react";
-import styled from "styled-components";
-import { Title1 } from "@/typography";
-import { createTheme } from "@/theme/create";
-import { ThemeProvider } from "@/theme/provider";
-import { Article } from "types";
+import React, { useMemo } from 'react';
+import styled from 'styled-components';
+import { Title1 } from '@/typography';
+import { createTheme } from '@/theme/create';
+import { ThemeProvider } from '@/theme/provider';
+import { Article } from 'types';
 
 type Props = {
   article: Article;
@@ -28,7 +28,7 @@ const Wrapper = styled.a`
 const Title = styled(Title1)`
   background: ${({ theme }) => theme.colors.primary};
   line-height: 40px;
-  font-family: "Black Ops One", sans-serif;
+  font-family: 'Black Ops One', sans-serif;
   font-size: 25px;
   padding: 0 5px;
   margin: 5px 0;
@@ -48,7 +48,7 @@ const AsideWrapper = styled.aside<{
   background: ${({ theme }) => theme.colors.primary};
   background-size: cover;
   background-position: center;
-  ${({ image }) => (image ? `background-image: url(${image});` : "")}
+  ${({ image }) => (image ? `background-image: url(${image});` : '')}
   flex: 1;
   top: 0;
   bottom: 0;
@@ -63,14 +63,14 @@ const ArticlePreview: React.FC<Props> = ({ article }) => {
       createTheme({
         baseColor: article.color,
       }),
-    [article.color]
+    [article.color],
   );
   return (
     <ThemeProvider theme={theme}>
       <Wrapper href={`/articles/${article.slug}`}>
         <AsideWrapper image={article.thumbUrl} />
         <MetaWrapper>
-          {article.title.split(" ").map((word, index) => (
+          {article.title.split(' ').map((word, index) => (
             <Title key={index}>{word}</Title>
           ))}
         </MetaWrapper>

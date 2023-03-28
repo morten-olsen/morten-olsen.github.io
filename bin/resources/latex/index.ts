@@ -1,7 +1,7 @@
-import { Asset, Bundler } from "../../bundler";
-import { Observable } from "../../observable";
-import { createEjs } from "../ejs";
-import { latexToPdf } from "./utils";
+import { Asset, Bundler } from '../../bundler';
+import { Observable } from '../../observable';
+import { createEjs } from '../ejs';
+import { latexToPdf } from './utils';
 
 type LatexOptions = {
   path: string;
@@ -23,7 +23,11 @@ const createLatex = ({ template, data, path, bundler }: LatexOptions) => {
       };
       return asset;
     });
-  return bundler.register(`${path}.pdf`, pdf);
+  const url = bundler.register(`${path}.pdf`, pdf);
+  return {
+    url,
+    item: pdf,
+  };
 };
 
 export { createLatex };

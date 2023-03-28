@@ -1,16 +1,26 @@
-import { readFile } from "fs/promises";
-import { Observable } from "../../observable";
-import { watch } from "fs";
+import { readFile } from 'fs/promises';
+import { Observable } from '../../observable';
+import { watch } from 'fs';
 
 type FileOptions = {
   path: string;
 };
 
 const createFile = ({ path }: FileOptions) => {
-  const file = new Observable(async () => readFile(path, "utf-8"));
+  let watcher: ReturnType<typeof watch> | undefined;
+  const addWatcher = () => {
+    if (watcher) {
+      watcher.close();
+    }
+    watcher = watch(path, () => {
+      file.recreate();
+      addWatcher();
+    });
+  };
 
-  watch(path, () => {
-    file.recreate();
+  const file = new Observable(async () => {
+    addWatcher();
+    return readFile(path, 'utf-8');
   });
 
   return file;

@@ -1,21 +1,35 @@
-import { program } from "commander";
-import { build } from "./build";
-import { createServer } from "./dev/server";
-import { dirname, join, resolve } from "path";
-import { mkdir, rm, writeFile } from "fs/promises";
-import { existsSync } from "fs";
+import { program } from 'commander';
+import { build } from './build';
+import { createServer } from './dev/server';
+import { dirname, join, resolve } from 'path';
+import { mkdir, rm, writeFile } from 'fs/promises';
+import { existsSync } from 'fs';
 
-const dev = program.command("dev");
-dev.action(async () => {
-  const bundler = await build();
+const getConfig = (path: string) => {
+  const resolved = resolve(path);
+  const module = require(resolved);
+  const config = module.default || module;
+  return {
+    cwd: dirname(resolved),
+    config,
+  };
+};
+
+const dev = program.command('dev');
+dev.argument('<config>', 'Path to config file');
+dev.action(async (configLocation) => {
+  const { cwd, config } = getConfig(configLocation);
+  const bundler = await build(cwd, config);
   const server = createServer(bundler);
   server.listen(3000);
 });
 
-const bundle = program.command("build");
-bundle.action(async () => {
-  const bundler = await build();
-  const outputDir = resolve("out");
+const bundle = program.command('build');
+bundle.argument('<config>', 'Path to config file');
+bundle.action(async (configLocation) => {
+  const { cwd, config } = getConfig(configLocation);
+  const bundler = await build(cwd, config);
+  const outputDir = resolve('out');
   if (existsSync(outputDir)) {
     rm(outputDir, { recursive: true });
   }

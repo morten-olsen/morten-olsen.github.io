@@ -1,5 +1,5 @@
-import { resolve } from "path";
-import { Observable } from "../observable";
+import { resolve } from 'path';
+import { Observable } from '../observable';
 
 type Asset = {
   content: string | Buffer;
@@ -17,7 +17,7 @@ class Bundler {
   }
 
   public register = (path: string, asset: Observable<Asset>) => {
-    const realPath = resolve("/", path);
+    const realPath = resolve('/', path);
     if (!this.#assets.has(realPath)) {
       this.#assets.set(realPath, asset);
     }
@@ -25,7 +25,7 @@ class Bundler {
   };
 
   public get = (path: string) => {
-    const realPath = resolve("/", path);
+    const realPath = resolve('/', path);
     return this.#assets.get(realPath);
   };
 }

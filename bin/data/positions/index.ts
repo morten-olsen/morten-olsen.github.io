@@ -1,20 +1,24 @@
-import { createGlob } from "../../resources/glob";
-import { createFile } from "../../resources/file";
-import grayMatter from "gray-matter";
-import { Bundler } from "../../bundler";
-import { markdownBundleImages } from "../../utils/markdown";
-import { dirname } from "path";
-import { Position } from "../../../types";
-import { Observable } from "../../observable";
+import { createGlob } from '../../resources/glob';
+import { createFile } from '../../resources/file';
+import grayMatter from 'gray-matter';
+import { Bundler } from '../../bundler';
+import { markdownBundleImages } from '../../utils/markdown';
+import { dirname } from 'path';
+import { Position } from '../../../types';
+import { Observable } from '../../observable';
 
 type PositionOptions = {
+  cwd: string;
+  pattern: string;
   bundler: Bundler;
 };
 
-const createPositions = ({ bundler }: PositionOptions) => {
+const createPositions = ({ cwd, pattern, bundler }: PositionOptions) => {
   const files = createGlob<Observable<Position>>({
-    pattern: "content/resume/positions/**/*.md",
+    pattern,
+    cwd,
     create: (path) => {
+      console.log('c', path);
       const file = createFile({ path });
       const position = file.pipe(async (raw) => {
         const { data, content } = grayMatter(raw);

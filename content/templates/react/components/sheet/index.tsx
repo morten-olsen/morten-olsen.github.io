@@ -1,7 +1,7 @@
-import React, { ReactNode, useMemo } from "react";
-import styled from "styled-components";
-import { createTheme } from "@/theme/create";
-import { ThemeProvider } from "@/theme/provider";
+import React, { ReactNode, useMemo } from 'react';
+import styled from 'styled-components';
+import { createTheme } from '@/theme/create';
+import { ThemeProvider } from '@/theme/provider';
 
 const Wrapper = styled.div`
   background: ${({ theme }) => theme.colors.background};
@@ -25,7 +25,7 @@ const BackgroundWrapper = styled.div<{
   background-size: cover;
   background-position: center;
   opacity: 0.2;
-  ${({ image }) => (image ? `background-image: url(${image});` : "")}
+  ${({ image }) => (image ? `background-image: url(${image});` : '')}
 `;
 
 const Content = styled.div`
@@ -50,7 +50,7 @@ const Sheet: React.FC<Props> = ({ color, background, children }) => {
       createTheme({
         baseColor: color,
       }),
-    [color]
+    [color],
   );
   return (
     <ThemeProvider theme={theme}>

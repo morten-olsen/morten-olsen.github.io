@@ -1,47 +1,33 @@
-import { resolve } from "path";
-import { createReact } from "../resources/react";
-import { Observable, getCollectionItems } from "../observable";
-import { createPage } from "../resources/page";
-import { createArticles } from "../data/articles";
-import { Bundler } from "../bundler";
-import { forEach } from "../utils/observable";
-import { createEjs } from "../resources/ejs";
-import { createLatex } from "../resources/latex";
-import { markdownToLatex } from "../utils/markdown";
-import { createPositions } from "../data/positions";
-import { createProfile } from "../data/profile";
-import { Position } from "../../types";
+import { resolve } from 'path';
+import { Observable, getCollectionItems } from '../observable';
+import { createPage } from '../resources/page';
+import { Bundler } from '../bundler';
+import { forEach } from '../utils/observable';
+import { createLatex } from '../resources/latex';
+import { markdownToLatex } from '../utils/markdown';
+import { Position } from '../../types';
+import { Config } from '../../types/config';
+import { getTemplates } from './templates';
+import { getData } from './data';
 
-const build = async () => {
+const build = async (cwd: string, config: Config) => {
   const bundler = new Bundler();
-  const articles = createArticles({
+  const data = getData({
+    cwd,
+    config,
     bundler,
   });
-  const positions = createPositions({
-    bundler,
-  });
-  const profile = createProfile({
-    bundler,
-  });
+  const templates = getTemplates(cwd, config);
 
-  const latex = {
-    article: createEjs(resolve("content/templates/latex/article.tex")),
-    resume: createEjs(resolve("content/templates/latex/resume.tex")),
-  };
-
-  const react = {
-    article: createReact(resolve("content/templates/react/article.tsx")),
-    frontpage: createReact(resolve("content/templates/react/frontpage.tsx")),
-  };
-
-  const resumeProps = Observable.combine({
-    articles: articles.pipe(getCollectionItems),
-    positions: positions.pipe(async (positions) => {
+  const resumeData = Observable.combine({
+    articles: data.articles.pipe(getCollectionItems),
+    // TODO: collection observer
+    positions: data.positions.pipe(async (positions) => {
       const result: Position[] = [];
       for (const a of positions) {
         const item = await a.data;
         const content = markdownToLatex({
-          root: resolve("content"),
+          root: resolve('content'),
           content: item.raw,
         });
         result.push({
@@ -51,38 +37,43 @@ const build = async () => {
       }
       return result;
     }),
-    profile,
+    profile: data.profile,
+  });
+
+  resumeData.subscribe(() => {
+    console.log('resume');
   });
 
   const resumeUrl = createLatex({
     bundler,
-    path: "/resume",
-    data: resumeProps,
-    template: latex.resume,
+    path: '/resume',
+    data: resumeData,
+    template: templates.latex.resume,
   });
 
   {
     const props = Observable.combine({
-      articles: articles.pipe(getCollectionItems),
-      positions: positions.pipe(getCollectionItems),
-      profile,
-      resumeUrl: new Observable(async () => resumeUrl),
+      articles: data.articles.pipe(getCollectionItems),
+      positions: data.positions.pipe(getCollectionItems),
+      profile: data.profile,
+      resumeUrl: Observable.link([resumeUrl.item], async () => resumeUrl.url),
     });
     createPage({
-      path: "/",
+      path: '/',
       props,
-      template: react.frontpage,
+      template: templates.react.frontpage,
       bundler,
     });
   }
 
-  await forEach(articles, async (article) => {
+  await forEach(data.articles, async (article) => {
     const { slug } = await article.data;
-    const pdfUrl = createLatex({
+    const pdf = createLatex({
       bundler,
-      path: resolve("/articles", slug),
-      template: latex.article,
+      path: resolve('/articles', slug),
+      template: templates.latex.article,
       data: Observable.combine({
+        profile: data.profile,
         article: article.pipe(async ({ title, cover, root, raw }) => {
           const body = markdownToLatex({
             root,
@@ -98,14 +89,16 @@ const build = async () => {
     });
     const props = Observable.combine({
       article,
-      profile,
-      pdfUrl: new Observable(async () => pdfUrl),
-      resumeUrl: new Observable(async () => resumeUrl),
+      profile: data.profile,
+      pdfUrl: Observable.link([pdf.item], async () => pdf.url),
+    });
+    article.subscribe(() => {
+      console.log('updated', slug);
     });
     createPage({
       path: `/articles/${slug}`,
       props,
-      template: react.article,
+      template: templates.react.article,
       bundler,
     });
   });

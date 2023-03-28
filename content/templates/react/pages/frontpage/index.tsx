@@ -1,12 +1,12 @@
-import styled, { createGlobalStyle } from "styled-components";
-import { ArticleGrid } from "@/components/article/grid";
-import { Jumbo } from "@/typography";
-import { useMemo } from "react";
-import { Sheet } from "./components/sheet";
-import { ThemeProvider, createTheme } from "./theme";
-import chroma from "chroma-js";
-import { Helmet } from "react-helmet-async";
-import { Page } from "../../../types";
+import styled, { createGlobalStyle } from 'styled-components';
+import { ArticleGrid } from '@/components/article/grid';
+import { Jumbo } from '@/typography';
+import { useMemo } from 'react';
+import { Sheet } from '../../components/sheet';
+import { ThemeProvider, createTheme } from '@/theme';
+import chroma from 'chroma-js';
+import { Helmet } from 'react-helmet-async';
+import { Page } from 'types';
 
 const GlobalStyle = createGlobalStyle`
   * { box-sizing: border-box; }
@@ -32,7 +32,7 @@ const Download = styled.a`
   padding: 0 15px;
   text-transform: uppercase;
   margin: 10px;
-  font-family: "Black Ops One", sans-serif;
+  font-family: 'Black Ops One', sans-serif;
   @media only screen and (max-width: 700px) {
     margin: 5px;
     font-size: 3rem;
@@ -49,7 +49,7 @@ const Title = styled(Jumbo)`
   padding: 0 15px;
   text-transform: uppercase;
   margin: 10px;
-  font-family: "Black Ops One", sans-serif;
+  font-family: 'Black Ops One', sans-serif;
   @media only screen and (max-width: 700px) {
     margin: 5px;
     font-size: 3rem;
@@ -71,7 +71,7 @@ const Arrow = styled.div`
     border-radius: 50%;
     width: 80px;
     height: 80px;
-    content: "↓";
+    content: '↓';
     font-size: 50px;
     @media only screen and (max-width: 700px) {
       width: 40px;
@@ -99,13 +99,13 @@ const ImageBg = styled.picture`
   }
 `;
 
-const FrontPage: Page<"frontpage"> = ({ articles, profile }) => {
+const FrontPage: Page<'frontpage'> = ({ articles, profile }) => {
   const theme = useMemo(
     () =>
       createTheme({
         baseColor: chroma.random().brighten(1).hex(),
       }),
-    []
+    [],
   );
 
   return (
@@ -113,11 +113,7 @@ const FrontPage: Page<"frontpage"> = ({ articles, profile }) => {
       <Helmet>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
           href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Black+Ops+One&family=Merriweather:wght@400;700&display=swap"
           rel="stylesheet"
@@ -130,12 +126,12 @@ const FrontPage: Page<"frontpage"> = ({ articles, profile }) => {
         </ImageBg>
         <Arrow />
         <Hero>
-          {"Hi, I'm Morten".split(" ").map((char, index) => (
+          {"Hi, I'm Morten".split(' ').map((char, index) => (
             <Title key={index}>{char}</Title>
           ))}
         </Hero>
         <Hero>
-          {"And I make software".split(" ").map((char, index) => (
+          {'And I make software'.split(' ').map((char, index) => (
             <Title key={index}>{char}</Title>
           ))}
         </Hero>
@@ -147,7 +143,7 @@ const FrontPage: Page<"frontpage"> = ({ articles, profile }) => {
       </Sheet>
       <Sheet color="#ef23e2">
         <Hero>
-          {"Table of Content".split(" ").map((char, index) => (
+          {'Table of Content'.split(' ').map((char, index) => (
             <Title key={index}>{char}</Title>
           ))}
         </Hero>

@@ -1,5 +1,5 @@
-import { Observable } from "../../observable";
-import { InputPluginOption, ModuleFormat, watch } from "rollup";
+import { Observable } from '../../observable';
+import { InputPluginOption, ModuleFormat, watch } from 'rollup';
 
 type ScriptOptions = {
   path: string;
@@ -13,7 +13,7 @@ const build = (options: ScriptOptions, update: (code: string) => void) =>
     const watcher = watch({
       input: options.path,
       plugins: options.plugins,
-      onwarn: () => { },
+      onwarn: () => {},
       output: {
         format: options.format,
       },
@@ -22,8 +22,8 @@ const build = (options: ScriptOptions, update: (code: string) => void) =>
       },
     });
 
-    watcher.on("event", async (event) => {
-      if (event.code === "BUNDLE_END") {
+    watcher.on('event', async (event) => {
+      if (event.code === 'BUNDLE_END') {
         const { output } = await event.result.generate({
           format: options.format,
         });
@@ -35,7 +35,7 @@ const build = (options: ScriptOptions, update: (code: string) => void) =>
           update(code);
         }
       }
-      if (event.code === "ERROR") {
+      if (event.code === 'ERROR') {
         reject(event.error);
       }
     });
@@ -43,7 +43,7 @@ const build = (options: ScriptOptions, update: (code: string) => void) =>
 
 const createScript = (options: ScriptOptions) => {
   const script: Observable<string> = new Observable(() =>
-    build(options, (code) => script.set(() => Promise.resolve(code)))
+    build(options, (code) => script.set(() => Promise.resolve(code))),
   );
 
   return script;

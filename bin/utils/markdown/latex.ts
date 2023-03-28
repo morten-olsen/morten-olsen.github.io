@@ -1,19 +1,20 @@
-import { decode } from "html-entities";
-import { existsSync } from "fs";
+import { decode } from 'html-entities';
+import { existsSync } from 'fs';
+import { resolve } from 'path';
 
-const latexTypes = ["", "section", "subsection", "paragraph", "subparagraph"];
+const latexTypes = ['', 'section', 'subsection', 'paragraph', 'subparagraph'];
 
 const sanitize = (text?: string) => {
   if (!text) {
-    return "";
+    return '';
   }
   return decode(text)
-    .replace("&", "\\&")
-    .replace("_", "\\_")
-    .replace(/([^\\])\}/g, "$1\\}")
-    .replace(/([^\\])\{/g, "$1\\{")
-    .replace(/[^\\]\[/g, "\\[")
-    .replace(/#/g, "\\#");
+    .replace('&', '\\&')
+    .replace('_', '\\_')
+    .replace(/([^\\])\}/g, '$1\\}')
+    .replace(/([^\\])\{/g, '$1\\{')
+    .replace(/[^\\]\[/g, '\\[')
+    .replace(/#/g, '\\#');
 };
 
 type Renderer = (depth: number) => {
@@ -30,7 +31,7 @@ type Renderer = (depth: number) => {
   image?: (link: string) => string;
 };
 
-const renderer = (outerDepth: number) => ({
+const renderer = (outerDepth: number, cwd: string) => ({
   heading: (text: string, depth: number) => {
     return `\\${latexTypes[outerDepth + depth]}{${sanitize(text)}}\n\n`;
   },
@@ -76,13 +77,12 @@ const renderer = (outerDepth: number) => ({
     return `\\texttt{${sanitize(code)}}`;
   },
   image: (link: string) => {
-    if (!existsSync(link)) {
-      return "Online image not supported";
+    const path = resolve(cwd, link);
+    if (!existsSync(path)) {
+      return `Online image not supported ${path}`;
     }
-    return `\\begin{figure}[h!]
-  \\includegraphics[width=0.5\\textwidth]{${link}}
-  \\centering
-\\end{figure}
+    return `
+  \\noindent\\includegraphics[width=\\linewidth]{${path}}
 `;
   },
 });
