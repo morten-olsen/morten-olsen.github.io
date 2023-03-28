@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "ts-node ./bin/index.ts build",
-    "dev": "ts-node ./bin/index.ts dev"
+    "build": "ts-node ./bin/index.ts build content/config.ts",
+    "dev": "ts-node ./bin/index.ts dev content/config.ts"
   },
   "keywords": [],
   "author": "",
