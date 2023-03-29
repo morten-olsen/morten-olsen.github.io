@@ -20,9 +20,9 @@ First, an event goes in, such as a motion sensor triggering, or you set the bath
 
 This distinction is essential because it comes with a few drawbacks:
 
-* Because the event does not change the state but sends a request to the device that does it, everything becomes asynchronous and can happen out of order. This behaviour can be seen either as an issue or a feature, but it does make integrating with it a lot harder from a technical point of view.
-* The request is sent to the device as a "fire-and-forget" event. It then relies on the success of that request and the subsequent state change to be reported back from the device before the state gets updated. This behaviour means that if this request fails (something you often see with ZigBee-based devices), the device and the state don't get updated.
-* Since the device is responsible for reporting the state change, you are dependent on having that actual device there to make the change. Without sending the changes to the actual device, you cannot test the setup.
+- Because the event does not change the state but sends a request to the device that does it, everything becomes asynchronous and can happen out of order. This behaviour can be seen either as an issue or a feature, but it does make integrating with it a lot harder from a technical point of view.
+- The request is sent to the device as a "fire-and-forget" event. It then relies on the success of that request and the subsequent state change to be reported back from the device before the state gets updated. This behaviour means that if this request fails (something you often see with ZigBee-based devices), the device and the state don't get updated.
+- Since the device is responsible for reporting the state change, you are dependent on having that actual device there to make the change. Without sending the changes to the actual device, you cannot test the setup.
 
 So can we create a setup that gets away from these issues?
 
@@ -34,7 +34,7 @@ Time to go a bit further down the React rabbit hole because another thing from R
 
 Instead of dispatching events to the devices waiting for them to update and report their state back, we can rely on reconciliation to update our device. For example, let's say we have a device state for our living room light that says it is at 80% brightness in our Redux store. So now we dispatch an event that sets it to 20% brightness.
 
-Instead of sending this event to the device, we update the Redux state. 
+Instead of sending this event to the device, we update the Redux state.
 
 We have a state listener that detects when the state changes and compares it to the state of the actual device. In our case, it seems that the state indicates that the living room light should be at 20% but are, in fact, at 80%, so it sends a request to the actual device to update it to the correct value.
 
@@ -56,13 +56,12 @@ So last thing we need is a direct way of updating devices, as we can not capture
 
 I have separated the events going into Redux into two types:
 
-* control events, which directly controls a device
-* environment events represent sensor data coming in (push on a button, motion sensor triggering, TV playing, etc.)
+- control events, which directly controls a device
+- environment events represent sensor data coming in (push on a button, motion sensor triggering, TV playing, etc.)
 
 Now comes the part I have feared, where I need to draw a diagram.
 
 ...sorry
-
 
 ![Image description](./graph.png)
 
@@ -89,4 +88,3 @@ We have a setup where we both have control events and environments coming in. Co
 Let's say you always dim the light when playing a movie that is more than one hour long; your smart home would be able to recognize this pattern and automatically start to do this routine for you.
 
 Would this work? I don't know. I am trying to get more skilled at machine learning to find out.
-

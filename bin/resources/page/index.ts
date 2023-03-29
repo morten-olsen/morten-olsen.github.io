@@ -5,6 +5,7 @@ import { Asset, Bundler } from '../../bundler';
 import { Observable } from '../../observable';
 import { ServerStyleSheet } from 'styled-components';
 import { resolve } from 'path';
+import { createScript } from '../script';
 
 type PageOptions = {
   path: string;
@@ -12,11 +13,28 @@ type PageOptions = {
   props: Observable<any>;
   bundler: Bundler;
 };
+
+let devClientUrl: string | undefined;
+
 const createPage = (options: PageOptions) => {
   const data = Observable.combine({
     template: options.template,
     props: options.props,
   });
+  if (devClientUrl === undefined) {
+    const devClient = createScript({
+      path: resolve(__dirname, 'client.ts'),
+      format: 'iife',
+    });
+    const devClientAsset = devClient.pipe<Asset>(async () => {
+      const script = await devClient.data;
+      return {
+        content: script,
+      };
+    });
+    const devClientBundle = options.bundler.register('/dev-client.js', devClientAsset);
+    devClientUrl = devClientBundle;
+  }
   const page = data.pipe(async ({ template, props }) => {
     const sheet = new ServerStyleSheet();
     const helmetContext: FilledContext = {} as any;
@@ -33,6 +51,7 @@ const createPage = (options: PageOptions) => {
     const css = sheet.getStyleTags();
     const headHtml = [
       css,
+      `<script src="${devClientUrl}"></script>`,
       helmet.title?.toString(),
       helmet.priority?.toString(),
       helmet.meta?.toString(),

@@ -23,7 +23,7 @@ const createProfile = ({ cwd, path, bundler }: ProfileOptions) => {
       ...data,
       imageUrl: createImage({
         image: imagePath,
-        format: 'webp',
+        format: 'avif',
         bundler,
       }),
       imagePath,
