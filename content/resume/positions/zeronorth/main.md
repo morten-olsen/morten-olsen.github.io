@@ -5,4 +5,6 @@ from: 2022
 to: Present
 ---
 
-// TODO
+I am currently employed at Zero North, a Danish software as a service company that specializes in providing solutions to help the shipping industry decarbonize through optimization. My primary focus has been on the development and maintenance of the on-vessel reporting platform. This platform is a NextJS based PWA with offline-first capabilities, which allows for easy and efficient reporting on board ships.
+
+In addition to working on the on-vessel reporting platform, I have also contributed to the development of the general infrastructure around report processing. My experience includes utilizing Terraform and NodeJS to build efficient and scalable report processing pipelines.
