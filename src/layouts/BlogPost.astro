@@ -1,0 +1,24 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Article from '../components/layouts/Article/index.astro';
+import Page from '../components/foundation/Page.astro';
+type Props = CollectionEntry<'articles'>['data'];
+
+const { title, description, color, heroImage } = Astro.props;
+---
+
+<Page
+	title={title}
+	description={description}
+	theme={{
+		color: color,
+	}}
+>
+			<Article
+				title={title}
+				author="Morten Olsen"
+				image={heroImage}
+			>
+					<slot />
+			</Article>
+</Page>

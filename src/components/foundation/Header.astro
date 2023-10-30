@@ -1,0 +1,44 @@
+---
+type Props = {
+  title: string,
+  tag?: string,
+  class?: string,
+}
+
+const {
+  title,
+  tag = 'h1',
+  class: className = '',
+  ...rest
+} = Astro.props;
+
+const Tag = tag;
+---
+
+<Tag class:list={['header', className]} {...rest}>
+  {title.split(' ').map((word, index) => (
+    <>
+      {index > 0 && <span class="space">{' '}</span>}
+      <span class="word">{word}</span>
+    </>
+  ))}
+</Tag>
+
+<style>
+  .header {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .space {
+    display: inline-block;
+    width: 10px;
+  }
+	.word {
+		display: inline-block;
+		background: var(--primary);
+		color: var(--primary-alt);
+		padding: 5px 15px;
+		text-transform: uppercase;
+		font-family: 'Black Ops One', sans-serif;
+	}
+</style>

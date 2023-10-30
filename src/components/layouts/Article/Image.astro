@@ -1,0 +1,43 @@
+---
+import { Picture } from 'astro:assets';
+
+type Props = {
+  image: any;
+};
+
+const { image } = Astro.props;
+---
+
+<div class="aside">
+	<Picture widths={[320, 500, 900, 1444, 1920]} formats={['avif', 'webp']} class="image" src={image} alt="Article image" />
+</div>
+
+<style>
+	.aside {
+		position: sticky;
+		top: 0;
+		right: 0;
+		width: 100%;
+		height: 100vh;
+		animation: slide-left 0.5s ease-in-out;
+		clip-path: polygon(40% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 50%);
+
+		@media only screen and (max-width: 800px) {
+			width: 100%;
+			height: 350px;
+			clip-path: none;
+		}
+	}
+
+	.image {
+		object-fit: cover;
+		object-position: center;
+		background-size: cover;
+		background-position: center;
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+	}
+</style>

@@ -1,0 +1,60 @@
+---
+import Title from './Title.astro';
+import Content from './Content.astro';
+import Image from './Image.astro'
+
+type Props = {
+  title: string;
+  author: string;
+  image: any;
+}
+
+const { title, author, image } = Astro.props;
+---
+
+<article class="root">
+	<header>
+		<Title {title} {author} />
+	</header>
+	<div class="content">
+		<Content>
+			<slot />
+		</Content>
+	</div>
+	<div class="cover">
+		<Image image={image} />
+	</div>
+</article>
+
+<style>
+	.root {
+		display: grid;
+		height: 100%;
+		min-height: 100vh;
+		color: var(--fg);
+		grid-template-columns: 1fr 700px 2fr;
+		grid-template-areas:
+			"empty header cover"
+			"empty content cover";
+
+		@media (max-width: 800px) {
+			grid-template-columns: 1fr;
+		grid-template-areas:
+			"header"
+			"cover"
+			"content";
+		}
+	}
+
+	.root :global(header) {
+		grid-area: header;
+	}
+
+	.root .content {
+		grid-area: content;
+	}
+
+	.root .cover {
+		grid-area: cover;
+	}
+</style>

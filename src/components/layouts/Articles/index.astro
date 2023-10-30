@@ -1,0 +1,65 @@
+---
+	import type { CollectionEntry } from 'astro:content';
+	import TopFeature from './top-feature.astro';
+	import Feature from './feature.astro';
+	import Article from './article.astro';
+
+	type Props = {
+		articles: CollectionEntry<'articles'>[];
+	}
+
+	const { articles } = Astro.props;
+	const topFeatured = articles.slice(0, 1)[0];
+	const featured = articles.slice(1, 4);
+	const remaining = articles.slice(4, 12);
+---
+
+<div class="root">
+	{topFeatured && (
+		<div class="top-featured">
+			<TopFeature article={topFeatured} />
+		</div>
+  )}
+	<div class="featured">
+    {featured.map((article) => (
+			<Feature {article} />
+    ))}
+	</div>
+	<div class="other">
+    {remaining.map((article) => (
+			<Article {article} />
+    ))}
+	</div>
+</div>
+
+<style>
+	.root {
+		width: 100%;
+		max-width: var(--max-width);
+		margin: auto;
+	}
+	.top-featured {
+		display: flex;
+		flex-wrap: wrap;
+		margin: 0 auto;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+	}
+
+	.featured {
+		display: flex;
+		flex-direction: row;
+		margin: 0 auto;
+		width: 100%;
+		flex-wrap: wrap;
+	}
+
+	.other {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		margin: 0 auto;
+		width: 100%;
+	}
+</style>

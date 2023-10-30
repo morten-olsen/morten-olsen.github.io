@@ -1,0 +1,79 @@
+---
+import { Picture } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+	type Props = {
+	  article: CollectionEntry<'articles'>;
+	}
+
+  const { article: { data: article, slug } } = Astro.props;
+---
+
+<a href={`/articles/${slug}`} class="root">
+	<Picture widths={[350]} formats={['avif', 'webp']} class="aside" src={article.heroImage} alt={article.title} />
+	<div class="meta">
+		<h2 class="title">{article.title}</h2>
+		<p class="summary">{article.description}</p>
+	</div>
+</a>
+
+<style>
+	.root {
+		height: 300px;
+		width: 100%;
+		position: relative;
+		margin: 15px;
+		cursor: pointer;
+		display: flex;
+
+		@media only screen and (max-width: 700px) {
+			flex-direction: column;
+			height: 500px;
+		}
+	}
+
+	.root :global(picture) {
+		display: contents;
+	}
+
+	.meta {
+		display: flex;
+		flex-direction: column;
+		padding: 40px;
+		flex: 1 0 0;
+	}
+
+	.aside {
+		background-size: cover;
+		background-position: center;
+		object-fit: cover;
+		object-position: center;
+		flex: 1 0 0;
+		height: 100%;
+
+		@media only screen and (max-width: 700px) {
+			width: 100%;
+		}
+	}
+
+	.title {
+		line-height: 40px;
+		font-family: 'Black Ops One', sans-serif;
+		font-size: 25px;
+		padding: 0 5px;
+		margin: 5px 0;
+		color: var(--fg);
+	}
+
+	.summary {
+		padding: 0 5px;
+		margin: 5px 0;
+		overflow: hidden;
+		letter-spacing: 0.5px;
+		line-height: 2.1rem;
+
+		@media only screen and (max-width: 700px) {
+			max-height: 100px;
+		}
+	}
+</style>

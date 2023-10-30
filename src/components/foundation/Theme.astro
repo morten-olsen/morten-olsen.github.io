@@ -1,0 +1,22 @@
+---
+import { type Theme, createTheme } from '../../utils/theme';
+
+type Props = Theme;
+
+const theme = Astro.props;
+
+const styles = createTheme(theme);
+---
+
+<div
+	class="root"
+	style={styles}
+>
+	<slot />
+</div>
+
+<style>
+	.root {
+		display: contents;
+	}
+</style>

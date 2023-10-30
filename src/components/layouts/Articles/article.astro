@@ -1,0 +1,71 @@
+---
+	import { Picture } from 'astro:assets';
+	import Theme from '../../foundation/Theme.astro';
+import type { CollectionEntry } from 'astro:content';
+
+
+	type Props = {
+	  article: CollectionEntry<'articles'>;
+	}
+
+  const { article: { data: article, slug } } = Astro.props;
+---
+
+<Theme color={article.color}>
+	<a href={`/articles/${slug}`} class="root">
+		<Picture widths={[350]} formats={['avif', 'webp']} class="aside" src={article.heroImage} alt={article.title} />
+		<div class="meta">
+      {article.title.split(' ').map(word => (
+        <span class="word">
+          {word}
+        </span>
+      ))}
+		</div>
+	</a>
+</Theme>
+
+<style>
+	.root {
+		position: relative;
+		margin: 15px;
+		cursor: pointer;
+		display: flex;
+		width: 220px;
+		height: 200px;
+
+		@media only screen and (max-width: 700px) {
+			width: 100%;
+		}
+	}
+
+	.word {
+		line-height: 20px;
+		font-size: 20px;
+		padding: 5px 5px;
+		font-family: 'Black Ops One', sans-serif;
+		margin: 5px 0;
+		background: var(--primary);
+		color: var(--primary-alt);
+	}
+
+	.meta {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		padding: 10px;
+		max-width: 220px;
+		position: absolute;
+	}
+
+	.aside {
+		background-size: cover;
+		background-position: center;
+		object-fit: cover;
+		object-position: center;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+</style>

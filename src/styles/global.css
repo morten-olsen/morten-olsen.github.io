@@ -1,0 +1,49 @@
+* {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	height: 100%;
+	margin: 0;
+	font-family: 'Merriweather', serif;
+	overflow-x: hidden;
+}
+
+html {
+	background-color: var(--bg);
+	color: var(--fg);
+}
+
+.jumbo {
+	font-size: 3.8rem;
+	font-weight: 400;
+	text-transform: uppercase;
+}
+
+a {
+	text-decoration: none;
+	color: var(--primary-alt);
+}
+
+@keyframes slide-up {
+	0% {
+		opacity: 0;
+		transform: translateY(400px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes slide-left {
+	0% {
+		opacity: 0;
+		transform: translateX(400px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}

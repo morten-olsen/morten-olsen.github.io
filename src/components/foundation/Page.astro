@@ -1,0 +1,36 @@
+---
+import { type Theme, createTheme } from '../../utils/theme';
+import BaseHead from './BaseHead.astro';
+
+type Props = {
+  title: string;
+  description: string;
+  theme?: Theme;
+}
+
+const {
+  title,
+  description,
+  theme = {
+  }
+} = Astro.props;
+
+const styles = createTheme(theme);
+---
+
+
+<html lang="en">
+	<head>
+		<BaseHead title={title} description={description} />
+		<slot name="head" />
+	</head>
+	<body style={{ ...styles, backgroundColor: styles['--bg'] }}>
+	  <slot />
+  </body>
+</html>
+
+<style>
+  :global(:root) {
+    --max-width: 1024px;
+  }
+</style>
