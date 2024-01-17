@@ -1,0 +1,79 @@
+---
+import "reset-css";
+import "../../styles/fonts-resume.css";
+import { getCollection } from "astro:content";
+import Reference from "../../components/resume/References.astro";
+const references = await getCollection("references");
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Morten Olsen's Resume</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  </head>
+  <body>
+    <div class="root">
+      <h2 class="text-2xl font-bold mb-16">References</h2>
+      <div class="flex flex-col gap-8">
+        {references.map((reference) => <Reference content={reference} />)}
+      </div>
+    </div>
+  </body>
+</html>
+
+<style>
+  @page {
+    size: auto; /* auto is the initial value */
+    margin: 20mm 20mm;
+  }
+
+  .workgrid {
+    grid-template-columns: auto 1fr;
+    grid-gap: 4rem;
+  }
+
+  .page-break {
+    page-break-after: always;
+  }
+
+  .avatar {
+    shape-outside: circle();
+  }
+
+  body,
+  html {
+    print-color-adjust: exact;
+    --bg-color: #f5f5f5;
+    --text-color: #333;
+    background-color: var(--bg-color);
+    font-family: "Leto", sans-serif;
+
+    @media print {
+      --bg-color: #fff;
+    }
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  .root {
+    width: 100%;
+    margin: 0 auto;
+    max-width: 1000px;
+
+    @apply p-8 md:p-16;
+    @apply print:p-0 print:max-w-none;
+  }
+
+  .withSidebar {
+    grid-template-columns: min(300px, 50%) 1fr;
+    column-gap: 50px;
+
+    @media print {
+      display: block;
+    }
+  }
+</style>

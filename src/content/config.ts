@@ -14,11 +14,18 @@ const articles = defineCollection({
 });
 
 const work = defineCollection({
-	schema: () => z.object({
+	schema: ({ image }) => z.object({
 		name: z.string(),
 		position: z.string(),
 		startDate: z.coerce.date(),
 		endDate: z.coerce.date().optional(),
+		summary: z.string().optional(),
+		logo: image().refine((img) => img.width >= 200, {
+			message: "Logo must be at least 320 pixels wide!",
+		}).optional(),
+		banner: image().refine((img) => img.height>= 50, {
+			message: "Logo must be at least 320 pixels wide!",
+		}).optional(),
 	}),
 })
 

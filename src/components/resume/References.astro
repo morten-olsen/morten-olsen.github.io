@@ -1,0 +1,27 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+type Props = {
+  content: CollectionEntry<'references'>;
+}
+const { content } = Astro.props;
+const Body = await content.render();
+---
+
+<div class="item">
+  <div class="flex items-center mb-4">
+    <div class="flex-1">
+      <h1 class="text-xl font-bold">{ content.data.name}</h1>
+      <p class="text-gray-500 text-lg">{ content.data.position} @ {content.data.company}</p>
+    </div>
+  </div>
+  <div class="leading-loose">
+    <Body.Content />
+  </div>  
+  <div class="text-gray-500 text-sm mt-4">{content.data.relation}</div>
+</div>
+
+<style>
+  .item {
+  }
+</style>

@@ -1,0 +1,34 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+type Props = {
+  content: CollectionEntry<"work">;
+};
+const { content } = Astro.props;
+const Body = await content.render();
+const formatDate = (d?: Date) => {
+  if (!d) {
+    return "Present";
+  }
+  return `${d.toLocaleString("default", { month: "long" })} ${d.getFullYear()}`;
+};
+---
+
+<div class="item">
+  <div class="md:text-right md:items-end flex flex-col">
+    <h1 class="text-xl font-bold">{content.data.name}</h1>
+    <p class="text-gray-500 text-lg">{content.data.position}</p>
+    <p class="text-gray-500 text-sm">
+      {formatDate(content.data.startDate)} - {formatDate(content.data.endDate)}
+    </p>
+  </div>
+  <div class="leading-loose">
+    <Body.Content />
+  </div>
+</div>
+
+<style>
+  .item {
+    display: contents;
+  }
+</style>

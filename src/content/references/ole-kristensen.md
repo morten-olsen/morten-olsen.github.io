@@ -3,7 +3,7 @@ name: Ole Højriis Kristensen
 position: Software Engineering Manager
 company: Apple
 date: 2017-11-22
-relation: Ole Højriis managed Morten directly
+relation: Ole Højriis managed Morten directly at Trendsales
 profile: https://www.linkedin.com/in/okristensen/
 ---
 

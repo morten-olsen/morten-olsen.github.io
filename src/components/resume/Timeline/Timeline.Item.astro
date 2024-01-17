@@ -1,0 +1,30 @@
+---
+import { type CollectionEntry } from "astro:content";
+import { Image } from "astro:assets";
+
+type Props = {
+  work: CollectionEntry<"work">;
+};
+const { work } = Astro.props;
+---
+
+<div class="border-slate-300 border-solid border rounded p-4">
+  <div class="flex items-center gap-2">
+    {
+      work.data.logo ? (
+        <Image
+          src={work.data.logo}
+          width={48}
+          height={48}
+          class="w-12 h-12 rounded-full object-cover"
+          alt={work.data.name}
+        />
+      ) : null
+    }
+    <div class="flex-1">
+      <h3 class="font-bold text-lg">{work.data.name}</h3>
+      <h4 class="font-bold">{work.data.position}</h4>
+    </div>
+  </div>
+  {work.data.summary && <div class="text-sm mt-2">{work.data.summary}</div>}
+</div>

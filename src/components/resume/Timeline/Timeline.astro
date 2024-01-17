@@ -1,0 +1,74 @@
+---
+import { type CollectionEntry } from "astro:content";
+import Item from "./Timeline.Item.astro";
+
+type Props = {
+  work: CollectionEntry<"work">[];
+  selected: number;
+};
+const { work, selected } = Astro.props;
+const formatDate = (d?: Date) => {
+  if (!d) {
+    return "Present";
+  }
+  return `${d.toLocaleString("default", {
+    month: "short",
+  })} ${d.getFullYear()}`;
+};
+---
+
+<div class="timeline" style={{ "--length": work.length }}>
+  <div class="indicator" style={{ "--index": selected }}></div>
+  <div class="current" style={{ "--index": selected }}></div>
+  {
+    work.map((work, index) => (
+      <>
+        <div class="time flex justify-center flex-col-reverse text-right text-sm gap-2 text-slate-600">
+          <div>{formatDate(work.data.startDate)}</div>
+          <div>{formatDate(work.data.endDate)}</div>
+        </div>
+        <div class="item">
+          <Item work={work} />
+        </div>
+      </>
+    ))
+  }
+</div>
+
+<style>
+  .timeline {
+    display: grid;
+    grid-template-columns: auto 60px auto;
+    grid-auto-flow: columns;
+    grid-auto-rows: auto;
+    row-gap: 1rem;
+
+    .indicator {
+      grid-column: 2;
+      grid-row: 1 / span var(--length);
+      width: calc(50% + 1px);
+      @apply border-r border-dashed border-slate-600;
+    }
+
+    .current {
+      grid-column: 2;
+      grid-row: 1 / span var(--index);
+      @apply flex items-center justify-center;
+
+      &:after {
+        content: "";
+        @apply border border-solid bg-white border-slate-600 rounded-full absolute w-4 h-4;
+      }
+    }
+
+    .time {
+      grid-column-start: 1;
+    }
+
+    .item {
+      break-inside: avoid;
+      width: fit-content;
+      grid-column-start: 3;
+    }
+  }
+</style>

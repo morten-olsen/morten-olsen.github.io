@@ -1,4 +1,4 @@
-import image from './me.jpg';
+import image from './me2.jpg';
 
 const levels = ['Beginner', 'Novice', 'Trained', 'Expert', 'Expert'];
 
@@ -8,26 +8,31 @@ const languages = [
     fluency: 'Conversational'
   },
   {
-    name: 'Dansih',
+    name: 'Danish',
     fluency: 'Native speaker'
   }
 ];
 
 const skills = [
   {
-    name: 'Web Development (React)',
+    name: 'Web Development',
     level: levels[5],
-    keywords: ['TypeScript', 'React', 'Next.js', 'Node.js', 'Fastify']
+    keywords: ['TypeScript', 'React', 'RTK', 'React Query', 'Vite', 'Webpack', 'Next.js', 'Astro']
   },
   {
-    name: 'Mobile development (React Native)',
+    name: 'Mobile development',
     level: levels[4],
-    keywords: ['TypeScript', 'React Native', 'Expo', 'React Navigation']
+    keywords: ['TypeScript', 'React Native', 'Expo', 'React Navigation', 'Xamarin']
+  },
+  {
+    name: 'Service development',
+    level: levels[4],
+    keywords: ['TypeScript', 'Node.js', 'Fastify', 'tRPC', 'Apollo', 'Knex.js', '.Net', 'Rust']
   },
   {
     name: 'DevOps',
     level: levels[3],
-    keywords: ['Docker', 'Terraform', 'GitHub Actions', 'AWS']
+    keywords: ['Kubernetes', 'Docker', 'ArgoCD', 'Terraform', 'GitHub Actions', 'AWS']
   }
 ];
 
@@ -37,7 +42,7 @@ const basics = {
   image,
   email: 'fbtijfdq@void.black',
   url: 'https://mortenolsen.pro',
-  summary: "Hi, I'm Morten and I make software",
+  summary: "Hi, I'm Morten and I make software 👋",
   location: {
     city: 'Copenhagen',
     countryCode: 'DK',
@@ -47,11 +52,13 @@ const basics = {
     {
       network: 'GitHub',
       username: 'morten-olsen',
+      icon: 'devicon:github',
       url: 'https://github.com/morten-olsen'
     },
     {
       network: 'LinkedIn',
       username: 'mortenolsendk',
+      icon: 'devicon:linkedin',
       url: 'https://www.linkedin.com/in/mortenolsendk/'
     }
   ]

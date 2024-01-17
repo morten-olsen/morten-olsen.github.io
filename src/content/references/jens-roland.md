@@ -3,7 +3,7 @@ name: Jens Roland
 position: Director of Engineering
 company: ZeroNorth
 date: 2021-10-28
-relation: Jens was senior to Morten but didn't manage Morten directlyOctober 28, 2021, Jens was senior to Morten but didn't manage Morten directly
+relation: Jens was senior to Morten but didn't manage Morten directly at Trendsales
 profile: https://www.linkedin.com/in/jensroland/
 ---
 

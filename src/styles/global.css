@@ -8,6 +8,9 @@ body {
 	margin: 0;
 	font-family: 'Merriweather', serif;
 	overflow-x: hidden;
+	media print {
+		overflow: visible;
+	}
 }
 
 html {
