@@ -1,124 +1,232 @@
 ---
-import Header from '../components/foundation/Header.astro';
-import { Picture } from 'astro:assets';
-import { getCollection } from "astro:content";
-import Articles from '../components/layouts/Articles/index.astro';
-import Page from "../components/foundation/Page.astro";
-import me from '../assets/me.jpg';
+import "reset-css";
+import "../styles/fonts-resume.css";
+import { Image } from "astro:assets";
+import { getCollection, type CollectionEntry } from "astro:content";
+import Timeline from "../components/resume/Timeline/Timeline.astro";
+import { basics, skills, languages } from "../data/profile";
+import { Icon } from "astro-icon/components";
 
-const articles = await getCollection('articles');
+const work: CollectionEntry<"work">[] = (await getCollection("work")).sort(
+  (a, b) => b.data.startDate.getTime() - a.data.startDate.getTime(),
+);
 ---
 
-<Page title="Morten Olsen" description="Morten Olsen's personal website">
-	<div class="root">
-		<div class="sheet">
-			<Picture src={me} widths={[ 480, 800, 1050, 1444, 1920 ]} formats={['avif', 'webp']} class="fill cover" alt="Me" />
-			<div class="fill">
-				<Header title="Hi, I'm Morten" class="title jumbo" />
-				<Header title="And I make Software" class="title jumbo" />
-			</div>
-			<div class="arrow" />
-		</div>
-		<div class="sheet">
-			<Header title="Table of Content" class="jumbo title" />
-			<Articles articles={articles.sort((a, b) => a.data.pubDate.getDate() - b.data.pubDate.getDate())} />
-		</div>
-	</div>
-</Page>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Morten Olsen's Resume</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  </head>
+  <body>
+    <div class="root">
+      <div class="basics flex flex-col nsm:flex-row gap-8">
+        <div
+          class="flex flex-col nsm:justify-center nsm:items-end nsm:text-right gap-4"
+        >
+          <div>
+            <div class="text-sm font-bold text-gray-600 uppercase">
+              ✉️ Contact
+            </div>
+            <div class="text-sm">{basics.email}</div>
+          </div>
+          <div>
+            <div class="text-sm font-bold text-gray-600 uppercase">
+              🙊 Languages
+            </div>
+            <div class="text-sm">
+              {languages.map((l) => l.name).join(", ")}
+            </div>
+          </div>
+          <div>
+            <div class="text-sm font-bold text-gray-600 uppercase">
+              🌐 Location
+            </div>
+            <div class="text-sm">
+              {basics.location.city}, {basics.location.countryCode}
+            </div>
+          </div>
+          <div>
+            <div class="text-sm font-bold text-gray-600 uppercase">
+              🕸️ Website
+            </div>
+            <div class="text-sm">www.mortenolsen.pro</div>
+          </div>
+        </div>
+
+        <div class="intro text-justify text-sm">
+          <Image
+            src={basics.image}
+            alt="Morten Olsen"
+            width={224}
+            height={224}
+            class="avatar p-4 mx-auto nsm:float-left w-64 h-64 rounded-full overflow-hidden"
+          />
+          <h1 class="text-4xl font-bold">{basics.name}</h1>
+          <div class="text-lg text-gray-600 mb-4">{basics.summary}</div>
+          <div class="leading-relaxed">
+            <p>
+              As a software engineer with a diverse skill set in frontend,
+              backend, and DevOps, I find my greatest satisfaction in unraveling
+              complex challenges and transforming them into achievable
+              solutions. My career has predominantly been in frontend
+              development, but my keen interest and adaptability have frequently
+              drawn me into backend and DevOps roles. I am driven not by titles
+              or hierarchy but by opportunities where I can make a real
+              difference through my work.
+            </p><p>
+              In every role, I strive to blend my technical skills with a
+              collaborative spirit, focusing on contributing to team goals and
+              delivering practical, effective solutions. My passion for
+              development extends beyond professional settings; I continually
+              engage in personal projects to explore new technologies and
+              methodologies, keeping my skills sharp and current.
+            </p><p>
+              I am eager to find a role that aligns with my dedication to
+              development and problem-solving, a place where I can apply my
+              varied expertise to meaningful projects and grow within a team
+              that values innovation and technical skill.
+            </p>
+          </div>
+          <div class="contact flex mt-8 gap-4">
+            {
+              basics.profiles.map((profile) => (
+                <div class="flex items-center gap-2">
+                  <Icon class="text-4xl" name={profile.icon} />
+                  <div>
+                    <div class="text-sm font-bold text-gray-600 uppercase">
+                      {profile.network}
+                    </div>
+                    <a href={profile.url} target="_blank">
+                      {profile.username}
+                    </a>
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="skills">
+        <h2 class="text-2xl font-bold py-4">🐝 Skills (Buzz words)</h2>
+        <div>
+          {
+            skills.map((skill) => (
+              <div class="mt-4">
+                <div class="text-sm font-bold text-gray-600 uppercase">
+                  {skill.name}
+                </div>
+                <div class="text-sm text-gray-800 mt-2 flex flex-wrap gap-2">
+                  {skill.keywords.map((k) => (
+                    <div class="text-sm rounded flex-shrink-0 border border-slate-300 border-solid px-2 py-1">
+                      {k}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="experience">
+        <h2 class="text-2xl font-bold py-4">💼 Work experience</h2>
+        <Timeline work={work} selected={1} />
+        <a
+          href="/resume/work-history"
+          class="text-sm text-gray-600 show-print block mt-2"
+        >
+          Read detailed work history
+        </a>
+      </div>
+    </div>
+  </body>
+</html>
 
 <style>
-	@keyframes cover-reveal {
-		0% {
-			opacity: 0;
-			transform: scale(2);
-		}
-		100% {
-			opacity: 0.5;
-			transform: translateX(0);
-		}
-	}
-	.root {
-		display: contents;
-	}
+  @page {
+    size: auto; /* auto is the initial value */
+    margin: 20mm 20mm;
+  }
 
-	.sheet {
-		min-height: 90vh;
-		position: relative;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		padding: 5rem;
-	}
-	.fill {
-		position: absolute;
-		height: 100%;
-		width: 100%;
-		left: 0;
-		top: 0;
-		overflow: hidden;
-		object-fit: cover;
-		object-position: center;
-		background-size: cover;
-		background-position: center;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-	}
+  .avatar {
+    shape-outside: circle();
+  }
 
-	.cover {
-		opacity: 0.5;
-		animation: cover-reveal 0.5s ease-in-out;
-		transform: translateZ(0);
-	}
+  body,
+  html {
+    print-color-adjust: exact;
+    font-family: "Leto", sans-serif;
+    @apply bg-slate-200;
 
-	.title {
-		margin-bottom: 20px;
-		justify-content: center;
-		row-gap: 20px;
-		column-gap: 5px;
-	}
+    @media print {
+      font-size: 9pt;
+    }
+  }
 
-	.word {
-		font-size: 60px;
-		line-height: 80px;
-		display: inline-block;
-		background: var(--primary);
-		color: var(--primary-alt);
-		padding: 0 15px;
-		text-transform: uppercase;
-		margin: 10px;
-		font-family: 'Black Ops One', sans-serif;
-		@media only screen and (max-width: 700px) {
-			margin: 5px;
-			font-size: 3rem;
-			line-height: 3.1rem;
-		}
-	}
+  @media print {
+    a.show-print {
+      &:after {
+        content: " (https://mortenolsen.pro" attr(href) ")";
+        font-size: 0.8em;
+      }
+    }
+  }
 
-	.arrow {
-		position: absolute;
-		bottom: 20px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		left: 50%;
-		transform: translateX(-50%);
-	}
+  * {
+    box-sizing: border-box;
+  }
 
-	.arrow:after {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		background: var(--primary);
-		border-radius: 50%;
-		width: 80px;
-		height: 80px;
-		content: '↓';
-		font-size: 50px;
-		@media only screen and (max-width: 700px) {
-			width: 40px;
-			height: 40px;
-		}
-	}
+  .root {
+    width: 100%;
+    margin: 0 auto;
+    max-width: 1000px;
+    @apply bg-slate-100 shadow-lg print:shadow-none p-8 nsm:p-24 gap-8;
+    @apply print:bg-white print:p-0 print:max-w-none;
+
+    display: grid;
+
+    grid-template-columns: max-content 1fr;
+    grid-template-areas:
+      "basics basics"
+      "skills skills"
+      "experience experience";
+
+    & > * {
+      break-inside: avoid;
+    }
+
+    @media only screen and (max-width: 775px) {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "intro"
+        "basics"
+        "skills"
+        "experience";
+    }
+
+    .basics {
+      grid-area: basics;
+    }
+
+    .intro {
+      grid-area: intro;
+    }
+
+    .contact {
+      grid-area: contact;
+    }
+
+    .skills {
+      grid-area: skills;
+      @apply border-t border-slate-200 border-solid pt-8 mt-8 print:border-none;
+    }
+
+    .experience {
+      grid-area: experience;
+      @apply border-t border-slate-200 border-solid pt-8 mt-8 print:border-none;
+    }
+  }
 </style>
