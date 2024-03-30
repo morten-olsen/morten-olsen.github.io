@@ -1,0 +1,68 @@
+---
+import Time from '@/components/time/absolute.astro';
+import type { WorkItem } from '@/data/data.js';
+import { formatYearMonth } from '@/utils/time.js';
+
+type Props = {
+  item: WorkItem;
+};
+
+const { item } = Astro.props;
+const { Content } = await item.render();
+---
+
+<div class="item">
+  <div class="time">
+    <Time format={formatYearMonth} datetime={item.data.endDate} />
+    -
+    <Time format={formatYearMonth} datetime={item.data.startDate} />
+  </div>
+  <div class="main">
+    <h3>{item.data.position}</h3>
+    <h4>{item.data.name}</h4>
+    <div class="content">
+      <Content />
+    </div>
+  </div>
+</div>
+
+<style>
+  .item {
+    display: contents;
+    break-inside: avoid;
+  }
+
+  .main {
+    break-inside: avoid;
+  }
+
+  .content {
+    line-height: 1.5;
+    letter-spacing: 1px;
+
+    ul {
+      padding-left: 1.5rem;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+      margin-top: 0.5rem;
+      list-style: disc;
+    }
+
+    p {
+      margin-bottom: var(--space-sm);
+    }
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-bottom: var(--space-sm);
+  }
+
+  h4 {
+    font-size: 1.25rem;
+    margin-bottom: var(--space-sm);
+  }
+</style>

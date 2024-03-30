@@ -1,0 +1,76 @@
+:root {
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu,
+    Cantarell, 'Helvetica Neue', sans-serif;
+  --font-family-heading: var(--font-family);
+  --font-size: 15px;
+  --letter-spacing: 0.5px;
+  --color: #000;
+  --background-color: #f1f5f9;
+  --content-width: 1000px;
+
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+  --space-xxl: 4rem;
+
+  --font-xxl: 2rem;
+  --font-xl: 1.5rem;
+  --font-lg: 1.1rem;
+  --font-sm: 0.875rem;
+  --font-xs: 0.75rem;
+
+  --color-text-light: rgb(75, 85, 99);
+  --color-border: #ddd;
+  --color-link: #007bff;
+
+  --radius-sm: 0.25rem;
+}
+
+ul,
+li {
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: var(--color-link);
+}
+
+* {
+  font: inherit;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-family-heading);
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  letter-spacing: var(--letter-spacing);
+  color: var(--color);
+  background-color: var(--background-color);
+}

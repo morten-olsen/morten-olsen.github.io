@@ -1,0 +1,18 @@
+---
+type Props = {
+  datetime: Date | undefined;
+  format?: Intl.DateTimeFormatOptions;
+};
+const { datetime, format, ...rest } = Astro.props;
+const formatted = Intl.DateTimeFormat('en-US', format).format(datetime);
+---
+
+{
+  !datetime ? (
+    <span {...rest}>Now</span>
+  ) : (
+    <time {...rest} datetime={datetime.toISOString()}>
+      {formatted}
+    </time>
+  )
+}

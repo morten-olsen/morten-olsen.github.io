@@ -1,0 +1,22 @@
+---
+import { type Article, data } from '@/data/data.js';
+import ArticleView from '@/layouts/article/article.astro';
+
+type Props = {
+  article: Article;
+};
+
+const getStaticPaths = async () => {
+  const articles = await data.articles.find();
+  return articles.map((article) => ({
+    params: { slug: article.slug },
+    props: { article },
+  }));
+};
+const { props } = Astro;
+const { article } = props;
+
+export { getStaticPaths };
+---
+
+<ArticleView article={article} />

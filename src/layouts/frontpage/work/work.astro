@@ -1,0 +1,78 @@
+---
+import Time from '@/components/time/absolute.astro';
+import { data } from '@/data/data.js';
+import { formatYearMonth } from '@/utils/time.js';
+
+type Props = {
+  class?: string;
+};
+
+const { class: className, ...rest } = Astro.props;
+const allWork = await data.work.find();
+const work = allWork.sort((a, b) => {
+  return new Date(b.data.startDate).getTime() - new Date(a.data.startDate).getTime();
+});
+---
+
+<div class:list={[className]} {...rest}>
+  <h2>Work</h2>
+  <div class="list">
+    {
+      work.map((item) => (
+        <div class="item">
+          <div class="time">
+            <Time format={formatYearMonth} datetime={item.data.endDate} />
+            <br />
+            <Time format={formatYearMonth} datetime={item.data.startDate} />
+          </div>
+          <div class="content">
+            <h3>{item.data.position}</h3>
+            <h4>@ {item.data.name}</h4>
+            <p>{item.data.summary}</p>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+  <a href="/work-history">See full work history</a>
+</div>
+
+<style>
+  h2 {
+    font-size: var(--font-xl);
+    margin-bottom: var(--space-lg);
+  }
+
+  .list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-xl);
+    align-items: center;
+  }
+
+  .item {
+    display: contents;
+  }
+
+  .time {
+    grid-column: 1;
+    font-size: var(--font-xs);
+    justify-self: center;
+    text-align: center;
+    position: relative;
+    align-self: stretch;
+    justify-self: stretch;
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .content {
+    break-inside: avoid;
+    grid-column: 2 / 5;
+    border: 0.6px solid var(--color-border);
+    padding: var(--space-md);
+    border-radius: 5px;
+  }
+</style>

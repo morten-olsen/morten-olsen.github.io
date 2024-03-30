@@ -1,0 +1,71 @@
+---
+import { Picture } from 'astro:assets';
+
+import Time from '@/components/time/absolute.astro';
+import type { Article } from '@/data/data.js';
+import { formatDate } from '@/utils/time.js';
+
+type Props = {
+  article: Article;
+};
+
+const { article: item } = Astro.props;
+---
+
+<a href={`/articles/${item.slug}`}>
+  <article>
+    <Picture
+      class="thumb"
+      alt="thumbnail image"
+      src={item.data.heroImage}
+      formats={['avif', 'webp', 'jpeg']}
+      width={100}
+    />
+    <div class="content">
+      <small>
+        <Time format={formatDate} datetime={item.data.pubDate} />
+      </small>
+      <h3>{item.data.title}</h3>
+    </div>
+  </article>
+</a>
+
+<style>
+  a {
+    width: 45%;
+  }
+
+  @media (max-width: 768px) {
+    a {
+      width: 100%;
+    }
+  }
+  article {
+    display: flex;
+    gap: var(--space-md);
+  }
+
+  .thumb {
+    border-radius: 0.5rem;
+    width: 100px;
+    height: 100px;
+    grid-area: image;
+  }
+
+  .content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  h3 {
+    font-size: var(--font-lg);
+    margin: 0;
+  }
+
+  small {
+    color: var(--color-text-light);
+    font-size: var(--font-sm);
+  }
+</style>

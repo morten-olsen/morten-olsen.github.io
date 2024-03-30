@@ -1,0 +1,44 @@
+---
+import '@/style/theme.css';
+
+import { Head } from 'astro-capo';
+
+import { icons } from '@/assets/images/icons.js';
+import { data } from '@/data/data.js';
+
+type Props = {
+  title: string;
+  description: string;
+  image?: string;
+  jsonLd?: unknown;
+};
+const { props } = Astro;
+const schema = JSON.stringify(props.jsonLd);
+---
+
+<!doctype html>
+<html lang="en">
+  <Head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{props.title}</title>
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content={data.site.theme} />
+    <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/articles/rss.xml" />
+    {props.description && <meta name="description" content={props.description} />}
+    {props.image && <meta property="og:image" content={props.image} />}
+    {props.jsonLd && <script type="application/ld+json" is:inline set:html={schema} />}
+    {
+      icons.pngs.map((icon) => (
+        <link rel="icon" href={icon.src} type="image/png" sizes={icon.size} />
+      ))
+    }
+  </Head>
+  <body>
+    <slot />
+  </body>
+</html>

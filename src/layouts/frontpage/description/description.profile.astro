@@ -1,0 +1,42 @@
+---
+import { Icon } from 'astro-icon/components';
+
+import type { Profile } from '@/data/data';
+
+type Props = {
+  profile: Profile['basics']['profiles'][number];
+};
+const { profile } = Astro.props;
+---
+
+<a href={profile.url} target="_blank">
+  <Icon class="icon" name={profile.icon} />
+  <div class="network">{profile.network}</div>
+  <div class="username">{profile.username}</div>
+</a>
+
+<style>
+  a {
+    display: grid;
+    align-items: center;
+    column-gap: var(--space-sm);
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+    grid-template-areas: 'icon network' 'icon username';
+  }
+
+  .icon {
+    grid-area: icon;
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .network {
+    grid-area: network;
+  }
+
+  .username {
+    grid-area: username;
+    font-weight: bold;
+  }
+</style>

@@ -1,0 +1,110 @@
+---
+import { data } from '@/data/data';
+
+import Html from '../html/html.astro';
+import Articles from './articles/articles.astro';
+import Description from './description/description.astro';
+import Info from './info/info.astro';
+import Skills from './skills/skills.astro';
+import Work from './work/work.astro';
+
+const jsonLd = await data.getJsonLDResume();
+---
+
+<Html title={data.profile.basics.name} description="Landing page" jsonLd={jsonLd}>
+  <div class="wrapper">
+    <div class="frontpage">
+      <Description class="description" />
+      <Info class="info" />
+      <Articles class="articles" />
+      <Skills class="skills" />
+      <Work class="work" />
+    </div>
+  </div>
+</Html>
+
+<style>
+  .wrapper {
+    --gap: var(--space-xxl);
+    margin: 0 auto;
+    width: 100%;
+    max-width: var(--content-width);
+    padding: var(--gap);
+  }
+
+  .frontpage {
+    display: grid;
+    gap: var(--gap);
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: auto;
+    overflow: hidden;
+    grid-template-areas:
+      'info description description description'
+      'articles articles articles articles'
+      'skills work work work';
+  }
+
+  .frontpage > * {
+    position: relative;
+
+    &::after {
+      content: '';
+      display: block;
+      height: 0.6px;
+      background-color: var(--color-border);
+      position: absolute;
+      bottom: calc(var(--gap) * -0.5);
+      left: calc(var(--gap) * -0.5);
+      right: calc(var(--gap) * -0.5);
+    }
+
+    &::before {
+      content: '';
+      display: block;
+      width: 0.6px;
+      background-color: var(--color-border);
+      position: absolute;
+      bottom: 0px;
+      top: calc(var(--gap) * -0.5);
+      bottom: calc(var(--gap) * -0.5);
+      right: calc(var(--gap) * -0.5);
+    }
+  }
+
+  .info {
+    grid-area: info;
+    break-inside: avoid;
+  }
+
+  .description {
+    grid-area: description;
+    break-inside: avoid;
+  }
+
+  .articles {
+    grid-area: articles;
+  }
+
+  .skills {
+    grid-area: skills;
+  }
+
+  .work {
+    grid-area: work;
+  }
+
+  @media (max-width: 768px) {
+    .wrapper {
+      --gap: var(--space-lg);
+    }
+    .frontpage {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        'description'
+        'info'
+        'articles'
+        'skills'
+        'work';
+    }
+  }
+</style>
