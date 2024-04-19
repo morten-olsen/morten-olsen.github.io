@@ -6,11 +6,11 @@ color: '#e7d9ac'
 heroImage: ./assets/cover.png
 ---
 
-import { Image } from 'astro:assets';
-import TaskBounds from './assets/TaskBounds.png';
-import Frame1 from './assets/Frame1.png';
-import Graph1 from './assets/Graph1.png';
-import Graph2 from './assets/Graph2.png';
+import { Image } from 'astro:assets'
+import TaskBounds from './assets/TaskBounds.png'
+import Frame1 from './assets/Frame1.png'
+import Graph1 from './assets/Graph1.png'
+import Graph2 from './assets/Graph2.png'
 
 Allow me to introduce Bob. Bob is an algorithm, and he has just accepted a role as my assistant.
 
@@ -26,7 +26,7 @@ Also, I wanted a planning algorithm that was not only for productivity. I did no
 
 Bob is still pretty young and still learning new things, but he has gotten to the point where I believe he is good enough to start to use on a day to day basis.
 
-<Image src={Frame1} alt="Frame1" />
+<Image src={Frame1} alt='Frame1' />
 
 How does Bob work? Bob gets a list of tasks, some from my calendar (both my work and my personal calendar), some from "routines" (which are daily tasks that I want to do most days, such as eating breakfast or picking up the kid), and some tasks come from "goals" which are a list of completable items. These tasks go into Bob, and he tries to create a plan for the next couple of days where I get everything done that I set out to do.
 
@@ -38,7 +38,7 @@ An "earliest start time" and a "latest start time". These define when the task c
 - If the task is required.
 - A priority
 
-<Image src={TaskBounds} alt="Task bounds" />
+<Image src={TaskBounds} alt='Task bounds' />
 
 Bob uses a graph walk to create the optimal plan, where each node contains a few different things
 
@@ -53,11 +53,11 @@ Bob starts by figuring out which locations I can go to complete the remaining ta
 He then gets a list of all the remaining tasks for the current node which can be completed at the current location, again figuring out when I would be done with the task, updating the list of impossible tasks and scoring the node.
 If any node adds a required task to the impossible list, that node is considered dead, and Bob will not analyze it further.
 
-<Image src={Graph1} alt="Graph1" />
+<Image src={Graph1} alt='Graph1' />
 
 Now we have a list of active leaves, and from that list, we find the node with the highest score and redo the process from above.
 
-<Image src={Graph2} alt="Graph2" />
+<Image src={Graph2} alt='Graph2' />
 
 Bob has four different strategies for finding a plan.
 

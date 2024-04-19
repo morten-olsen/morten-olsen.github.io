@@ -1,27 +1,27 @@
 ---
-import { Picture } from 'astro:assets';
+import { Picture } from 'astro:assets'
 
-import Time from '@/components/time/absolute.astro';
-import type { Article } from '@/data/data.js';
-import { formatDate } from '@/utils/time.js';
+import Time from '@/components/time/absolute.astro'
+import type { Article } from '@/data/data.js'
+import { formatDate } from '@/utils/time.js'
 
 type Props = {
-  article: Article;
-};
+  article: Article
+}
 
-const { article: item } = Astro.props;
+const { article: item } = Astro.props
 ---
 
 <a href={`/articles/${item.slug}`}>
   <article>
     <Picture
-      class="thumb"
-      alt="thumbnail image"
+      class='thumb'
+      alt='thumbnail image'
       src={item.data.heroImage}
       formats={['avif', 'webp', 'jpeg']}
       width={100}
     />
-    <div class="content">
+    <div class='content'>
       <small>
         <Time format={formatDate} datetime={item.data.pubDate} />
       </small>
@@ -30,7 +30,7 @@ const { article: item } = Astro.props;
   </article>
 </a>
 
-<style>
+<style lang='less'>
   a {
     width: 45%;
   }

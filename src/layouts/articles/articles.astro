@@ -1,20 +1,20 @@
 ---
-import type { Article } from '@/data/data.js';
-import { range } from '@/utils/data';
+import type { Article } from '@/data/data.js'
+import { range } from '@/utils/data'
 
-import Html from '../html/html.astro';
+import Html from '../html/html.astro'
 
 type Props = {
-  pageNumber: number;
-  pageCount: number;
-  articles: Article[];
-};
-const { articles, pageNumber, pageCount } = Astro.props;
-const hasPrev = pageNumber > 1;
-const hasNext = pageNumber < pageCount;
+  pageNumber: number
+  pageCount: number
+  articles: Article[]
+}
+const { articles, pageNumber, pageCount } = Astro.props
+const hasPrev = pageNumber > 1
+const hasNext = pageNumber < pageCount
 ---
 
-<Html title="Articles" description="A list of articles">
+<Html title='Articles' description='A list of articles'>
   <h1>Articles</h1>
   {
     articles.map((article) => (
@@ -26,7 +26,9 @@ const hasNext = pageNumber < pageCount;
   }
 
   <nav>
-    <a aria-disabled={!hasPrev} href={`/articles/pages/${pageNumber - 1}`}>Previous</a>
+    <a aria-disabled={!hasPrev} href={`/articles/pages/${pageNumber - 1}`}
+      >Previous</a
+    >
     {
       range(1, pageCount).map((page) => (
         <a
@@ -37,11 +39,13 @@ const hasNext = pageNumber < pageCount;
         </a>
       ))
     }
-    <a aria-disabled={!hasNext} href={`/articles/pages/${pageNumber + 1}`}> Next </a>
+    <a aria-disabled={!hasNext} href={`/articles/pages/${pageNumber + 1}`}>
+      Next
+    </a>
   </nav>
 </Html>
 
-<style>
+<style lang='less'>
   nav {
     display: flex;
     justify-content: center;

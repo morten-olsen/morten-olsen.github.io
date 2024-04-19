@@ -1,13 +1,13 @@
-import { icons } from '@/assets/images/icons.js';
-import { data } from '@/data/data.js';
-import type { ManifestOptions } from 'vite-plugin-pwa';
+import { icons } from '@/assets/images/icons.js'
+import { data } from '@/data/data.js'
+import type { ManifestOptions } from 'vite-plugin-pwa'
 
 export async function GET() {
   const [maskableIcon] = icons.pngs.filter(
-    (icon) => icon.size === '512x512' && icon.src.includes('png'),
-  );
-  const nonMaskableIcons = icons.pngs.filter((icon) => icon !== maskableIcon);
-  const basics = data.profile.basics;
+    (icon) => icon.size === '512x512' && icon.src.includes('png')
+  )
+  const nonMaskableIcons = icons.pngs.filter((icon) => icon !== maskableIcon)
+  const basics = data.profile.basics
 
   const manifest: Partial<ManifestOptions> = {
     name: basics.name,
@@ -21,7 +21,7 @@ export async function GET() {
       ...nonMaskableIcons.map((png) => ({
         src: png.src,
         sizes: png.size,
-        type: 'image/png',
+        type: 'image/png'
       })),
       ...(maskableIcon
         ? [
@@ -29,11 +29,11 @@ export async function GET() {
               src: maskableIcon.src,
               sizes: maskableIcon.size,
               type: 'image/png',
-              purpose: 'maskable',
-            },
+              purpose: 'maskable'
+            }
           ]
-        : []),
-    ],
-  };
-  return new Response(JSON.stringify(manifest, null, 2));
+        : [])
+    ]
+  }
+  return new Response(JSON.stringify(manifest, null, 2))
 }

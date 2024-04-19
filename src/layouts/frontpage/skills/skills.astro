@@ -1,20 +1,20 @@
 ---
-import { data } from '@/data/data.js';
+import { data } from '@/data/data.js'
 
 type Props = {
-  class?: string;
-};
+  class?: string
+}
 
-const { class: className, ...rest } = Astro.props;
-const skills = await data.skills.find();
+const { class: className, ...rest } = Astro.props
+const skills = await data.skills.find()
 ---
 
 <div class:list={['skills', className]} {...rest}>
   <h2>Skills</h2>
-  <div class="skill">
+  <div class='skill'>
     {
       skills.map((item) => (
-        <div class="item">
+        <div class='item'>
           <h3>{item.data.name}</h3>
           <ul>
             {item.data.technologies.map((tech) => (
@@ -27,7 +27,7 @@ const skills = await data.skills.find();
   </div>
 </div>
 
-<style>
+<style lang='less'>
   h2 {
     font-size: var(--font-xl);
     margin-bottom: var(--space-lg);

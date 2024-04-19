@@ -1,21 +1,21 @@
 ---
-import { Icon } from 'astro-icon/components';
+import { Icon } from 'astro-icon/components'
 
-import type { Profile } from '@/data/data';
+import type { Profile } from '@/data/data'
 
 type Props = {
-  profile: Profile['basics']['profiles'][number];
-};
-const { profile } = Astro.props;
+  profile: Profile['basics']['profiles'][number]
+}
+const { profile } = Astro.props
 ---
 
-<a href={profile.url} target="_blank">
-  <Icon class="icon" name={profile.icon} />
-  <div class="network">{profile.network}</div>
-  <div class="username">{profile.username}</div>
+<a href={profile.url} target='_blank'>
+  <Icon class='icon' name={profile.icon} />
+  <div class='network'>{profile.network}</div>
+  <div class='username'>{profile.username}</div>
 </a>
 
-<style>
+<style lang='less'>
   a {
     display: grid;
     align-items: center;

@@ -1,25 +1,27 @@
 ---
-import Header from '@/components/header/header.astro';
-import { data } from '@/data/data.js';
+import Header from '@/components/header/header.astro'
+import { data } from '@/data/data.js'
 
-import Html from '../html/html.astro';
-import Item from './work-history.item.astro';
+import Html from '../html/html.astro'
+import Item from './work-history.item.astro'
 
-const allWork = await data.work.find();
-const work = allWork.sort((a, b) => b.data.startDate.getTime() - a.data.startDate.getTime());
+const allWork = await data.work.find()
+const work = allWork.sort(
+  (a, b) => b.data.startDate.getTime() - a.data.startDate.getTime()
+)
 ---
 
-<Html title="Work" description="A list of work experiences">
+<Html title='Work' description='A list of work experiences'>
   <Header />
-  <div class="wrapper">
+  <div class='wrapper'>
     <h2>Work history</h2>
-    <div class="list">
+    <div class='list'>
       {work.map((item) => <Item item={item} />)}
     </div>
   </div>
 </Html>
 
-<style>
+<style lang='less'>
   .wrapper {
     margin: 0 auto;
     max-width: var(--content-width);

@@ -1,20 +1,20 @@
-import { defineConfig } from 'astro/config';
-import mdx from '@astrojs/mdx';
-import sitemap from '@astrojs/sitemap';
-import icon from "astro-icon";
-import compress from "astro-compress";
-import robotsTxt from 'astro-robots-txt';
+import { defineConfig } from 'astro/config'
+import mdx from '@astrojs/mdx'
+import sitemap from '@astrojs/sitemap'
+import icon from 'astro-icon'
+import compress from 'astro-compress'
+import robotsTxt from 'astro-robots-txt'
 const getSiteInfo = () => {
-  const siteUrl = process.env.SITE_URL;
+  const siteUrl = process.env.SITE_URL
   if (!siteUrl) {
-    return {};
+    return {}
   }
-  const url = new URL(siteUrl);
+  const url = new URL(siteUrl)
   return {
     site: `${url.protocol}//${url.host}`,
     base: url.pathname
-  };
-};
+  }
+}
 
 // https://astro.build/config
 export default defineConfig({
@@ -26,4 +26,4 @@ export default defineConfig({
       assetsInlineLimit: 1024 * 10
     }
   }
-});
+})

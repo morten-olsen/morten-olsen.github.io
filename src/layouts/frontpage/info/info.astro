@@ -1,12 +1,12 @@
 ---
-import { data } from '@/data/data.js';
+import { data } from '@/data/data.js'
 
 type Props = {
-  class?: string;
-};
+  class?: string
+}
 
-const { class: className, ...rest } = Astro.props;
-const { basics } = data.profile;
+const { class: className, ...rest } = Astro.props
+const { basics } = data.profile
 ---
 
 <div class:list={['sidebar', className]} {...rest}>
@@ -28,7 +28,7 @@ const { basics } = data.profile;
   </div>
 </div>
 
-<style>
+<style lang='less'>
   .sidebar {
     display: flex;
     flex-direction: column;

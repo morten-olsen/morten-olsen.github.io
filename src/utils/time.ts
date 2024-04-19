@@ -1,12 +1,12 @@
 const formatDate: Intl.DateTimeFormatOptions = {
   year: 'numeric',
   month: 'long',
-  day: 'numeric',
-};
+  day: 'numeric'
+}
 
 const formatYearMonth: Intl.DateTimeFormatOptions = {
   year: 'numeric',
-  month: 'short',
-};
+  month: 'short'
+}
 
-export { formatDate, formatYearMonth };
+export { formatDate, formatYearMonth }

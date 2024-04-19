@@ -1,4 +1,4 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection, z } from 'astro:content'
 
 const articles = defineCollection({
   schema: ({ image }) =>
@@ -10,10 +10,10 @@ const articles = defineCollection({
       updatedDate: z.coerce.date().optional(),
       tags: z.array(z.string()).optional(),
       heroImage: image().refine((img) => img.width >= 320, {
-        message: 'Cover image must be at least 1080 pixels wide!',
-      }),
-    }),
-});
+        message: 'Cover image must be at least 1080 pixels wide!'
+      })
+    })
+})
 
 const work = defineCollection({
   schema: ({ image }) =>
@@ -26,16 +26,16 @@ const work = defineCollection({
       url: z.string().optional(),
       logo: image()
         .refine((img) => img.width >= 200, {
-          message: 'Logo must be at least 320 pixels wide!',
+          message: 'Logo must be at least 320 pixels wide!'
         })
         .optional(),
       banner: image()
         .refine((img) => img.height >= 50, {
-          message: 'Logo must be at least 320 pixels wide!',
+          message: 'Logo must be at least 320 pixels wide!'
         })
-        .optional(),
-    }),
-});
+        .optional()
+    })
+})
 
 const references = defineCollection({
   schema: () =>
@@ -45,16 +45,16 @@ const references = defineCollection({
       company: z.string(),
       date: z.coerce.date(),
       relation: z.string(),
-      profile: z.string(),
-    }),
-});
+      profile: z.string()
+    })
+})
 
 const skills = defineCollection({
   schema: () =>
     z.object({
       name: z.string(),
-      technologies: z.array(z.string()),
-    }),
-});
+      technologies: z.array(z.string())
+    })
+})
 
-export const collections = { articles, work, references, skills };
+export const collections = { articles, work, references, skills }

@@ -1,29 +1,33 @@
 ---
-import { data } from '@/data/data';
+import { data } from '@/data/data'
 
-import Html from '../html/html.astro';
-import Articles from './articles/articles.astro';
-import Description from './description/description.astro';
-import Info from './info/info.astro';
-import Skills from './skills/skills.astro';
-import Work from './work/work.astro';
+import Html from '../html/html.astro'
+import Articles from './articles/articles.astro'
+import Description from './description/description.astro'
+import Info from './info/info.astro'
+import Skills from './skills/skills.astro'
+import Work from './work/work.astro'
 
-const jsonLd = await data.getJsonLDResume();
+const jsonLd = await data.getJsonLDResume()
 ---
 
-<Html title={data.profile.basics.name} description="Landing page" jsonLd={jsonLd}>
-  <div class="wrapper">
-    <div class="frontpage">
-      <Description class="description" />
-      <Info class="info" />
-      <Articles class="articles" />
-      <Skills class="skills" />
-      <Work class="work" />
+<Html
+  title={data.profile.basics.name}
+  description='Landing page'
+  jsonLd={jsonLd}
+>
+  <div class='wrapper'>
+    <div class='frontpage'>
+      <Description class='description' />
+      <Info class='info' />
+      <Articles class='articles' />
+      <Skills class='skills' />
+      <Work class='work' />
     </div>
   </div>
 </Html>
 
-<style>
+<style lang='less'>
   .wrapper {
     --gap: var(--space-xxl);
     margin: 0 auto;

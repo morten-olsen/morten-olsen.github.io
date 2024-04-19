@@ -1,37 +1,37 @@
 ---
-import { Picture } from 'astro:assets';
+import { Picture } from 'astro:assets'
 
-import { data } from '@/data/data.js';
+import { data } from '@/data/data.js'
 
-import Profile from './description.profile.astro';
+import Profile from './description.profile.astro'
 
 type Props = {
-  class?: string;
-};
+  class?: string
+}
 
-const { class: className, ...rest } = Astro.props;
-const { Content, basics, image } = data.profile;
+const { class: className, ...rest } = Astro.props
+const { Content, basics, image } = data.profile
 ---
 
 <div class:list={['main', className]} {...rest}>
   <Picture
-    class="picture"
-    alt="Profile Picture"
+    class='picture'
+    alt='Profile Picture'
     src={image}
     formats={['avif', 'webp', 'jpeg']}
     width={230}
   />
   <h1>{basics.name}</h1>
   <h2>{basics.tagline}</h2>
-  <div class="description">
+  <div class='description'>
     <Content />
   </div>
-  <div class="profiles">
+  <div class='profiles'>
     {basics.profiles.map((profile) => <Profile profile={profile} />)}
   </div>
 </div>
 
-<style>
+<style lang='less'>
   @media screen and (max-width: 768px) {
     .main {
       display: flex;

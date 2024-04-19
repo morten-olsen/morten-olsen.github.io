@@ -1,36 +1,36 @@
 ---
-import { type Article, data } from '@/data/data.js';
-import Articles from '@/layouts/articles/articles.astro';
-import { range } from '@/utils/data.js';
+import { type Article, data } from '@/data/data.js'
+import Articles from '@/layouts/articles/articles.astro'
+import { range } from '@/utils/data.js'
 
 type Props = {
-  articles: Article[];
-  pageNumber: number;
-  pageCount: number;
-  pageSize: number;
-};
+  articles: Article[]
+  pageNumber: number
+  pageCount: number
+  pageSize: number
+}
 
 export async function getStaticPaths() {
-  const pageSize = 2;
-  const allArticles = await data.articles.find();
-  const pageCount = Math.ceil(allArticles.length / pageSize);
+  const pageSize = 2
+  const allArticles = await data.articles.find()
+  const pageCount = Math.ceil(allArticles.length / pageSize)
   const pages = range(0, pageCount).map((index) => {
-    const start = index * pageSize;
-    const end = start + pageSize;
+    const start = index * pageSize
+    const end = start + pageSize
     return {
       pageNumber: index + 1,
       pageCount,
       pageSize,
-      articles: allArticles.slice(start, end),
-    };
-  });
+      articles: allArticles.slice(start, end)
+    }
+  })
   return pages.map((page) => ({
     params: { page: String(page.pageNumber) },
-    props: page,
-  }));
+    props: page
+  }))
 }
 
-const { props } = Astro;
+const { props } = Astro
 ---
 
 <Articles {...props} />

@@ -1,15 +1,15 @@
-import type { ResumeSchema } from '@/types/resume-schema.js';
+import type { ResumeSchema } from '@/types/resume-schema.js'
 
-import type { Article, Data } from './data';
+import type { Article, Data } from './data'
 
 const getJsonResume = async (data: Data) => {
-  const profile = data.profile;
+  const profile = data.profile
   const resume = {
-    basics: profile.basics,
-  } satisfies ResumeSchema;
+    basics: profile.basics
+  } satisfies ResumeSchema
 
-  return resume;
-};
+  return resume
+}
 
 const getArticleJsonLD = async (data: Data, article: Article) => {
   const jsonld = {
@@ -23,16 +23,16 @@ const getArticleJsonLD = async (data: Data, article: Article) => {
     author: {
       '@type': 'Person',
       name: data.profile.basics.name,
-      url: data.profile.basics.url,
-    },
-  };
-  return jsonld;
-};
+      url: data.profile.basics.url
+    }
+  }
+  return jsonld
+}
 
 const getJsonLDResume = async (data: Data) => {
-  const work = await data.work.find();
-  const currentWork = work.find((w) => !w.data.endDate);
-  const otherWork = work.filter((w) => w !== currentWork);
+  const work = await data.work.find()
+  const currentWork = work.find((w) => !w.data.endDate)
+  const otherWork = work.filter((w) => w !== currentWork)
 
   const jsonld = {
     '@context': 'https://schema.org',
@@ -47,24 +47,24 @@ const getJsonLDResume = async (data: Data) => {
       '@type': 'ContactPoint',
       contactType: profile.network.toLowerCase(),
       identifier: profile.username,
-      url: profile.url,
+      url: profile.url
     })),
     address: {
       '@type': 'PostalAddress',
       addressLocality: data.profile.basics.location.city,
       addressRegion: data.profile.basics.location.region,
-      addressCountry: data.profile.basics.location.countryCode,
+      addressCountry: data.profile.basics.location.countryCode
     },
     sameAs: data.profile.basics.profiles.map((profile) => profile.url),
     hasOccupation: currentWork && {
       '@type': 'EmployeeRole',
       roleName: currentWork.data.position,
-      startDate: currentWork.data.startDate.toISOString(),
+      startDate: currentWork.data.startDate.toISOString()
     },
     worksFor: currentWork && {
       '@type': 'Organization',
       name: currentWork?.data.name,
-      sameAs: currentWork?.data.url,
+      sameAs: currentWork?.data.url
     },
     alumniOf: otherWork.map((w) => ({
       '@type': 'Organization',
@@ -76,14 +76,14 @@ const getJsonLDResume = async (data: Data) => {
           '@type': 'EmployeeRole',
           roleName: w.data.position,
           startDate: w.data.startDate.toISOString(),
-          endDate: w.data.endDate?.toISOString(),
+          endDate: w.data.endDate?.toISOString()
         },
-        sameAs: '#me',
-      },
-    })),
-  };
+        sameAs: '#me'
+      }
+    }))
+  }
 
-  return jsonld;
-};
+  return jsonld
+}
 
-export { getJsonResume, getJsonLDResume, getArticleJsonLD };
+export { getJsonResume, getJsonLDResume, getArticleJsonLD }

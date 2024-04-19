@@ -1,17 +1,17 @@
 ---
-import { Picture } from 'astro:assets';
+import { Picture } from 'astro:assets'
 
-import { type Article, data } from '@/data/data.js';
-import { getArticleJsonLD } from '@/data/data.utils';
+import { type Article, data } from '@/data/data.js'
+import { getArticleJsonLD } from '@/data/data.utils'
 
-import Html from '../html/html.astro';
+import Html from '../html/html.astro'
 
 type Props = {
-  article: Article;
-};
-const { props } = Astro;
-const { article } = props;
-const { Content } = await article.render();
+  article: Article
+}
+const { props } = Astro
+const { article } = props
+const { Content } = await article.render()
 ---
 
 <Html
@@ -24,22 +24,22 @@ const { Content } = await article.render();
       <h1>
         {article.data.title.split(' ').map((word) => <span>{word}</span>)}
       </h1>
-      <a href="/"><h2>By {data.profile.basics.name}</h2></a>
+      <a href='/'><h2>By {data.profile.basics.name}</h2></a>
     </header>
     <Picture
-      loading="eager"
-      class="img"
+      loading='eager'
+      class='img'
       src={article.data.heroImage}
       widths={[320, 640, 1024, 1400]}
       formats={['avif', 'webp', 'png']}
-      alt="Cover image"
+      alt='Cover image'
     />
-    <div class="content">
+    <div class='content'>
       <Content />
     </div>
   </article>
 </Html>
-<style lang="less">
+<style lang='less'>
   article {
     --left-padding: 100px;
     display: grid;
