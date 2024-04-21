@@ -2,8 +2,9 @@ import { defineConfig } from 'astro/config'
 import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
 import icon from 'astro-icon'
-import compress from 'astro-compress'
 import robotsTxt from 'astro-robots-txt'
+import compress from '@playform/compress'
+
 const getSiteInfo = () => {
   const siteUrl = process.env.SITE_URL
   if (!siteUrl) {

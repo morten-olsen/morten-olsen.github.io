@@ -1,4 +1,5 @@
 ---
+import { Picture } from 'astro:assets'
 import Time from '@/components/time/absolute.astro'
 import { data } from '@/data/data.js'
 import { formatYearMonth } from '@/utils/time.js'
@@ -28,8 +29,19 @@ const work = allWork.sort((a, b) => {
             <Time format={formatYearMonth} datetime={item.data.startDate} />
           </div>
           <div class='content'>
-            <h3>{item.data.position}</h3>
-            <h4>@ {item.data.name}</h4>
+            <div class='header'>
+              {item.data.logo && (
+                <Picture
+                  class='logo'
+                  src={item.data.logo}
+                  alt={item.data.name}
+                />
+              )}
+              <div class='info'>
+                <h3>{item.data.position}</h3>
+                <h4>{item.data.name}</h4>
+              </div>
+            </div>
             <p>{item.data.summary}</p>
           </div>
         </div>
@@ -43,6 +55,31 @@ const work = allWork.sort((a, b) => {
   h2 {
     font-size: var(--font-xl);
     margin-bottom: var(--space-lg);
+  }
+
+  h3 {
+    font-weight: 400;
+  }
+
+  h4 {
+    font-size: var(--font-lg);
+    margin: 0;
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+  }
+
+  .logo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin: 0 auto;
+    display: block;
+    object-fit: cover;
+    object-position: center;
   }
 
   .list {
@@ -76,5 +113,8 @@ const work = allWork.sort((a, b) => {
     border: 0.6px solid var(--color-border);
     padding: var(--space-md);
     border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
   }
 </style>

@@ -1,3 +1,4 @@
+/.pnpm-store/
 # build output
 dist/
 # generated types
