@@ -1,45 +1,45 @@
 import { defineCollection, z } from 'astro:content'
+import { glob } from 'astro/loaders'
+import { resolve } from 'path'
+
+const base = import.meta.dirname
 
 const articles = defineCollection({
+  loader: glob({ pattern: '*/index.mdx', base: resolve(base, 'articles') }),
   schema: ({ image }) =>
     z.object({
+      slug: z.string(),
       title: z.string(),
       description: z.string(),
       color: z.string(),
       pubDate: z.coerce.date(),
       updatedDate: z.coerce.date().optional(),
       tags: z.array(z.string()).optional(),
-      heroImage: image().refine((img) => img.width >= 320, {
-        message: 'Cover image must be at least 1080 pixels wide!'
-      })
+      heroImage: image()
     })
 })
 
 const work = defineCollection({
+  loader: glob({ pattern: '*.mdx', base: resolve(base, 'work') }),
   schema: ({ image }) =>
     z.object({
+      slug: z.string(),
       name: z.string(),
       position: z.string(),
       startDate: z.coerce.date(),
       endDate: z.coerce.date().optional(),
       summary: z.string().optional(),
       url: z.string().optional(),
-      logo: image()
-        .refine((img) => img.width >= 200, {
-          message: 'Logo must be at least 320 pixels wide!'
-        })
-        .optional(),
-      banner: image()
-        .refine((img) => img.height >= 50, {
-          message: 'Logo must be at least 320 pixels wide!'
-        })
-        .optional()
+      logo: image().optional(),
+      banner: image().optional()
     })
 })
 
 const references = defineCollection({
+  loader: glob({ pattern: '*.mdx', base: resolve(base, 'references') }),
   schema: () =>
     z.object({
+      slug: z.string(),
       name: z.string(),
       position: z.string(),
       company: z.string(),
@@ -50,8 +50,10 @@ const references = defineCollection({
 })
 
 const skills = defineCollection({
+  loader: glob({ pattern: '*.mdx', base: './src/content/skills' }),
   schema: () =>
     z.object({
+      slug: z.string(),
       name: z.string(),
       technologies: z.array(z.string())
     })

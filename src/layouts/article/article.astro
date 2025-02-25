@@ -1,5 +1,6 @@
 ---
 import { Picture } from 'astro:assets'
+import { render } from 'astro:content';
 
 import { type Article, data } from '@/data/data.js'
 import { getArticleJsonLD } from '@/data/data.utils'
@@ -11,7 +12,8 @@ type Props = {
 }
 const { props } = Astro
 const { article } = props
-const { Content } = await article.render()
+const { Content } = await render(article);
+console.log('foo', Content)
 ---
 
 <Html

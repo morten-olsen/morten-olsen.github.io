@@ -1,4 +1,5 @@
 ---
+import { render } from 'astro:content';
 import Time from '@/components/time/absolute.astro'
 import type { WorkItem } from '@/data/data.js'
 import { formatYearMonth } from '@/utils/time.js'
@@ -8,7 +9,7 @@ type Props = {
 }
 
 const { item } = Astro.props
-const { Content } = await item.render()
+const { Content } = await render(item)
 ---
 
 <div class='item'>

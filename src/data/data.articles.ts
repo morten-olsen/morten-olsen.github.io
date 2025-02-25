@@ -4,7 +4,7 @@ class Articles {
   public find = () => getCollection('articles')
   public get = async (slug: string) => {
     const collection = await this.find()
-    return collection.find((entry) => entry.slug === slug)
+    return collection.find((entry) => entry.data.slug === slug)
   }
 }
 

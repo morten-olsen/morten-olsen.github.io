@@ -9,7 +9,7 @@ type Props = {
 export const getStaticPaths = async () => {
   const articles = await data.articles.find()
   return articles.map((article) => ({
-    params: { slug: article.slug },
+    params: { slug: article.data.slug },
     props: { article }
   }))
 }

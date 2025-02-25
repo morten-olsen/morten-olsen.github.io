@@ -12,7 +12,7 @@ type Props = {
 const { article: item } = Astro.props
 ---
 
-<a href={`/articles/${item.slug}`}>
+<a href={`/articles/${item.data.slug}`}>
   <article>
     <Picture
       class='thumb'
