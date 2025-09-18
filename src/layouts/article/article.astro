@@ -1,6 +1,6 @@
 ---
 import { Picture } from 'astro:assets'
-import { render } from 'astro:content';
+import { render } from 'astro:content'
 
 import { type Article, data } from '@/data/data.js'
 import { getArticleJsonLD } from '@/data/data.utils'
@@ -12,7 +12,7 @@ type Props = {
 }
 const { props } = Astro
 const { article } = props
-const { Content } = await render(article);
+const { Content } = await render(article)
 console.log('foo', Content)
 ---
 
@@ -26,6 +26,11 @@ console.log('foo', Content)
       <h1>
         {article.data.title.split(' ').map((word) => <span>{word}</span>)}
       </h1>
+      {
+        article.data.subtitle && (
+          <div class='subtitle'>{article.data.subtitle}</div>
+        )
+      }
       <a href='/'><h2>By {data.profile.basics.name}</h2></a>
     </header>
     <Picture
@@ -45,10 +50,10 @@ console.log('foo', Content)
   article {
     --left-padding: 100px;
     display: grid;
-    letter-spacing: 0.08rem;
+    letter-spacing: 0.05rem;
     font-size: 1rem;
-    line-height: 2.1rem;
-    grid-template-columns: 1fr calc(50ch + var(--left-padding)) 2fr;
+    line-height: 1.3rem;
+    grid-template-columns: 1fr calc(60ch + var(--left-padding)) 2fr;
     grid-template-rows: auto;
     grid-template-areas:
       '. title cover'
@@ -73,10 +78,18 @@ console.log('foo', Content)
 
   header {
     grid-area: title;
-    height: 80vh;
+    min-height: 80vh;
     display: flex;
     justify-content: center;
     flex-direction: column;
+
+    .subtitle {
+      font-size: 1rem;
+      line-height: 2rem;
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+      text-transform: uppercase;
+    }
   }
 
   h2 {
@@ -86,6 +99,10 @@ console.log('foo', Content)
     text-transform: uppercase;
     margin-top: var(--space-md);
     color: #000;
+  }
+
+  h3 {
+    font-size: 1.1rem;
   }
 
   h1 {
@@ -118,7 +135,8 @@ console.log('foo', Content)
 
     :global(p) {
       text-align: justify;
-      margin-bottom: var(--space-lg);
+      margin-bottom: var(--space-md);
+      line-height: 1.5rem;
     }
 
     :global(p):first-of-type {
@@ -130,6 +148,53 @@ console.log('foo', Content)
         margin-right: 1rem;
         line-height: 1;
       }
+    }
+
+    :global(h2) {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: var(--space-lg);
+      padding-top: var(--space-lg);
+      text-transform: uppercase;
+
+      &:first-letter {
+        background: #000;
+        color: #fff;
+        padding: 0 5px;
+        letter-spacing: -0.2rem;
+      }
+    }
+
+    :global(h3) {
+      font-size: 1rem;
+      text-transform: uppercase;
+      font-weight: 900;
+      margin-bottom: 1rem;
+
+      &:first-letter {
+        font-size: 1.2rem;
+      }
+    }
+
+    :global(strong) {
+      background: #000;
+      padding: 0 5px;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    :global(em) {
+      font-style: italic;
+    }
+
+    :global(li) {
+      list-style-type: circle;
+      margin-left: 2rem;
+      padding-bottom: var(--space-md);
+    }
+
+    :global(code) {
+      font-family: monospace;
     }
   }
 

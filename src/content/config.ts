@@ -10,6 +10,7 @@ const articles = defineCollection({
     z.object({
       slug: z.string(),
       title: z.string(),
+      subtitle: z.string().optional(),
       description: z.string(),
       color: z.string(),
       pubDate: z.coerce.date(),

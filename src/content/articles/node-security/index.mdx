@@ -1,0 +1,199 @@
+---
+title: Your npm dependencies are plotting against you
+subtitle: ...and other cheerful thoughts about JS supply-chain risks
+pubDate: 2025-09-19
+color: '#e80ccf'
+description: ''
+heroImage: ./assets/cover.png
+slug: node-security
+---
+
+
+_Audience note: This is for developers and DevOps folks who build JS services and haven’t spent their weekends threat-modeling install hooks for fun. Me neither (... well maybe sometimes). I’m not a security pro; this post is opinionated guidance to build intuition—not a substitute for a security professional or a comprehensive secure SDLC program._
+
+Our industry runs on packages published by strangers on the internet at 2 a.m. from a coffee shop Wi‑Fi. That’s charming and also quite terrifying. Attackers know this. Compromise of a single npm package or maintainer account can reach developers, CI/CD, servers, and even end users—without touching your codebase.
+
+## The common targets of an npm based supply chain attack
+
+### The developer workstation
+
+**Why attackers love it:** It’s an all-you-can-eat buffet of secrets—SSH keys, cloud creds from CLIs, personal access tokens, Git config, npm tokens, Slack/1Password sessions, and your .env files.
+
+**How it gets hit:** npm install scripts and dev-time tooling run with your privileges. A malicious package can scrape env vars, local files, git remotes, or your shell history—then exfiltrate.
+
+### The CI/CD pipeline
+
+**Why attackers love it:** It often has the power to ship to prod. Think deployment keys, cloud credentials, container registry tokens, signing keys, and sometimes global admin perms. Sometimes these are broadly available across pipelines and forks.
+
+**How it gets hit:** Same install-time and run-time execution during builds/tests; pipelines frequently run “npm install && npm test” on code from pull requests. If secrets are exposed to untrusted PR jobs, game over.
+
+### The application server
+**Why attackers love it:** Direct lines to databases, queues, internal APIs, and service meshes. Servers often have longer-lived credentials and generous network access. Also a good way to get a foot in the door for further network pivoring.
+
+**How it gets hit:** Runtime attacks via the backend dependency graph—if an imported library goes rogue, it executes with server privileges and can read env vars, connect to internal services, or tamper with logs and telemetry.
+
+### The end user
+
+**Why attackers love it:** That’s where the money (and data) is. Injected frontend code can skim credentials and wallets, hijack sessions, or quietly mine crypto in the background.
+
+**How it gets hit:** Dependency-based injection of malicious JS into your build artifacts or CDN. The browser happily runs whatever you ship.
+
+## How do they get in? Three common attack mechanics
+
+### Install-time attacks (dev and CI/CD)
+
+**What it is:** Abuse of npm lifecycle scripts (preinstall, install, postinstall, prepare) or native binary install hooks. When you run npm install, these scripts execute on the host.
+
+**What it can do:** Read env vars and files, steal tokens from known locations, run network calls to exfiltrate secrets, modify the project (or lockfile), or plant persistence for later runs.
+
+**Why it works:** Install scripts are normal for legitimate packages (building native modules, generating code). The line between “helpful build step” and “exfil script” can be a single curl.
+
+### Runtime attacks (dev, CI, and servers)
+
+**What it is:** Malicious code that executes when your app imports the package, during initialization, or at a hot code path in production. Could be time-bombed, user-conditional, or input-triggered.
+
+**What it can do:** Log scraping, credential harvesting, data exfiltration, lateral movement inside the VPC, monkey-patching core modules, or sabotaging output only under certain conditions (e.g., cloud provider metadata present).
+
+**Why it works:** Transitive dependencies load automatically; tree-shaking doesn’t save you if the malicious path is executed; tests run your code too.
+
+### Injection into shipped artifacts (end users)
+
+**What it is:** Malicious code added to your build pipeline or artifacts that reach the browser. Could be a compromised package, a tampered CDN asset, or a poisoned build step.
+
+**What it can do:** Inject script tags, skim forms or wallet interactions, steal JWTs, or swap API endpoints. The browser happily executes whatever came out of your build.
+
+**Why it works:** Frontend bundles are opaque blobs; source maps and integrity checks aren’t always enforced; many teams rely on third-party scripts or dynamic imports.
+
+## How attackers get that malicious code into your graph (the “entry points”)
+
+- Maintainer account takeover: Password reuse, phishing, token theft, or MFA fatigue on a real maintainer’s npm/GitHub accounts.
+- Typosquatting and lookalikes: left-pad → leftpad, lodash-core vs lodashcore, etc.
+- Dependency confusion: Publishing a higher version of an internal package name to the public registry so your tooling prefers the public one.
+- Compromised build of a legitimate package: Malicious code only in the distributed tarball, not the GitHub source.
+- Hijacked release infrastructure: Malicious CI secrets or release scripts in upstream projects.
+- Social engineering: “Helpful” PRs that introduce a dependency or tweak scripts.
+
+## Mitigation: Making Your npm Supply Chain a Little More Boring (in a Good Way)
+
+Goal: shrink the blast radius across the four targets (developer, CI/CD, servers, end users) and the three attack mechanics (install-time, runtime, injection). None of this replaces a real secure SDLC or a security professional—but it will dramatically raise the bar.
+
+### 1. Pin Your Dependency Graph and Make Installs Reproducible
+
+-   **What to do:**
+    -   Commit your lockfile. Always install with a lockfile-enforcing mode:
+        -   `npm`: `npm ci`
+        -   `pnpm`: `pnpm install --frozen-lockfile`
+        -   `yarn` (Berry): `yarn install --immutable`
+    -   Enable Corepack and declare the package manager/version in `package.json` to prevent lockfile confusion and mismatched security settings across machines and CI.
+        -   Run `corepack enable`
+        -   Add `"packageManager": "pnpm@x.y.z"` (or `npm`/`yarn`) to `package.json`.
+-   **Why it helps:** Prevents surprise version drifts, enables static analysis of exactly-what’s-installed, and keeps “oops we pulled the bad minor release” from happening mid-build.
+
+### 2. Tame Lifecycle Scripts (Install-Time Attack Surface)
+
+-   **What to do:**
+    -   **Default to no install scripts, then allow only what’s required:**
+        -   **`pnpm`:** Use `onlyBuiltDependencies` in `.npmrc` to whitelist packages that may run install scripts (great for native modules). You can also set `ignore-scripts=true` when you know nothing should run.
+        -   **`npm`/`yarn`:** Disable scripts by default (`npm config set ignore-scripts true` or `yarn config set enableScripts false`), then run needed scripts explicitly for approved packages (e.g., `npm rebuild <pkg>`).
+        -   For npm/yarn whitelisting at scale, use a maintained helper like LavaMoat’s `allow-scripts` (`npx @lavamoat/allow-scripts`) to manage an explicit allow-list.
+    -   Treat `prepare` scripts as “runs on dev boxes and CI” code—only allow for packages you trust to execute on your machines.
+-   **Why it helps:** Install hooks are a primary path to dev and CI credential theft. A deny-by-default stance turns “one malicious `preinstall`” into “no-op unless allowlisted.”
+
+### 3. Don’t Update Instantly Unless It’s a Security Fix
+
+-   **What to do:**
+    -   **Delay non-security updates** to let the ecosystem notice regressions or malicious releases:
+        -   **`pnpm`:** Set `minimumReleaseAge` in `pnpm-workspace.yaml` or `.npmrc` (e.g., `10080` for 7 days).
+        -   **Renovate:** Use `stabilityDays` to hold PRs until a package has “aged.”
+        -   If you prefer manual updates, tools like `taze` can help you batch and filter upgrades.
+    -   **Exception:** apply security patches immediately (Dependabot/Renovate security PRs).
+-   **Why it helps:** Many supply-chain incidents are discovered within a few days. A short delay catches a lot of fallout without leaving you perpetually stale.
+
+### 4. Continuous Dependency Monitoring
+
+-   **What to do:**
+    -   Enable GitHub Dependabot alerts and (optionally) security updates.
+    -   Consider a second source like Snyk, Trivy or Socket.dev for malicious-pattern detection beyond CVEs.
+    -   Make `audit` part of CI (`npm audit`, `pnpm audit`, `yarn dlx npm-check-updates + advisories`) but treat results as signals, not gospel.
+-   **Why it helps:** Quick detection matters; you can roll back or block promotion if an alert fires.
+
+### 5. Secrets: Inject, Scope, and Make Them Short-Lived
+
+-   **What to do:**
+    -   **Prefer runtime secret injection over files on disk.** Examples:
+        -   1Password: `op run -- <your command>` (https://developer.1password.com/docs/cli/reference/commands/run/)
+        -   with-ssm: `with-ssm -- <your command>` (https://github.com/morten-olsen/with-ssm, disclaimer; made by me)
+    -   Separate secrets available at install vs runtime. Most builds don’t need prod creds—don’t make them available.
+    -   In CI, use OIDC federation to clouds (e.g., GitHub Actions → AWS/GCP/Azure) for short-lived tokens instead of static long-lived keys.
+    -   Never expose prod secrets to PRs from forks. Use GitHub environments with required reviewers and “secrets only on protected branches.”
+-   **Why it helps:** Even if an attacker runs code, they only get ephemeral, least-privilege creds for that one task—not the keys to the kingdom.
+
+### 6. SSH Keys: Hardware-Backed or at Least in a Secure Agent
+
+-   **What to do:**
+    -   Prefer a hardware token (YubiKey) for SSH and code signing.
+    -   Or use a secure agent: [1Password SSH Agent](https://developer.1password.com/docs/ssh/agent/) or [KeePassXC’s SSH agent support](https://keepassxc.org/docs/#faq-ssh-agent-keys).
+    -   Limit key usage to specific hosts, require touch/approval, and avoid storing private keys unencrypted on disk.
+-   **Why it helps:** Reduces credential theft on dev boxes and narrows lateral movement if a machine is compromised.
+
+### 7. Contain Installs and Runs (Local and CI)
+
+-   **What to do:**
+    -   Use containers or ephemeral VMs for dependency installs, builds, and tests.
+    -   Run as a non-root user; prefer read-only filesystems and `tmpfs` for caches.
+    -   Don’t mount your whole home directory into the container; mount only what’s needed.
+    -   **Consider egress restrictions during install/build:**
+        -   Fetch packages from an internal registry proxy (Artifactory, Nexus, Verdaccio), then block direct outbound network calls from lifecycle scripts.
+    -   Cache packages safely (content-addressed, read-only) to reduce repeated network trust.
+-   **Why it helps:** Install-time and runtime code sees a minimal, temporary filesystem and limited network—greatly shrinking what it can steal or persist.
+
+### 8. GitHub Org/Repo Hygiene for Secrets and Deployments
+
+-   **What to do:**
+    -   Avoid org-wide prod secrets. Prefer per-environment secrets bound to protected branches/environments with required reviewers.
+    -   Use least-privilege `GITHUB_TOKEN` permissions and avoid over-scoped classic PATs.
+    -   Lock down workflows: avoid `pull_request_target` unless you’re very sure; keep untrusted PRs in isolated jobs with no secrets.
+    -   Gate deployments (manual approvals, environment protections) and use separate credentials for staging vs prod.
+    -   Consider policy-as-code for repo baselines. 
+    -   Handling environment secrets and repo compliance at scale is currently hard to do on GitHub. I am working on a sideproject [git-law](https://github.com/morten-olsen/git-law), but it is not ready for primetime yet. If you know another alternative, please reach out.
+-   **Why it helps:** Prevents a single compromised developer or workflow from reaching prod with god-mode credentials.
+
+### 9. Frontend Integrity and User Protection
+
+-   **What to do:**
+    -   Bundle and self-host third-party scripts when possible. If you must load from a CDN, use Subresource Integrity (`integrity=...`) and pin exact versions.
+    -   Set a strict Content Security Policy with nonces/hashes and disallow `inline`/`eval`. Consider Trusted Types for DOM-sink safety.
+    -   Don’t expose secrets to the browser you wouldn’t post on a billboard. Assume any injected JS can read what the page can.
+-   **Why it helps:** Raises the difficulty of injecting, swapping, or skimming scripts in your end users’ browsers.
+
+### 10. Server-Side Guardrails for Runtime Attacks
+
+-   **What to do:**
+    -   Principle of least privilege for app IAM: narrow roles, scoped database users, and service-to-service auth.
+    -   Egress controls and allowlists from app containers to the internet. Alert on unusual destinations.
+    -   Consider Node’s [permission model](https://nodejs.org/api/permissions.html) (Node 20+/22, still evolving): run with flags that restrict `fs`/`net`/`process` access to what the app needs.
+    -   Centralized logging with egress detection for secrets in logs; treat unexpected DNS/HTTP calls as suspicious.
+-   **Why it helps:** Even if a dependency misbehaves at runtime, it can’t freely scrape the filesystem or exfiltrate to arbitrary endpoints.
+
+### 11. Publish and Consume with Provenance (When You Can)
+
+-   **What to do:**
+    -   If you publish packages, use `npm publish --provenance` from CI with signing to attach attestations.
+    -   Prefer dependencies that provide provenance and verifiable builds where possible.
+-   **Why it helps:** Makes “tarball differs from source” and tampered release pipelines easier to detect.
+
+---
+
+### Quick-Start Recipe (Copy/Paste Friendly)
+
+-   **`corepack enable`**, and set `"packageManager"` in `package.json`.
+-   **Enforce lockfiles in CI**: `npm ci` / `pnpm install --frozen-lockfile` / `yarn install --immutable`.
+-   **Default-disable lifecycle scripts**; whitelist only required ones (`pnpm onlyBuiltDependencies` or LavaMoat `allow-scripts`).
+-   **Use `minimumReleaseAge`** (`pnpm`) or Renovate `stabilityDays`; fast-track only security fixes.
+-   **Turn on Dependabot alerts**; add a second scanner for defense in depth.
+-   **Inject secrets at runtime** (`op run --` / `with-ssm --`) and use cloud OIDC in CI.
+-   **Containerize installs/builds**, run as non-root, restrict egress, and use an internal registry proxy.
+-   **Lock down GitHub environments**; no org-wide prod secrets; restrict secrets from forked PRs.
+-   **Add CSP + SRI for frontend**; bundle third-party JS.
+-   **Tighten server IAM, egress, and metadata access**; consider Node permission flags.
+
