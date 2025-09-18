@@ -68,7 +68,7 @@ Our industry runs on packages published by strangers on the internet at 2 a.m. f
 
 - Maintainer account takeover: Password reuse, phishing, token theft, or MFA fatigue on a real maintainer’s npm/GitHub accounts.
 - Typosquatting and lookalikes: left-pad → leftpad, lodash-core vs lodashcore, etc.
-- Dependency confusion: Publishing a higher version of an internal package name to the public registry so your tooling prefers the public one.
+- Dependency confusion: Publish a package to the public npm repository with the same name as an internal package for instance `@your-company/important-stuff` - if you install the package without a correct scope configuration you will get the malicius version.
 - Compromised build of a legitimate package: Malicious code only in the distributed tarball, not the GitHub source.
 - Hijacked release infrastructure: Malicious CI secrets or release scripts in upstream projects.
 - Social engineering: “Helpful” PRs that introduce a dependency or tweak scripts.
@@ -197,3 +197,6 @@ Goal: shrink the blast radius across the four targets (developer, CI/CD, servers
 -   **Add CSP + SRI for frontend**; bundle third-party JS.
 -   **Tighten server IAM, egress, and metadata access**; consider Node permission flags.
 
+## Final thoughts
+
+This journey through the precarious landscape of npm supply-chain security might seem daunting, but remember: the goal isn't perfect impossibility of attack. Instead, by implementing these strategies, you're building a more resilient, defensible system. Each step, from pinning dependencies to taming lifecycle scripts and securing secrets, adds another layer of protection, making your npm supply chain less of a wild frontier and more of a well-guarded stronghold. Stay vigilant, stay updated, and keep building securely!
