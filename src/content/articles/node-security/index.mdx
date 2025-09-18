@@ -96,7 +96,7 @@ Goal: shrink the blast radius across the four targets (developer, CI/CD, servers
     -   **Default to no install scripts, then allow only what’s required:**
         -   **`pnpm`:** Use [`onlyBuiltDependencies`](https://pnpm.io/settings#onlybuiltdependencies) in `pnpm-workspace.yaml`/.npmrc` to whitelist packages that may run install scripts (great for native modules). You can also set [`strictDepBuilds`](https://pnpm.io/settings#strictdepbuilds) which makes the build fail if it has unreviewed install scripts.
         -   **`npm`/`yarn`:** Disable scripts by default (`npm config set ignore-scripts true` or `yarn config set enableScripts false`), then run needed scripts explicitly for approved packages (e.g., `npm rebuild <pkg>`).
-        -   For npm/yarn whitelisting at scale, use a maintained helper like [LavaMoat’s `allow-scripts`](https://www.npmjs.com/package/@lavamoat/allow-scripts) (`npx @lavamoat/allow-scripts`) to manage an explicit allow-list.
+        -   For npm/yarn whitelisting at scale, use a maintained helper like LavaMoat’s [`allow-scripts`](https://www.npmjs.com/package/@lavamoat/allow-scripts) (`npx @lavamoat/allow-scripts`) to manage an explicit allow-list.
     -   Treat `prepare` scripts as “runs on dev boxes and CI” code—only allow for packages you trust to execute on your machines.
 -   **Why it helps:** Install hooks are a primary path to dev and CI credential theft. A deny-by-default stance turns “one malicious `preinstall`” into “no-op unless allowlisted.”
 
@@ -123,9 +123,9 @@ Goal: shrink the blast radius across the four targets (developer, CI/CD, servers
 -   **What to do:**
     -   **Prefer runtime secret injection over files on disk.** Examples:
         -   [1Password: `op run -- <your command>`](https://developer.1password.com/docs/cli/reference/commands/run/)
-        -   [with-ssm: `with-ssm -- <your command>`](https://github.com/morten-olsen/with-ssm, disclaimer; made by me)
+        -   [with-ssm: `with-ssm -- <your command>`](https://github.com/morten-olsen/with-ssm), disclaimer; made by me)
     -   Separate secrets available at install vs runtime. Most builds don’t need prod creds—don’t make them available.
-    -   [In CI, use OIDC federation to clouds (e.g., GitHub Actions → AWS/GCP/Azure) for short-lived tokens instead of static long-lived keys. ([AWS](https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-aws))
+    -   In CI, use OIDC federation to clouds (e.g., GitHub Actions → AWS/GCP/Azure) for short-lived tokens instead of static long-lived keys. ([AWS](https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-aws))
     -   Never expose prod secrets to PRs from forks. Use GitHub environments with required reviewers and “secrets only on protected branches.”
 -   **Why it helps:** Even if an attacker runs code, they only get ephemeral, least-privilege creds for that one task—not the keys to the kingdom.
 
@@ -172,7 +172,7 @@ Goal: shrink the blast radius across the four targets (developer, CI/CD, servers
 -   **What to do:**
     -   Principle of least privilege for app IAM: narrow roles, scoped database users, and service-to-service auth.
     -   Egress controls and allowlists from app containers to the internet. Alert on unusual destinations.
-    -   Consider Node’s [permission model](https://nodejs.org/api/permissions.html) (Node 20+/22, still evolving): run with flags that restrict `fs`/`net`/`process` access to what the app needs.
+    -   Consider Node’s [permission model](https://nodejs.org/api/permissions.html): run with flags that restrict `fs`/`net`/`process` access to what the app needs.
     -   Centralized logging with egress detection for secrets in logs; treat unexpected DNS/HTTP calls as suspicious.
 -   **Why it helps:** Even if a dependency misbehaves at runtime, it can’t freely scrape the filesystem or exfiltrate to arbitrary endpoints.
 
