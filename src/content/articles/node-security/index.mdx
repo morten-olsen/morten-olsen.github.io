@@ -104,7 +104,7 @@ Goal: shrink the blast radius across the four targets (developer, CI/CD, servers
 
 -   **What to do:**
     -   **Delay non-security updates** to let the ecosystem notice regressions or malicious releases:
-        -   **`pnpm`:** Set [`minimumReleaseAge`](https://pnpm.io/settings#minimumreleaseage) in `pnpm-workspace.yaml` or `.npmrc` (e.g., `10080` for 7 days).
+        -   **`pnpm (>=10.16.0)`:** Set [`minimumReleaseAge`](https://pnpm.io/settings#minimumreleaseage) in `pnpm-workspace.yaml` or `.npmrc` (e.g., `10080` for 7 days).
         -   **Renovate:** Use [`minimumReleaseAge`](https://docs.renovatebot.com/configuration-options/#minimumreleaseage) to hold PRs until a package has “aged.”
         -   If you prefer manual updates, tools like [`taze`](https://www.npmjs.com/package/taze) can help you batch and filter upgrades.
     -   **Exception:** apply security patches immediately (Dependabot/Renovate security PRs).
