@@ -1,6 +1,7 @@
+import type { Article, Data } from './data'
+
 import type { ResumeSchema } from '@/types/resume-schema.js'
 
-import type { Article, Data } from './data'
 
 const getJsonResume = async (data: Data) => {
   const profile = data.profile

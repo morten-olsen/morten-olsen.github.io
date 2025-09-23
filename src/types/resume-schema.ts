@@ -3,7 +3,7 @@
  */
 export type Iso8601 = string
 
-export interface ResumeSchema {
+export type ResumeSchema = {
   /**
    * link to the version of the schema that can validate the resume
    */

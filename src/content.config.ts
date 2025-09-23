@@ -1,8 +1,9 @@
-import { defineCollection, z } from 'astro:content'
-import { glob } from 'astro/loaders'
-import { resolve } from 'path'
+import { resolve } from 'path';
 
-const base = import.meta.dirname
+import { defineCollection, z } from 'astro:content';
+import { glob } from 'astro/loaders';
+
+const base = 'content';
 
 const articles = defineCollection({
   loader: glob({ pattern: '*/index.mdx', base: resolve(base, 'articles') }),
@@ -16,12 +17,12 @@ const articles = defineCollection({
       pubDate: z.coerce.date(),
       updatedDate: z.coerce.date().optional(),
       tags: z.array(z.string()).optional(),
-      heroImage: image()
-    })
-})
+      heroImage: image(),
+    }),
+});
 
 const work = defineCollection({
-  loader: glob({ pattern: '*.mdx', base: resolve(base, 'work') }),
+  loader: glob({ pattern: '**/*.mdx', base: resolve(base, 'work') }),
   schema: ({ image }) =>
     z.object({
       slug: z.string(),
@@ -32,12 +33,12 @@ const work = defineCollection({
       summary: z.string().optional(),
       url: z.string().optional(),
       logo: image().optional(),
-      banner: image().optional()
-    })
-})
+      banner: image().optional(),
+    }),
+});
 
 const references = defineCollection({
-  loader: glob({ pattern: '*.mdx', base: resolve(base, 'references') }),
+  loader: glob({ pattern: '*.md', base: resolve(base, 'references') }),
   schema: () =>
     z.object({
       slug: z.string(),
@@ -46,18 +47,18 @@ const references = defineCollection({
       company: z.string(),
       date: z.coerce.date(),
       relation: z.string(),
-      profile: z.string()
-    })
-})
+      profile: z.string(),
+    }),
+});
 
 const skills = defineCollection({
-  loader: glob({ pattern: '*.mdx', base: './src/content/skills' }),
+  loader: glob({ pattern: '*.mdx', base: resolve(base, 'skills') }),
   schema: () =>
     z.object({
       slug: z.string(),
       name: z.string(),
-      technologies: z.array(z.string())
-    })
-})
+      technologies: z.array(z.string()),
+    }),
+});
 
-export const collections = { articles, work, references, skills }
+export const collections = { articles, work, references, skills };

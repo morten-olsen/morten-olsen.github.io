@@ -1,0 +1,89 @@
+---
+title: My day is being planned by an algorithm
+pubDate: 2022-05-06
+description: ''
+color: '#e7d9ac'
+heroImage: ./assets/cover.png
+slug: bob-the-algorithm
+---
+
+import { Image } from 'astro:assets'
+import TaskBounds from './assets/TaskBounds.png'
+import Frame1 from './assets/Frame1.png'
+import Graph1 from './assets/Graph1.png'
+import Graph2 from './assets/Graph2.png'
+
+Allow me to introduce Bob, an algorithm who has just accepted a role as my assistant.
+
+I'm not very good at planning my day, and the many apps out there that promise to help haven't solved the problem for me. This is usually due to three significant shortcomings:
+
+1.  Most day planner apps do what their paper counterparts would do: they record the plan you create. I don't want to make the plan; someone should do that for me.
+2.  They help you create a plan at the start of the day that you have to follow all day long. My days aren't that static, so my schedule needs to be able to change throughout the day.
+3.  They can't handle travel time between locations very well.
+
+To solve those issues, I decided that the piece of silicon in my pocket, capable of doing a million calculations a second, should be able to help me do something other than waste time doomscrolling. It should help me get more done throughout the day and free up more time for the things I want to do. That's why I created Bob.
+
+I also wanted a planning algorithm that wasn't solely for productivity. I didn't want to end up in the same situation as poor Kiki in the book *The Circle*, who is driven insane by a planning algorithm that tries to hyper-optimize her day. Bob also needs to plan for downtime.
+
+Bob is still pretty young and learning new things, but he has gotten to the point where I believe he is good enough to use on a day-to-day basis.
+
+<Image src={Frame1} alt='Frame1' />
+
+## How Bob Works
+
+Bob receives a list of tasks. Some are from my calendar (both my work and my personal one), some are from "routines" (which are daily tasks that I want to do most days, such as eating breakfast or picking up the kid), and some tasks come from "goals," which are a list of completable items. These tasks go into Bob, and he tries to create a plan for the next couple of days where I get everything done that I set out to do.
+
+Tasks have a bit more data than your standard calendar events to allow for good scheduling:
+
+  * An **earliest start time** and a **latest start time**. These define when the task can be added to the schedule.
+  * A list of locations where the task can be completed.
+  * A duration.
+  * If the task is required.
+  * A priority.
+
+<Image src={TaskBounds} alt='Task bounds' />
+
+Bob uses a graph walk to create the optimal plan, where each node contains a few different things:
+
+  * A list of remaining tasks.
+  * A list of tasks that are impossible to complete in the current plan.
+  * A score.
+  * The current location.
+  * The present time.
+
+Bob starts by figuring out which locations I can go to to complete the remaining tasks and then creates new leaf nodes for all of those transitions. Next, he figures out if some of the remaining tasks become impossible to complete and when I will arrive at the location, and he calculates a score for that node.
+
+He then gets a list of all the remaining tasks for the current node that can be completed at the current location, again figuring out when I would be done with the task, updating the list of impossible tasks, and scoring the node. If any node adds a required task to the impossible list, that node is considered dead, and Bob will not analyze it further.
+
+<Image src={Graph1} alt='Graph1' />
+
+Now we have a list of active leaves, and from that list, we find the node with the highest score and redo the process from above.
+
+<Image src={Graph2} alt='Graph2' />
+
+Bob has four different strategies for finding a plan:
+
+  * **First valid:** This finds the first plan that satisfies all constraints but may lead to non-required tasks getting removed, even though it would be possible to find a plan that included all tasks. This strategy is the fastest and least precise.
+  * **First complete:** This does the same as "First valid" but only exits early if it finds a plan that includes all tasks. This strategy will generally create pretty good plans but can contain excess travel. If it does not find any plans that contain all tasks, it will switch to the "All valid" strategy.
+  * **All valid:** This explores all paths until the path is either dead or completed. Then it finds the plan with the highest score. If there are no valid plans, it will switch to the "All" strategy.
+  * **All:** This explores all paths, even dead ones, and at the end returns the one with the highest score. This strategy allows a plan to be created even if it needs to remove some required tasks.
+
+Scoring is quite simple at the moment, but something I plan to expand on a lot. Currently, the score increases when a task is completed, and it decreases when a task becomes impossible. How much it increases or decreases is influenced by the task's priority and if the task is required. It also decreases based on minutes spent traveling.
+
+The leaf picked for analysis is the one with the highest score. This approach allows the two first strategies to create decent results, though they aren't guaranteed to be the best. It all comes down to how well the scoring variables are tweaked. Currently, they aren't, but at some point, I plan to create a training algorithm for Bob, which will create plans, score them through "All," and then try to tweak the variables to arrive at the correct one with as few nodes analyzed as possible when running the same plan through "First valid"/"First complete."
+
+This approach also allows me to calculate a plan with any start time, so I can re-plan later in the day if I can't follow the original plan or if things get added or removed. So this becomes a tool that helps me get the most out of my day without dictating it.
+
+Bob can also do multi-day planning. Here, he gets a list of tasks for the different days as he usually would and a "shared" list of goals. So he runs the same calculation, adding in the tasks for that day, along with the shared goal list, and everything remaining from the shared list then gets carried over to the next day. This process repeats for all the remaining days.
+
+I have created a proof-of-concept app that houses Bob. I can manage tasks, generate plans, and update my calendar with those plans in this app.
+
+There are also a few features that I want to add later. The most important one is an "asset" system. For instance, when calculating travel, it needs to know if I have brought the bike along because if I took public transit to work, it doesn't make sense to calculate a bike transition later in the day. This system would work by "assets" being tied to a task and location, and then when Bob creates plans, he knows to consider if the asset is there or not. Assets could also be tied to tasks, so one task may be to pick up something, and another is to drop it off. In those cases, assets would act as dependencies, so I have to have picked up the asset before being able to drop it off. The system is pretty simple to implement but causes the graph to grow a lot, so I need to do some optimizations before it makes sense to put it in.
+
+## Conclusion
+
+I have only been using Bob for a few days, but so far, he seems to create good plans and has helped me achieve more productive tasks. He has also scheduled downtime, such as reading, meditation, and playing on the console, ensuring I had time for that in the plan.
+
+There is still a lot of stuff that needs to be done, and I will slowly add features and fix the codebase over time.
+
+You can find the source for this algorithm and the app it lives in at [Github](https://github.com/morten-olsen/bob-the-algorithm), but beware, it is a proof of concept, so readability or maintainability hasn't been a goal.

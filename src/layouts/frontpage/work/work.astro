@@ -1,43 +1,35 @@
 ---
-import { Picture } from 'astro:assets'
-import Time from '@/components/time/absolute.astro'
-import { data } from '@/data/data.js'
-import { formatYearMonth } from '@/utils/time.js'
+import { Picture } from 'astro:assets';
+import Time from '@/components/time/absolute.astro';
+import { formatYearMonth } from '@/utils/time.js';
+import { getCollection } from 'astro:content';
 
 type Props = {
-  class?: string
-}
+  class?: string;
+};
 
-const { class: className, ...rest } = Astro.props
-const allWork = await data.work.find()
+const { class: className, ...rest } = Astro.props;
+const allWork = await getCollection('work');
 const work = allWork.sort((a, b) => {
-  return (
-    new Date(b.data.startDate).getTime() - new Date(a.data.startDate).getTime()
-  )
-})
+  return new Date(b.data.startDate).getTime() - new Date(a.data.startDate).getTime();
+});
 ---
 
 <div class:list={[className]} {...rest}>
   <h2>Work</h2>
-  <div class='list'>
+  <div class="list">
     {
       work.map((item) => (
-        <div class='item'>
-          <div class='time'>
+        <div class="item">
+          <div class="time">
             <Time format={formatYearMonth} datetime={item.data.endDate} />
             <br />
             <Time format={formatYearMonth} datetime={item.data.startDate} />
           </div>
-          <div class='content'>
-            <div class='header'>
-              {item.data.logo && (
-                <Picture
-                  class='logo'
-                  src={item.data.logo}
-                  alt={item.data.name}
-                />
-              )}
-              <div class='info'>
+          <div class="content">
+            <div class="header">
+              {item.data.logo && <Picture class="logo" src={item.data.logo} alt={item.data.name} />}
+              <div class="info">
                 <h3>{item.data.position}</h3>
                 <h4>{item.data.name}</h4>
               </div>
@@ -48,10 +40,10 @@ const work = allWork.sort((a, b) => {
       ))
     }
   </div>
-  <a href='/work-history'>See full work history</a>
+  <a href="/work-history">See full work history</a>
 </div>
 
-<style lang='less'>
+<style lang="less">
   h2 {
     font-size: var(--font-xl);
     margin-bottom: var(--space-lg);

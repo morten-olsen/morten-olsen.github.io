@@ -1,6 +1,7 @@
-import type { ResumeSchema } from '@/types/resume-schema.js'
-import { Content } from './description.md'
-import image from './profile.jpg'
+import { Content } from './description.md';
+import image from './profile.jpg';
+
+import type { ResumeSchema } from '@/types/resume-schema.js';
 
 const basics = {
   name: 'Morten Olsen',
@@ -11,38 +12,38 @@ const basics = {
   location: {
     city: 'Copenhagen',
     countryCode: 'DK',
-    region: 'Capital Region of Denmark'
+    region: 'Capital Region of Denmark',
   },
   profiles: [
     {
       network: 'GitHub',
       icon: 'mdi:github',
       username: 'morten-olsen',
-      url: 'https://github.com/morten-olsen'
+      url: 'https://github.com/morten-olsen',
     },
     {
       network: 'LinkedIn',
       icon: 'mdi:linkedin',
       username: 'mortenolsendk',
-      url: 'https://www.linkedin.com/in/mortenolsendk'
-    }
+      url: 'https://www.linkedin.com/in/mortenolsendk',
+    },
   ],
   languages: [
     {
       name: 'English',
-      fluency: 'Conversational'
+      fluency: 'Conversational',
     },
     {
       name: 'Danish',
-      fluency: 'Native speaker'
-    }
-  ]
-} satisfies ResumeSchema['basics']
+      fluency: 'Native speaker',
+    },
+  ],
+} satisfies ResumeSchema['basics'];
 
 const profile = {
   basics,
   image,
-  Content
-}
+  Content,
+};
 
-export { profile }
+export { profile };

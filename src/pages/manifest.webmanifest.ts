@@ -1,6 +1,7 @@
+import type { ManifestOptions } from 'vite-plugin-pwa'
+
 import { icons } from '@/assets/images/icons.js'
 import { data } from '@/data/data.js'
-import type { ManifestOptions } from 'vite-plugin-pwa'
 
 export async function GET() {
   const [maskableIcon] = icons.pngs.filter(

@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'url'
 import { resolve, dirname } from 'path'
 import { writeFile, mkdir } from 'fs/promises'
+
 import { compile } from 'json-schema-to-typescript'
 
 const root = fileURLToPath(new URL('..', import.meta.url))
