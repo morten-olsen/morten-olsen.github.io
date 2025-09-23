@@ -35,6 +35,13 @@ const work = allWork.sort((a, b) => {
               </div>
             </div>
             <p>{item.data.summary}</p>
+            {item.data.stack && (
+              <div class="stack">
+                {item.data.stack.map((item) => (
+                  <div>{item}</div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       ))
@@ -108,5 +115,20 @@ const work = allWork.sort((a, b) => {
     display: flex;
     flex-direction: column;
     gap: var(--space-md);
+  }
+
+  .stack {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+    font-size: var(--font-xs);
+
+    div {
+      margin-right: var(--space-xxs);
+      margin-bottom: var(--space-xxs);
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-border);
+    }
   }
 </style>

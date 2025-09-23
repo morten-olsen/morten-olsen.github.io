@@ -34,6 +34,7 @@ const work = defineCollection({
       url: z.string().optional(),
       logo: image().optional(),
       banner: image().optional(),
+      stack: z.array(z.string()).optional(),
     }),
 });
 
