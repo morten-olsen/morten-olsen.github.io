@@ -1,6 +1,6 @@
-import { data } from '@/data/data.ts'
+import { data } from "~/data/data"
 
 export async function GET() {
-  const resume = await data.getJsonResume()
+  const resume = await data.profile.getResumeJson();
   return new Response(JSON.stringify(resume, null, 2))
 }

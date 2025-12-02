@@ -1,0 +1,47 @@
+---
+import type { GetStaticPaths } from "astro";
+import { Picture } from "astro:assets";
+import { render } from "astro:content";
+import Html from "~/components/page/Html.astro";
+import { data } from "~/data/data";
+import { formatMonthYear, positionWithTeam } from "~/utils/utils.format";
+
+export const getStaticPaths = (async () => {
+  const experiences = await data.experiences.getAll();
+  return experiences.map((experience) => ({
+    params: { id: experience.id }
+  }));
+}) satisfies GetStaticPaths;
+
+const experience = await data.experiences.get(Astro.params.id)
+const { Content } = await render(experience);
+---
+
+<Html
+  title={experience.data.slug}
+  description={experience.data.slug}
+>
+  <main>
+    <h1>{experience.data.company.name}</h1>
+    <h2>{positionWithTeam(experience.data.position.name, experience.data.position.team)}</h2>
+    {experience.data.logo && (
+      <Picture
+        alt='thumbnail image'
+        fetchpriority="auto"
+        src={experience.data.logo}
+        formats={['avif', 'webp', 'jpeg']}
+        width={50}
+      />
+    )}
+    {formatMonthYear(experience.data.startDate)}
+    {formatMonthYear(experience.data.endDate)}
+    <Content />
+  </main>
+</Html>
+
+<style>
+main {
+  max-width: var(--content-width);
+  margin: auto;
+}
+</style>

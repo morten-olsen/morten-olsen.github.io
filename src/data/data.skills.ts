@@ -1,13 +1,20 @@
-import { getCollection } from 'astro:content'
+import { getCollection, getEntry } from "astro:content";
 
 class Skills {
-  public find = () => getCollection('skills')
-  public get = async (slug: string) => {
-    const collection = await this.find()
-    return collection.find((entry) => entry.data.slug === slug)
+  public getAll = async () => {
+    const collection = await getCollection('skills');
+    return collection;
+  }
+
+  public get = async (id: string) => {
+    const entry = await getEntry('skills', id);
+    if (!entry) {
+      throw new Error(`Could not find skill ${id}`);
+    }
+    return entry;
   }
 }
 
-type Skill = Exclude<Awaited<ReturnType<Skills['get']>>, undefined>
+const skills = new Skills();
 
-export { Skills, type Skill }
+export { skills }

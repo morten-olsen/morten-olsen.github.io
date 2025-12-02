@@ -1,0 +1,226 @@
+---
+import { Picture } from "astro:assets";
+import Html from "~/components/page/Html.astro";
+import { data } from "~/data/data"
+import { formatMonthYear, positionWithTeam } from "~/utils/utils.format";
+
+const { Content, ...profile } = data.profile;
+const experiences = await data.experiences.getAll();
+const skills = await data.skills.getAll();
+const jsonLd = await profile.getJsonLd();
+---
+
+<Html
+  title={profile.name}
+  description={profile.name}
+  jsonLd={jsonLd}
+>
+  <main class="main">
+    <div class="content">
+      <Content />
+    </div>
+
+    <div class="profiles">
+      <h2>Profiles</h2>
+      <ul>
+      {Object.entries(profile.profiles).map(([id, profile]) => (
+        <li class="profile">
+          <a href={profile.url} target="_blank">{profile.network?.name || id}</a>
+        </li>
+      ))}
+      </ul> 
+    </div>
+
+    <div class="experiences">
+      <h2>Experiences</h2>
+      <div class="content">
+        {experiences.map((experience) => (
+          <div data-fadein class="experience">
+            {experience.data.logo && (
+              <div class="logo">
+                <Picture
+                  alt='thumbnail image'
+                  fetchpriority="auto"
+                  src={experience.data.logo}
+                  formats={['avif', 'webp', 'jpeg']}
+                  width={50}
+                />
+              </div>
+            )}
+            <div class="header">
+              <a class="companyName" href={`/experiences/${experience.id}`}><h3>{experience.data.company.name}</h3></a>
+              <a class="position" href={`/experiences/${experience.id}`}><h3>{positionWithTeam(experience.data.position.name, experience.data.position.team)}</h3></a>
+            </div>
+            <div class="time">
+              <div class="from">
+                {formatMonthYear(experience.data.startDate)}
+              </div>
+              <div class="to">
+                {formatMonthYear(experience.data.endDate)}
+              </div>
+            </div>
+            {experience.data.stack && (
+              <div class="stack">
+                <ul>
+                {experience.data.stack.map((item) => (
+                  <li>{item}</li> 
+                ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="skills">
+      <h2>Technologies</h2>
+      {skills.map((skill) => (
+        <div class="skill" data-fadein>
+          <a class="name" href={`/skills/${skill.id}`}><h3>{skill.data.name}</h3></a>
+          <div class="technologies">
+            <ul>
+            {skill.data.technologies.map((technology) => (
+              <li>{technology}</li>
+            ))}
+            </ul>
+          </div>
+        </div>
+      ))}
+    </div>
+  </main>
+</Html>
+
+<script src="../scripts/fadein.ts"></script>
+
+<style>
+.main {
+  max-width: var(--content-width);
+  margin: auto;
+  display: grid;
+  gap: calc(var(--gap) * 3);
+  grid-template-columns: 200px 1fr;
+  grid-template-rows: auto;
+  grid-template-areas:
+    "content content"
+    "profiles profiles"
+    "skills experiences";
+
+  h2 {
+    font-weight: var(--fw-md);
+  }
+}
+
+.content {
+  grid-area: content;
+}
+
+.profiles {
+  grid-area: profiles;
+  display: flex;
+  gap: var(--gap);
+
+  ul {
+    display: contents;
+  }
+}
+
+.skills {
+  grid-area: skills;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+
+  .skill {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+
+    .technologies ul {
+      display: flex;
+      flex-wrap: wrap;
+      gap: calc(var(--gap) / 2);
+
+      li {
+        border: solid var(--c-line) 1px;
+        padding: 3px 8px;
+        border-radius: var(--radius);
+        font-size: 12px;
+      }
+    }
+  }
+}
+
+.experiences {
+  grid-area: experiences;
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--gap) * 2);
+  }
+
+  .experience {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto;
+    column-gap: var(--gap);
+    row-gap: calc(var(--gap) / 2);
+    align-items: center;
+    grid-template-areas:
+      "logo header time"
+      "logo stack time";
+
+    .logo {
+      grid-area: logo;
+
+      img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        object-position: center center;
+      }
+    }
+
+    .time {
+      grid-area: time;
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .companyName {
+      grid-area: companyName;
+      font-weight: var(--fw-md);
+    }
+
+    .position {
+      grid-area: position;
+      font-size: var(--fs-sm);
+    }
+
+    .summary{
+      grid-area: summary;
+    }
+
+    .stack {
+      grid-area: stack;
+      ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: calc(var(--gap) / 4);
+
+        li {
+          border: solid var(--c-line) 1px;
+          padding: 3px 8px;
+          border-radius: var(--radius);
+          font-size: 12px;
+        }
+      }
+    }
+  }
+}
+</style>

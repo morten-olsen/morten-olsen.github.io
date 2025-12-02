@@ -1,0 +1,96 @@
+---
+import { Picture } from "astro:assets";
+import { data } from "~/data/data";
+import { positionWithTeam } from "~/utils/utils.format";
+
+const currentPath = Astro.url.pathname;
+const { Content, ...profile } = data.profile;
+const currentExperience = await data.experiences.getCurrent()
+const links = {
+  '/': 'Posts',
+  '/about': 'About',
+}
+---
+
+<header class="header">
+  <div class="image">
+    <Picture
+      class="picture"
+      alt='Profile Picture'
+      src={profile.image}
+      fetchpriority="high"
+      formats={['avif', 'webp', 'jpeg']}
+      width={60}
+    />
+  </div>
+  <div class="info">
+    <a class="name" href="/">{profile.name}</a>
+    {currentExperience && (
+      <a class="work" href="/">
+      {currentExperience.data.position.name} @ {currentExperience.data.company.name}
+      </a>
+    )}
+  </div>
+  <div class="links">
+    {Object.entries(links).map(([target, name]) => (
+      <a class={currentPath === target ? 'link active' : 'link'} href={target}>{name}</a>
+    ))}
+  </div>
+</header>
+
+<style>
+  .header {
+    max-width: var(--content-width);
+    margin: 80px auto;
+    display: grid;
+    gap: var(--gap);
+    align-items: center;
+    grid-template-columns: auto auto 1fr auto;
+    grid-template-rows: auto;
+    grid-template-areas:
+      "image info . links";
+  }
+
+  img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+  }
+
+  .image {
+    grid-area: image;
+  }
+
+  .info {
+    grid-area: info;
+    display: flex;
+    flex-direction: column;
+
+    .name {
+      font-weight: var(--fw-md);
+      color: var(--t-fg);
+      text-decoration: none;
+    }
+
+    .work {
+      font-size: var(--fs-sm);
+      color: var(--t-fg);
+      text-decoration: none;
+    }
+  }
+
+  .links {
+    grid-area: links;
+    display: flex;
+    gap: var(--gap);
+
+    .link {
+      padding: 7px 12px;
+      border-radius: var(--radius);
+
+      &.active {
+        background: var(--c-bg-em);
+      }
+    }
+  }
+</style>

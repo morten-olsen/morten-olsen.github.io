@@ -1,6 +1,89 @@
 ---
-import {} from '@/data/data.js'
-import Frontpage from '@/layouts/frontpage/frontpage.astro'
+import { Picture } from "astro:assets";
+import AbsoluteTime from "~/components/base/time/AbsoluteTime.astro";
+import Html from "~/components/page/Html.astro";
+import { data } from "~/data/data"
+
+const { Content, ...profile } = data.profile;
+const posts = await data.posts.getPublished();
+const jsonLd = await profile.getJsonLd();
 ---
 
-<Frontpage />
+<Html
+  title={profile.name}
+  description={profile.name}
+  jsonLd={jsonLd}
+>
+  <main class="main">
+    <div class="content">
+      <Content />
+    </div>
+
+
+
+    <h2>Posts</h2>
+    <div class="posts">
+      {posts.map((post) => (
+        <div class="post" data-fadein>
+          <a href={`/posts/${post.id}`}>
+          <Picture
+            alt='thumbnail image'
+            src={post.data.heroImage}
+            formats={['avif', 'webp', 'jpeg']}
+            fetchpriority="auto"
+            widths={[100, 200, 300]}
+          />
+          </a>
+          <a class="title" href={`/posts/${post.id}`}><h3>{post.data.title}</h3></a>
+          <div class="subtitle"><AbsoluteTime datetime={post.data.pubDate} /></div>
+        </div>
+      ))}
+    </div>
+  </main>
+</Html>
+
+<script src="../scripts/fadein.ts"></script>
+
+<style>
+.main {
+  max-width: var(--content-width);
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--gap) * 3);
+  padding-bottom: 50px;
+
+  h2 {
+    font-weight: var(--fw-md);
+  }
+}
+
+.posts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: calc(var(--gap) * 2);
+
+  .post {
+    img {
+      width: 100%;
+      max-height: 250px;
+      object-fit: cover;
+      border-radius: var(--radius);
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .title {
+      font-weight: var(--fw-md);
+    }
+
+    .subtitle {
+      font-size: var(--fs-sm);
+    }
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+}
+
+</style>

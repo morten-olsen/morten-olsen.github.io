@@ -21,10 +21,19 @@ const getSiteInfo = () => {
 export default defineConfig({
   ...getSiteInfo(),
   output: 'static',
-  integrations: [mdx(), sitemap(), icon(), compress(), robotsTxt()],
+  integrations: [mdx(), sitemap(), icon(), compress({
+    HTML: false,
+  }), robotsTxt()],
+  devToolbar: {
+    enabled: false,
+  },
+  build: {
+    inlineStylesheets: 'always',
+  },
   vite: {
     build: {
       assetsInlineLimit: 1024 * 10
+
     }
   }
 })

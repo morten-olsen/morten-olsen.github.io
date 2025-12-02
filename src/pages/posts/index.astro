@@ -1,0 +1,17 @@
+---
+import { getCollection } from 'astro:content';
+import Html from '~/components/page/Html.astro';
+
+const posts = await getCollection('posts');
+---
+
+<Html
+  title="Morten Olsen's Posts"
+  description='Foo'
+>
+  <h1>Posts</h1>
+
+  {posts.map((post) => (
+    <a href={`/posts/${post.id}`}>{post.data.title}</a>
+  ))}
+</Html>

@@ -1,0 +1,159 @@
+---
+import { icons } from '~/assets/images/images.icons';
+import Header from './Header.astro';
+type Props = {
+  title: string;
+  description: string
+  jsonLd?: unknown;
+  image?: string;
+  themeColor?: string;
+}
+
+const { title, description, jsonLd, themeColor, image }= Astro.props;
+const schema = JSON.stringify(jsonLd)
+---
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
+    <meta name='HandheldFriendly' content='True' />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+    <link rel='sitemap' href='/sitemap-index.xml' />
+    <link rel='manifest' href='/manifest.webmanifest' />
+    {themeColor && <meta name='theme-color' content={themeColor} />}
+    <link
+      rel='alternate'
+      type='application/rss+xml'
+      title='RSS Feed'
+      href='/articles/rss.xml'
+    />
+    <meta name='description' content={description} />
+    {image && <meta property='og:image' content={image} />}
+    {
+      jsonLd && (
+        <script type='application/ld+json' is:inline set:html={schema} />
+      )
+    }
+    {
+      icons.pngs.map((icon) => (
+        <link rel='icon' href={icon.src} type='image/png' sizes={icon.size} />
+      ))
+    }
+    <title>{title}</title>
+	</head>
+	<body>
+    <Header />
+		<slot />
+	</body>
+</html>
+
+<style is:global>
+
+@view-transition {
+    navigation: auto; /* enabled! */
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-indent: 0;
+  list-style-type: none;
+}
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+:root {
+  --c-bg-em: rgb(241, 242, 246);
+  --c-line: #d3d3d3;
+  --content-width: 800px;
+  --gap: 16px;
+  --system-ui: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --t-fg: #222;
+  --bg: #fff;
+  --fw-df: 400;
+  --fw-md: 600;
+  --fs-sm: 14px;
+  --fs-md: 16px;
+  --radius: 10px;
+
+
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+  --font-family-heading: var(--font-family);
+  --font-size: 15px;
+  --letter-spacing: 0.5px;
+  --color: #000;
+  --background-color: #f1f5f9;
+  --content-width: 1000px;
+
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+  --space-xxl: 4rem;
+
+  --font-xxl: 2rem;
+  --font-xl: 1.5rem;
+  --font-lg: 1.1rem;
+  --font-sm: 0.875rem;
+  --font-xs: 0.75rem;
+
+  --color-text-light: rgb(75, 85, 99);
+  --color-border: #ddd;
+  --color-link: #007bff;
+
+  --radius-sm: 0.25rem;
+}
+
+html {
+  background-color: var(--bg);
+}
+
+body {
+  font-family: var(--system-ui);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-df);
+  color: var(--t-fg);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: inherit;
+  font-size: inherit;
+}
+
+a {
+  color: var(--t-fg);
+  text-decoration: none;
+}
+
+p a {
+  color: var(--t-fg);
+  text-decoration: underline;
+  text-decoration-color: var(--c-line);
+  text-underline-offset: .35em;
+}
+
+p {
+  line-height: 1.6;
+}
+
+p {
+  margin-bottom: var(--gap);
+}
+
+[data-fadein] {
+  transition: all 1s;
+}
+
+.hidden {
+  opacity: 0;
+}
+
+</style>
