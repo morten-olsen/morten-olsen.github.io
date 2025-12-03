@@ -32,6 +32,7 @@ const { Content } = await render(post);
     <Picture
       loading='eager'
       class='img'
+      fetchpriority="high"
       src={post.data.heroImage}
       widths={[320, 640, 1024, 1400]}
       formats={['avif', 'webp', 'png']}
@@ -75,7 +76,7 @@ const { Content } = await render(post);
       '. content cover';
   }
 
-  article :global(picture) {
+  article picture {
     grid-area: cover;
     position: relative;
   }

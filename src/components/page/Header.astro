@@ -1,36 +1,35 @@
 ---
 import { Picture } from "astro:assets";
 import { data } from "~/data/data";
-import { positionWithTeam } from "~/utils/utils.format";
 
 const currentPath = Astro.url.pathname;
 const { Content, ...profile } = data.profile;
 const currentExperience = await data.experiences.getCurrent()
 const links = {
   '/': 'Posts',
-  '/about': 'About',
+  '/about/': 'About',
 }
 ---
 
 <header class="header">
-  <div class="image">
+  <a class="image" href="/">
     <Picture
       class="picture"
       alt='Profile Picture'
       src={profile.image}
       fetchpriority="high"
       formats={['avif', 'webp', 'jpeg']}
-      width={60}
+      width={120}
     />
-  </div>
-  <div class="info">
-    <a class="name" href="/">{profile.name}</a>
+  </a>
+  <a class="info" href="/">
+    <div class="name">{profile.name}</div>
     {currentExperience && (
-      <a class="work" href="/">
+      <div  class="work">
       {currentExperience.data.position.name} @ {currentExperience.data.company.name}
-      </a>
+      </div>
     )}
-  </div>
+  </a>
   <div class="links">
     {Object.entries(links).map(([target, name]) => (
       <a class={currentPath === target ? 'link active' : 'link'} href={target}>{name}</a>
@@ -42,6 +41,7 @@ const links = {
   .header {
     max-width: var(--content-width);
     margin: 80px auto;
+    padding: 30px;
     display: grid;
     gap: var(--gap);
     align-items: center;
