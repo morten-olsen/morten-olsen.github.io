@@ -1,0 +1,234 @@
+---
+title: A Simple Service Pattern for Node.js
+pubDate: 2026-01-09
+description: 'A lightweight approach to dependency injection in Node.js without the framework bloat.'
+heroImage: ./assets/cover.png
+slug: simple-service-pattern
+color: '#e80ccf'
+---
+
+For a long time, I felt guilty about not using "Real Architecture" in my Node.js side projects.
+
+I wanted to move fast. I didn't want to spend three days setting up modules, decorators, and providers just to build a simple API. I looked at frameworks like NestJS and felt that while powerful, they often felt like buying a semi-truck to carry a bag of groceries.
+
+But the alternative—the "Wild West" of random imports—eventually slows you down too. You hit a wall when you try to write tests, or when a simple script crashes because it accidentally connected to Redis just by importing a file.
+
+This post is for developers who want to keep their development speed high. It introduces a pattern that gives you the biggest benefits of Dependency Injection—testability, clean shutdown, and lazy loading—with minimal effort and zero external libraries.
+
+It is the middle ground that lets you write code fast today, without regretting it tomorrow.
+
+## But first, the downsides
+
+Before I show you the code, I need to be honest about what this is. This pattern is effectively a **Service Locator**.
+
+In pure software architecture circles, the Service Locator pattern is often considered an anti-pattern. Why? Because it hides dependencies. Instead of a class screaming "I NEED A DATABASE" in its constructor arguments, it just asks for the `Services` container and quietly pulls what it needs.
+
+This can make the dependency graph harder to visualize statically. If you are building a massive application with hundreds of services and complex circular dependencies, you might be better off with a robust DI framework that handles dependency resolution graphs for you.
+
+However, I would also offer a gentle challenge: If your dependency graph is so complex that you *need* a heavy framework to manage it, maybe the issue isn't the tool—maybe the service itself is doing too much.
+
+In my experience, keeping services focused and modular often eliminates the need for complex wiring. If your service is simple, your tools can be simple too. For most pragmatic Node.js services, this pattern works surprisingly well.
+
+## The Implementation
+
+Here is the entire container implementation. It relies on standard ES6 Maps and Symbols. It's less than 60 lines of code.
+
+```typescript
+const destroy = Symbol('destroy');
+const instanceKey = Symbol('instances');
+
+type ServiceDependency<T> = new (services: Services) => T & {
+  [destroy]?: () => Promise<void> | void;
+};
+
+class Services {
+  [instanceKey]: Map<ServiceDependency<unknown>, unknown>;
+
+  constructor() {
+    this[instanceKey] = new Map();
+  }
+
+  public get = <T>(service: ServiceDependency<T>) => {
+    if (!this[instanceKey].has(service)) {
+      this[instanceKey].set(service, new service(this));
+    }
+    const instance = this[instanceKey].get(service);
+    if (!instance) {
+      throw new Error('Could not generate instance');
+    }
+    return instance as T;
+  };
+
+  public set = <T>(service: ServiceDependency<T>, instance: Partial<T>) => {
+    this[instanceKey].set(service, instance);
+  };
+
+  public destroy = async () => {
+    await Promise.all(
+      Array.from(this[instanceKey].values()).map(async (instance) => {
+        if (
+          typeof instance === 'object' &&
+          instance &&
+          destroy in instance &&
+          typeof instance[destroy] === 'function'
+        ) {
+          await instance[destroy]();
+        }
+      }),
+    );
+  };
+}
+
+export { Services, destroy };
+```
+
+It is essentially a Singleton-ish Map that holds instances of your classes. When you ask for a class, it checks if it exists. If not, it creates it, passing itself (`this`) into the constructor.
+
+## How to use it
+
+Let's look at a practical example. Say we have a `DatabaseService` that connects to Postgres, and a `PostsService` that needs to query it.
+
+First, the database service.
+
+```typescript
+import knex, { type Knex } from 'knex';
+
+class DatabaseService {
+  #instance: Promise<Knex> | undefined;
+
+  #setup = async () => {
+    const instance = knex({ client: 'pg' /* config */});
+    await instance.migrate.latest();
+    return instance;
+  };
+
+  public getInstance = async () => {
+    // Lazy loading: We don't connect until someone asks for the connection
+    if (!this.#instance) {
+      this.#instance = this.#setup();
+    }
+
+    return this.#instance;
+  };
+}
+
+export { DatabaseService };
+```
+
+Now, the `PostsService` consumes it:
+
+```typescript
+import { Services } from './services';
+import { DatabaseService } from './database-service';
+
+class PostsService {
+  #services: Services;
+
+  constructor(services: Services) {
+    this.#services = services;
+  }
+
+  public getBySlug = async (slug: string) => {
+    // Resolve the dependency
+    const databaseService = this.#services.get(DatabaseService);
+    const database = await databaseService.getInstance();
+    
+    return database('posts').where({ slug }).first();
+  };
+}
+
+export { PostsService };
+```
+
+Notice that we ask for `DatabaseService` inside the `getBySlug` method, not in the constructor. This is intentional. By resolving dependencies at runtime, we preserve lazy loading (the database connection doesn't start until we actually query a post) and we allow for dependencies to be swapped out in the container even after the `PostsService` has been instantiated—a huge plus for testing.
+
+And finally, wiring it up in your application entry point:
+
+```typescript
+const services = new Services();
+
+const postsService = services.get(PostsService);
+const post = await postsService.getBySlug('hello-world');
+console.log(post);
+```
+
+## The "CLI" Benefit: Lazy Instantiation
+
+One of the biggest wins here is lazy instantiation.
+
+In many Node.js apps, we tend to initialize everything at startup. You start the app, and it immediately connects to the database, the Redis cache, the RabbitMQ listener, and the email provider.
+
+But what if you are just running a CLI script to rotate some keys? Or a script to seed some test data? You don't want your script to hang because it's trying to connect to a Redis instance that doesn't exist in your local environment.
+
+With this pattern, resources are only initialized when `get()` is called. If your script never asks for the `EmailService`, the `EmailService` never gets created.
+
+## Testing made easy
+
+This is where the `.set()` method shines. Because everything flows through the container, you can intercept requests for heavy services and swap them out for mocks.
+
+```typescript
+import { Services } from './services';
+import { PostsService } from './posts-service';
+import { DatabaseService } from './database-service';
+
+test('it should return a post', async () => {
+  const services = new Services();
+
+  // Inject a mock database service
+  services.set(DatabaseService, {
+    getInstance: async () => async () => ({ id: 1, title: 'Test Post' })
+  });
+
+  const postsService = services.get(PostsService);
+  const post = await postsService.getBySlug('test');
+
+  expect(post.title).toBe('Test Post');
+});
+```
+
+No `jest.mock`, no module swapping magic. Just plain object substitution.
+
+## Graceful Cleanup
+
+Finally, there is that `[destroy]` symbol. Cleaning up resources is often an afterthought, but it is critical for preventing memory leaks and ensuring your tests exit cleanly.
+
+You can implement the destroy interface on any service:
+
+```typescript
+import { destroy } from './services';
+
+class DatabaseService {
+  // ... setup code ...
+
+  [destroy] = async () => {
+    if (this.#instance) {
+      const db = await this.#instance;
+      await db.destroy();
+    }
+  };
+}
+```
+
+When your application shuts down, you simply call:
+
+```typescript
+process.on('SIGTERM', async () => {
+  await services.destroy();
+  process.exit(0);
+});
+```
+
+This ensures that every service that registered a destroy method gets a chance to clean up its connections.
+
+## Summary
+
+This isn't a silver bullet. If you need complex dependency graphs, lifecycle scopes (request-scoped vs singleton-scoped), or rigid interface enforcement, there are better options out there.
+
+But if you want:
+
+1. **Zero dependencies**
+2. **Lazy loading** out of the box
+3. **Simple mocking** for tests
+4. A way to **clean up resources**
+
+Then copy-paste that `Services` class into your `utils` folder and give it a spin. Simplicity is often its own reward.
