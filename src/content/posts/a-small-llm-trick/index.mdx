@@ -1,0 +1,85 @@
+---
+title: 'A Small LLM Trick: Giving AI Assistants Long-Term Memory'
+pubDate: 2026-01-10
+color: '#4A90E2'
+description: 'Experimenting with giving AI coding assistants a form of long-term memory.'
+heroImage: ./assets/cover.png
+slug: a-small-llm-trick
+---
+
+I have a confession to make: I often forget how my own projects work. 
+
+It usually happens like this: I spend a weekend building a Proof of Concept, life gets in the way for three weeks, and when I finally come back to it, I’m staring at a folder structure that makes sense to "Past Morten" but is a complete mystery to "Current Morten."
+
+Nowadays, I usually have an AI assistant helping me out. But even they struggle with what I call the "session void." They see the code, but they don't see the *intent* behind changes made three weeks ago. They learn something during a long chat session, but as soon as you start a new one, that "aha!" moment is gone.
+
+I’ve been experimenting with a new technique to solve this. It’s early days, but the initial results have been promising enough that I wanted to share it. I call it the `AGENTS.md` trick.
+
+## Beyond the System Prompt
+
+Many developers using AI for coding are already familiar with the idea of a project-level prompt or an instructions file. But usually, these are static—you write them once, and they tell the agent how to format code or which library to prefer.
+
+The experiment I'm running is to stop treating `AGENTS.md` as a static instruction manual and start treating it as **long-term memory**.
+
+## The Strategy: Resemblance of Recall
+
+The goal is to give the agent a set of instructions that forces it to continuously build and maintain an understanding of the project, across sessions and across different agents.
+
+I’ve started adding these core "memory" instructions to an `AGENTS.md` file in the root of my projects:
+
+1.  **Maintain the Source of Truth**: Every time the agent makes a significant architectural change or learns something new about the project's "hidden rules," it must update `AGENTS.md`. 
+2.  **Externalize Discoveries**: Any time the agent spends time "exploring" a complex logic flow to understand it, it should write a short summary of that discovery into a new file in `./docs/`.
+3.  **Maintain the Map**: It must keep `./docs/index.md` updated with a list of these discoveries.
+4.  **Reference Personal Standards**: I point it to a global directory (like `~/prompts/`) where I keep my general preferences for things like JavaScript style or testing patterns. The power here is that these standards are **cross-project**. If you're in a team, you could host these in a shared git repository and instruct the agent to clone them if the folder is missing. This ensures the agent learns "how we build things" globally, not just "how this one project works."
+
+## Why I'm Liking This (Especially for Existing Projects)
+
+LLMs are great at reading what's right in front of them, but they have zero "recall" for things that happened in a different chat thread or a file they haven't opened yet. 
+
+By forcing the agent to document its own "aha!" moments, I'm essentially building a bridge between sessions. 
+
+- **Continuity**: When I start a new session, the agent reads `AGENTS.md`, sees the map in `index.md`, and suddenly has the context of someone who has been working on the project for weeks.
+- **Organic Growth**: I don't have to sit down and write "The Big Manual." The documentation grows exactly where the complexity is, because that's where the agent had to spend effort understanding things.
+- **Legacy Code**: This has been a lifesaver for older projects. I don't need to document the whole thing upfront. I just tell the agent: "As you figure things out, write it down." 
+
+## Evolutionary Patterns
+
+One of the coolest side effects of this setup is how it handles evolving standards. 
+
+If I decide I want to switch from arrow functions back to standard function declarations, I don't just change my code; I tell the agent. Because the agent has instructions to maintain the memory, it can actually suggest updating my global standards. 
+
+I've instructed it that if it notices me consistently deviating from my `javascript-writing-style.md`, it should ask: *"Hey, it looks like you're moving away from arrow functions. Should I update your global pattern file to reflect this?"* This keeps my preferences as alive as the code itself.
+
+## Early Results
+
+Is it perfect? Not yet. Sometimes agents need a nudge to remember their documentation duties, and I'm still figuring out the best balance to keep the `./docs/` folder from getting cluttered. 
+
+But so far, it has drastically reduced the "What was I thinking?" factor for both me and the AI.
+
+## The "Memory" Template
+
+If you want to try this out, here is the behavioral template I've been using. **Please note: this is a work in progress.** I expect to refine these instructions significantly over the coming months.
+
+```markdown
+# Agent Guidelines for this Repository
+
+> **Important**: You are responsible for maintaining the long-term memory of this project.
+
+## 1. Your Behavioral Rules
+- **Incremental Documentation**: When you figure out a complex part of the system or a non-obvious relationship between components, create a file in `./docs/` explaining it.
+- **Self-Correction**: If you find that the existing documentation in `./docs/` or this file is out of date based on the current code, fix it immediately.
+- **Index Maintenance**: Ensure `./docs/index.md` always points to all relevant documentation so it's easy to get an overview.
+- **Personal Standards**: Before starting significant work, refer to `~/prompts/index.md` to see my preferences for `javascript-writing-style.md`, `good-testing-patterns.md`, etc.
+- **Evolutionary Feedback**: If you notice me consistently requesting or writing code that contradicts these standards, ask if you should update the global files in `~/prompts/` to match the new pattern.
+
+## 2. Project Context
+[Briefly describe the current state and tech stack]
+```
+
+## Making AI a Partner, Not a Guest
+
+The difference between a tool that sees your code for the first time every morning and one that "remembers" your previous architectural decisions is massive. 
+
+It’s a simple experiment, but it's one that anyone can try today. It turns the agent from a temporary guest in your codebase into a partner that helps you maintain a rolling understanding of what you are actually building.
+
+Would this work for you? I don't know yet, but I'm excited to keep refining it.
