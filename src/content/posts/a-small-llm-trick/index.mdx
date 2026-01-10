@@ -30,7 +30,7 @@ I’ve started adding these core "memory" instructions to an `AGENTS.md` file in
 1.  **Maintain the Source of Truth**: Every time the agent makes a significant architectural change or learns something new about the project's "hidden rules," it must update `AGENTS.md`. 
 2.  **Externalize Discoveries**: Any time the agent spends time "exploring" a complex logic flow to understand it, it should write a short summary of that discovery into a new file in `./docs/`.
 3.  **Maintain the Map**: It must keep `./docs/index.md` updated with a list of these discoveries.
-4.  **Reference Personal Standards**: I point it to a global directory (like `~/prompts/`) where I keep my general preferences for things like JavaScript style or testing patterns. The power here is that these standards are **cross-project**. If you're in a team, you could host these in a shared git repository and instruct the agent to clone them if the folder is missing. This ensures the agent learns "how we build things" globally, not just "how this one project works."
+4.  **Reference Personal Standards**: I point it to a global directory (like `~/prompts/`) where I keep my general preferences for things like JavaScript style or testing patterns. The power here is that these standards are **cross-project**. (Note: This works best if your AI tool—like Cursor or GitHub Copilot—allows you to reference or index files outside the current project root.) If you're in a team, you could host these in a shared git repository and instruct the agent to clone them if the folder is missing. This ensures the agent learns "how we build things" globally, not just "how this one project works."
 
 ## Why I'm Liking This (Especially for Existing Projects)
 
@@ -56,6 +56,14 @@ Is it perfect? Not yet. Sometimes agents need a nudge to remember their document
 
 But so far, it has drastically reduced the "What was I thinking?" factor for both me and the AI.
 
+## The Hidden Benefits: Documentation Gardening
+
+Beyond just "remembering" things for the next chat session, this pattern creates a virtuous cycle for the project's health.
+
+- **Automated Gardening**: Periodically, you can ask an agent to go over the scattered notes in `./docs/` and reformat them into actual, structured project documentation. Since the agent has already captured the technical nuances it needed to work effectively, these docs are often more accurate and detailed than anything a human would write from scratch.
+- **Context for Reviewers**: When you open a Pull Request, the documentation changes serve as excellent context for human reviewers. If you’ve introduced a change large enough to document, seeing the agent’s "memory" update alongside the code makes the *why* behind your changes much more transparent.
+- **Advanced Tip: The Auto-Documenting Hook**: For the truly lazy (like me), you can set up a git hook that runs an agent after a commit. It reviews your manual changes and ensures the `./docs/` folder is updated accordingly. This means that even if you bypass the AI for a quick fix, your project's "memory" stays in sync.
+
 ## The "Memory" Template
 
 If you want to try this out, here is the behavioral template I've been using. **Please note: this is a work in progress.** I expect to refine these instructions significantly over the coming months.
@@ -73,7 +81,7 @@ If you want to try this out, here is the behavioral template I've been using. **
 - **Evolutionary Feedback**: If you notice me consistently requesting or writing code that contradicts these standards, ask if you should update the global files in `~/prompts/` to match the new pattern.
 
 ## 2. Project Context
-[Briefly describe the current state and tech stack]
+[User or Agent: Briefly describe the current state and tech stack here to give the agent an immediate starting point]
 ```
 
 ## Making AI a Partner, Not a Guest
