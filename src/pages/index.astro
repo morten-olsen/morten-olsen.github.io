@@ -35,7 +35,13 @@ const jsonLd = await profile.getJsonLd();
           />
           </a>
           <a class="title" href={`/posts/${post.id}`}><h3>{post.data.title}</h3></a>
-          <div class="subtitle"><AbsoluteTime datetime={post.data.pubDate} /></div>
+          <div class="subtitle">
+            <AbsoluteTime
+              datetime={post.data.pubDate}
+              format={{ month: "long", day: "numeric", year: "numeric" }}
+            />
+            {" "}&bull; {post.readingTime} min read
+          </div>
         </div>
       ))}
     </div>

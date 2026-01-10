@@ -3,7 +3,9 @@ import { profile } from "./data.profile";
 
 class Posts {
   #map = (post: CollectionEntry<'posts'>) => {
+    const readingTime = Math.ceil(post.body?.split(/\s+/g).length / 200) || 1;
     return Object.assign(post, {
+      readingTime,
       jsonLd: {
         '@context': 'https://schema.org',
         '@type': 'BlogPosting',

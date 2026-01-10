@@ -21,6 +21,9 @@ const getSiteInfo = () => {
 export default defineConfig({
   ...getSiteInfo(),
   output: 'static',
+  server: {
+    allowedHosts: true,
+  },
   integrations: [mdx(), sitemap(), icon(), compress({
     HTML: false,
   }), robotsTxt()],
