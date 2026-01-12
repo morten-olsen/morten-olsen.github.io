@@ -7,13 +7,23 @@ heroImage: ./assets/cover.png
 slug: clubhouse-protocol
 ---
 
-I have a backlog of "projects I want to build but will probably never find the time for." Today, I want to talk about one of them: **The Clubhouse Protocol**.
+I am a huge admirer of the open-source ethos. There is something magical about how thousands of strangers can self-organize to build world-changing software like Linux or Kubernetes. These communities thrive on rough consensus, shared goals, and the freedom to fork if visions diverge.
 
-The premise is simple: We have excellent protocols for distributed source code (Git) and distributed finance (Bitcoin), but our online communities are still stuck in the era of benevolent dictatorships.
+But there is a disconnect. While we have mastered distributed collaboration for our *code* (Git), the tools we use to *talk* to each other are still stuck in a rigid, hierarchical past.
 
-Whether it's a subreddit, a Discord server, or a Slack workspace, the power dynamic is always the same: There is an Admin (or a company) who owns the database, sets the rules, and holds the ban hammer. If they decide to change the API pricing or ban a topic you love, your only option is to leave and start over from zero.
+Even in the healthiest, most democratic Discord server or Slack workspace, the software forces a power imbalance. Technically, one person owns the database, and one person holds the keys. The community remains together because of trust, yes—but the *architecture* treats it like a dictatorship.
 
-I wanted to explore a different approach. What if we could build a communication protocol where the rules aren't enforced by a moderator clicking buttons in a UI, but by the protocol itself? A "Constitution-as-Code" for communities.
+## The Problem: Benevolent Dictatorships
+
+Most online communities I am part of are benevolent. The admins are friends, the rules are fair, and everyone gets along. But this peace exists *despite* the software, not because of it.
+
+Under the hood, our current platforms rely on a "superuser" model. One account has the `DELETE` privilege. One account pays the bill. One account owns the data.
+
+This works fine until it doesn't. We have seen it happen with Reddit API changes, Discord server deletions, or just a simple falling out between founders. When the social contract breaks, the one with the technical keys wins. Always.
+
+I call this experiment **The Clubhouse Protocol**. It is an attempt to fix this alignment—to create a "Constitution-as-Code" where the social rules are enforced by cryptography, making the community itself the true owner of the platform.
+
+This post is part of a series of ideas from my backlog—projects I have wanted to build but simply haven't found the time for. I am sharing them now in the hope that someone else becomes inspired, or at the very least, as a mental note to myself if I ever find the time (and skills) to pursue them.
 
 *Disclaimer: I am not a cryptographer. The architecture below is a napkin sketch designed to explore the social dynamics of such a system. The security mechanisms described (especially the encryption ratcheting) are illustrative and would need a serious audit by someone who actually knows what they are doing before writing a single line of production code.*
 
