@@ -1,0 +1,177 @@
+---
+title: 'Hyperconnect: A Theory of Seamless Device Mesh'
+pubDate: 2026-01-12
+color: '#3b82f6'
+description: 'A theoretical framework for building an Apple-like service mesh that spans WiFi, Bluetooth, and LTE seamlessly.'
+heroImage: ./assets/cover.png
+slug: hyperconnect
+---
+
+Apple's "Continuity" features feel like magic. You copy text on your phone and paste it on your Mac. Your watch unlocks your laptop. It just works. But it only works because Apple owns the entire vertical stack.
+
+For the rest of us living outside the walled garden, device communication is stuck in the 90s. We are still manually pairing Bluetooth or debugging local IP addresses. Why is it harder to send 10 bytes of data to a device three feet away than it is to stream 4K video from a server on the other side of the planet?
+
+I have "ecosystem envy," and I think it’s time we fixed it. I want to build a service mesh that treats Bluetooth, WiFi, and LTE as mere implementation details, not hard constraints.
+
+"But doesn't Tailscale solve this?" you might ask. Tailscale (and WireGuard) are brilliant technologies that solve the *connectivity* problem by creating a secure overlay network at Layer 3 (IP). However, they don't solve the *continuity* problem. They assume the physical link exists. They can't ask the radio firmware to scan for BLE beacons because the WiFi signal is getting weak.
+
+Similarly, projects like **libp2p** (used by IPFS) do an excellent job of abstracting transport layers for developers, but they function more as a library for building P2P apps rather than a system-wide mesh that handles your text messages and file transfers transparently. I want something that sits deeper—between the OS and the network.
+
+Furthermore, I have a strong distaste for the "walled garden" approach. I don't believe you should have to buy every device from a single manufacturer just to get them to talk to each other reliably. An open-source, vendor-neutral framework would unlock this kind of "hyperconnectivity" for the maker community, allowing us to mix and match hardware without sacrificing that magical user experience.
+
+So, I’ve been toying with a concept I call **Hyperconnect**.
+
+If a person is hyperconnected, it generally means they are available on multiple different channels simultaneously. I want to build a framework that allows my devices to do the same.
+
+## The Big Idea
+
+The core idea is to build a framework where all your personal devices create a **device mesh** (distinct from the backend "service mesh" concept often associated with Kubernetes) that can span different protocols. This mesh maintains a live service graph and figures out how to relay messages from one device to another, using different strategies to do so effectively.
+
+This isn't just about failover; it's about context-aware routing.
+
+### The Architecture
+
+To make this work without turning into a security nightmare, we need a few foundational blocks:
+
+#### 1. Passports (Identity)
+
+We can't just let any device talk to the mesh. The user starts by creating an authority private key. This key is used to sign "Passports" for devices. A passport is a cryptographic way for a device to prove, "I belong to Morten, and I am allowed in the mesh."
+
+Crucially, this passport also includes a signed public key for the device. This allows for end-to-end encryption between any two nodes. Even if traffic is relayed through a third device (like the phone), the intermediary cannot read the payload.
+
+#### 2. Lighthouses (Discovery)
+
+How do isolated devices find each other? We need a **Lighthouse**. This is likely a cloud server or a stable home server with a public IP. When a device connects for the first time, it gets introduced through the Lighthouse to find other nodes and build up its local service graph. While an always-available service helps established devices reconnect, the goal is to be as peer-to-peer (P2P) as possible.
+
+#### 3. The Service Graph
+
+Every device advertises the different ways to communicate with it. It might say: "I am available via mDNS on local LAN, I have an LTE modem accessible via this IP, and I accept Bluetooth LE connections"
+
+#### 4. Topology & Gossip
+
+Once introduced, the Lighthouse steps back. The goal is a resilient peer-to-peer network. However, a naive "spaghetti mesh" where everyone gossips with everyone is a battery killer.
+
+Instead, the network forms a **tiered topology**:
+
+*   **Anchor Nodes:** Mains-powered devices (NAS, Desktop) maintain the full Service Graph and gossip updates frequently. They act as the stable backbone.
+*   **Leaf Nodes:** Battery-constrained devices (Watch, Sensor) connect primarily to Anchor Nodes. They typically do not route traffic for others unless acting as a specific bridge (like a Phone acting as an LTE relay).
+
+When a device rejoins the network (e.g., coming home), it doesn't need to check in with the Lighthouse. It simply pings the first known peer it sees (e.g., the Watch sees the Phone). If that peer is authorized, they sync the graph directly. The Lighthouse is merely a fallback for "cold" starts or when no known local peers are visible.
+
+## The Scenario: A Smartwatch in the Wild
+
+To explain how this works in practice, let's look at a specific scenario. Imagine I have a custom smartwatch that connects to a service on my **desktop computer at home** to track my steps.
+
+### Stage 1: At Home
+
+Initially, the watch is connected at home. It publishes its network IP using mDNS. My desktop sees it on the local network. Since the framework prioritizes bandwidth and low latency, the two devices communicate directly over IP.
+
+The watch also knows it has an LTE modem, and it advertises to the Lighthouse that it is reachable there. It also advertises to my Phone that it's available via Bluetooth. The Service Graph is fully populated.
+
+### Stage 2: Leaving the House
+
+Now, it's time to head out. I leave the house, and the local WiFi connection drops.
+
+This is where the framework needs to be smart. It must have a built-in mechanism to handle **backpressure**. For the few seconds I am in the driveway between networks, packets aren't lost; they are captured in a ring buffer (up to a safe memory limit), waiting for the mesh to heal.
+
+The **Connection Owner** (in this case, my desktop, chosen because it has the most compute power and no battery constraints) looks at the graph. It sees the WiFi path is dead. It checks for alternatives. It sees the Watch advertised P2P capabilities over LTE.
+
+The desktop re-establishes the connection over LTE. The buffer flushes. No packets dropped, just slightly delayed.
+
+### Stage 3: The Metro (The Relay)
+
+I head down into the metro. The LTE coverage is spotty, and the smartwatch's tiny antenna can't hold a stable connection to the cell tower. The connection drops again. The buffer starts to fill.
+
+The desktop looks at the Service Graph. Direct IP is gone. LTE is gone. But, it sees that the **Phone** is currently online via 5G (better antenna) and that the Phone has previously reported a Bluetooth relationship with the Watch.
+
+The desktop contacts the Phone: *"Hey, I need a tunnel to the Watch."*
+
+The Phone acts as a relay. It establishes a Bluetooth Low Energy link to the Watch. The data path is now **Desktop ↔ Internet ↔ Phone ↔ Bluetooth ↔ Watch**.
+
+The step counter updates. The mesh survives.
+
+## Beyond the Basics: Strategy and Characteristics
+
+So far, I've mostly talked about the "big three": WiFi, Bluetooth, and LTE. But the real power of a personal mesh comes when we start integrating niche protocols that are usually siloed.
+
+### Expanding the Protocol Stack
+
+Imagine adding **Zigbee** or **Thread** (via Matter) to the mix. These low-power mesh protocols are perfect for stationary home devices. Suddenly, your lightbulbs could act as relay nodes for your smartwatch when you are in the garden, extending the mesh's reach without needing a full WiFi signal.
+
+Or consider **LoRa** (Long Range). I could have a LoRa node on my roof and one in my car. Even if I park three blocks away and the car has no LTE signal, it could potentially ping my home node to report its battery status or location. The bandwidth is tiny, but the range is incredible.
+
+### Connection Characteristics
+
+However, just knowing that a link *exists* isn't enough. The mesh needs to know the *quality* and *cost* of that link. We need to attach metadata to every edge in our service graph.
+
+I believe we need to track at least four dimensions:
+
+1. **Bandwidth:** Can this pipe handle a 1080p stream, or will it choke on a JSON payload?
+2. **Latency:** Is this a snappy local WiFi hop (5ms), or a satellite uplink (600ms)?
+3. **Energy Cost:** This is critical for battery-powered devices. Waking up the WiFi radio on an ESP32 is expensive. Sending a packet via BLE or Zigbee is much cheaper.
+4. **Monetary Cost:** Am I on unlimited home fiber, or am I roaming on a metered LTE connection in Switzerland?
+
+### Smart Routing Strategies
+
+Once the mesh understands these characteristics, the routing logic becomes fascinating. It stops being about "shortest path" and starts being about "optimal strategy."
+
+* **The "Netflix" Strategy:** If I am trying to stream a video file from my NAS to my tablet, the mesh should optimize for **Bandwidth**. It should aggressively prefer WiFi Direct or wired Ethernet, even if it takes a few seconds to negotiate the handshake.
+* **The "Whisper" Strategy:** If a temperature sensor needs to report a reading every minute, the mesh should optimize for **Energy**. It should route through the nearest Zigbee node, avoiding the power-hungry WiFi radio entirely.
+* **The "Emergency" Strategy:** If a smoke detector goes off, we don't care about energy or money. The mesh should blast the alert out over every available channel—WiFi, LTE, LoRa, Bluetooth—to ensure the message gets through to me.
+
+## The Developer Experience
+
+As a developer, I don't want to manage sockets or handle Bluetooth pairing in my application code. I want a high-level intent-based API.
+
+It might look something like this for a pub/sub pattern:
+
+```typescript
+import { mesh } from '@hyperconnect/sdk';
+
+// Subscribe to temperature updates from any node
+mesh.subscribe('sensors/temp', (msg) => {
+  console.log(`Received from ${msg.source}: ${msg.payload}`);
+});
+
+// Publish a command with constraints
+await mesh.publish('controls/lights', { state: 'ON' }, {
+  strategy: 'energy_efficient', // Prefer Zigbee/BLE
+  scope: 'local_network'        // Don't route over LTE
+});
+```
+
+For use cases that require continuous data flow (like video streaming) or legacy application support, the mesh could offer a standard stream interface that handles the underlying transport switching transparently:
+
+```typescript
+// Stream-based API (Socket-compatible)
+// 'my-nas-server' resolves to a Public Key from the Passport
+const stream = await mesh.connect('my-nas-server', 8080, {
+  strategy: 'high_bandwidth'
+});
+
+// Looks just like a standard Node.js socket
+stream.write(new Uint8Array([0x01, 0x02]));
+stream.on('data', (chunk) => console.log(chunk));
+```
+
+There are other massive topics to cover here—like handling delegated guest access (a concept I call 'Visas') or how this becomes the perfect transport layer for Local-First (CRDT) apps—but those deserve their own articles. For now, let's look at the downsides.
+
+## But first, the downsides
+
+I am painting a rosy picture here, but I want to be honest about the challenges.
+
+**Battery Life:** Maintaining multiple radio states and constantly updating a service graph is expensive. A protocol like this needs to be aggressive about sleeping. The "advertising" phase needs to be incredibly lightweight.
+
+**Complexity:** Implementing backpressure handling across different transport layers is hard. TCP handles some of this, but when you are switching from a UDP stream on WiFi to a BLE characteristic, you are effectively rewriting the transport layer logic.
+
+**Security:** While end-to-end encryption (enabled by the keys in the Passport) solves the privacy issue of relaying, implementing a secure cryptographic protocol is notoriously difficult. Ideally, we would need to implement forward secrecy to ensure that if a device key is compromised, past traffic remains secure. That is a heavy lift for a weekend project.
+
+**Platform Restrictions:** Finally, there is the reality of the hardware we carry. Efficiently managing radio handovers requires low-level system access. On open hardware like a Raspberry Pi, this is accessible. However, on consumer devices like iPhones or Android phones, the OS creates a sandbox that restricts direct control over the radios. An app trying to manually toggle network interfaces or scan aggressively in the background will likely be killed by the OS to save battery or prevent background surveillance (like tracking your location via WiFi SSIDs).
+
+## A Call to Build
+
+This is a project I have long wanted to build, but never found the time to.
+
+I am posting this idea hoping it might inspire someone else to take a crack at it. Or, perhaps, this will just serve as documentation for my future self if I ever clear my backlog enough to tackle it.
+
+The dream of a truly hyperconnected personal mesh is vivid. We have the radios, we have the bandwidth, and we have the hardware. We just need the software glue to make it stick.
