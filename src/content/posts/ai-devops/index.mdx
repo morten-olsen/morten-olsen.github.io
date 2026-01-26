@@ -1,0 +1,102 @@
+---
+title: I gave an AI Root access to my Kubernetes Cluster
+pubDate: 2026-01-26
+description: 'I gave an AI root access to my Kubernetes cluster. It fixed a BIOS issue I didn’t know I had. I am still terrified.'
+heroImage: ./assets/cover.png
+slug: i-gave-an-ai-root-access-to-my-kubernetes-cluster
+color: '#f97316'
+---
+
+I have a confession to make. I am a software engineer who insists on self-hosting everything, but I secretly hate being a sysadmin.
+
+It’s the classic paradox of the "Home Lab Enthusiast." I want the complex, enterprise-grade Kubernetes cluster. I want the GitOps workflows with ArgoCD. I want the Istio service mesh and the SSO integration with Authentik. It makes me feel powerful.
+
+But you know what I don't want? I don't want to spend my Saturday afternoon grepping through `journalctl` logs to figure out why a random kernel update made my DNS resolver unhappy. I don't want my family watching the popcorn for movie night go stale while I debug file descriptor limits trying to bring the Jellyfin server back online.
+
+So, I did the only logical thing a lazy engineer in 2026 would do: I built an AI agent, gave it root SSH access to my server, and went to sleep.
+
+## The "Security Nightmare" Disclaimer
+
+If you work in InfoSec, you might want to look away now. Or grab a stiff drink.
+
+I have effectively built a system that gives a Large Language Model uncontrolled root access to my physical hardware. It is, generally speaking, a terrible idea. It’s like handing a toddler a loaded gun, except the toddler has read the entire internet and knows exactly how to run `rm -rf --no-preserve-root`.
+
+Do not do this on production systems. Do not do this if you value your data. I am doing it so you don't have to.
+
+## The Lazy Architecture
+
+I needed a digital employee. Someone (or something) that could act autonomously, investigate issues, and report back.
+
+I cobbled the system together using **n8n**. Not because it's my absolute favorite tool in the world, but because it’s the duct tape of the internet—it’s the easiest way to glue a webhook to a dangerous amount of power.
+
+The team consists of two agents:
+
+1. **The Investigator (Claude Opus 4.5)**: The expensive consultant. It has a massive context window, excellent reasoning, and isn't afraid to dig deep. It handles the "why is everything on fire?" questions.
+2. **The Monitor (Gemini Flash v3)**: The intern. It’s fast, cheap, and runs daily to check if the fixes the consultant applied are actually working.
+
+### How It Works (Ideally)
+
+1. **The Panic**: I notice my cluster is acting up.
+2. **The Delegation**: I open a chat window and type: *"The pods are crash-looping. Fix it."*
+3. **The Black Box**: The Investigator spins up, SSHs into the node, runs commands, reads logs, and forms a hypothesis.
+4. **The Fix**: It proposes a solution. I say "YOLO" (approve it).
+5. **The Watch**: The Monitor keeps an eye on it for a week to make sure it wasn't a fluke.
+
+## The Case of the Toasty CPU
+
+Recently, my server started pulling a vanishing act. No graceful shutdowns, no warnings. Just a hard reset, as if someone had yanked the power cord.
+
+I was stumped. It wasn't the PSU (I checked). It wasn't the RAM (mostly).
+
+So I unleashed the agent. *"My K3s cluster keeps restarting. Figure it out."*
+
+The AI logged in. It poked around the system logs. It checked the hardware sensors. And then, it found the smoking gun that I—the human with the "superior biological brain"—had completely missed.
+
+Here is an excerpt from its report:
+
+> **Root Causes Identified: CPU Thermal Shutdown**
+>
+> **Critical Finding**: CPU Power Limits were unlocked.
+>
+> ```
+> PL1 (sustained power): 253W  (Stock is 65W!)
+> PL2 (burst power):     4095W (Unlimited)
+> ```
+>
+> **Analysis**: The BIOS default settings are allowing the CPU to draw 4x its rated TDP. During the heavy Kubernetes boot sequence (starting 134 pods), the CPU hits thermal shutdown before the fans can even spin up.
+
+I stared at the report. `PL2: 4095W`. My BIOS was effectively telling my CPU, "Consume the power of a small sun if you feel like it."
+
+My poor Mini-ITX cooler never stood a chance. The "Performance" default in my motherboard BIOS was silently killing my server every time it tried to boot K3s.
+
+### The Fix
+
+The agent didn't just diagnose it; it offered a solution. It crafted a command to manually force the Intel RAPL (Running Average Power Limit) constraints back to sanity via the `/sys/class/powercap` interface.
+
+```bash
+echo 65000000 > /sys/class/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw
+```
+
+I approved it. The agent applied the fix and even wrote a systemd service to make sure the limits persisted after a reboot.
+
+### The Verification
+
+This is where it gets cool. Fixing a bug is easy; knowing it's fixed is hard.
+
+The agent created a **Verification Plan**. It refused to close the ticket until the server had survived **7 days** without an unplanned reboot.
+
+For the next week, the Monitor agent checked in daily. It reported that the "CPU throttle count" dropped from **7,581 events/day** to almost zero. On day 7, I got a notification: *"Issue Resolved. System stable. Closing investigation."*
+
+## The Future is Weird
+
+This system works shockingly well. It feels like having a junior DevOps engineer who works 24/7, never sleeps, and doesn't complain when I ask it to read 5,000 lines of logs.
+
+But it’s also a glimpse into a weird future. We are moving from "Infrastructure as Code" to **"Infrastructure as Intent."**
+
+I didn't write the YAML to fix the power limit. I didn't write the script to monitor the thermals. I just stated my intent: *"Stop the random reboots."* The AI figured out the implementation details.
+
+Right now, the system is reactive. I have to tell it something is wrong. The next step? **Active Monitoring**. I want the agent to wake up, "feel" the server is running a bit sluggish, and start an investigation before I even wake up.
+
+I might eventually automate myself out of a hobby. But until then, I’m enjoying the extra sleep.
+
+(Just maybe don't give it root access to your production database. Seriously.)
