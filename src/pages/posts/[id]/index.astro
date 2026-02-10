@@ -23,7 +23,7 @@ const { Content } = await render(post);
   image={`/posts/${post.id}/share.png`}
 >
   <article>
-    <div class="hero-image">
+    <div class="hero-image anim-hero">
       <Picture
         loading='eager'
         class='img'
@@ -37,11 +37,11 @@ const { Content } = await render(post);
     <div class="article-container">
       <header>
         <h1>
-          {post.data.title.split(' ').map((word) => <span>{word}</span>)}
+          {post.data.title.split(' ').map((word, i) => <span style={`--delay: ${i * 0.05}s`}>{word}</span>)}
         </h1>
-        <a href='/' class="author">By {data.profile.name}</a>
+        <a href='/' class="author anim-fade">By {data.profile.name}</a>
       </header>
-      <div class='content'>
+      <div class='content anim-fade-up'>
         <Content />
       </div>
     </div>
@@ -71,6 +71,7 @@ const { Content } = await render(post);
     min-height: 400px;
     overflow: hidden;
     border-bottom: var(--border-width) solid var(--border-color);
+    background: var(--accent-tertiary);
 
     img {
       display: block;
@@ -296,6 +297,66 @@ const { Content } = await render(post);
     }
   }
 
+  /* Entry animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(1.05);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes wordIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px) rotate(-2deg);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) rotate(0);
+    }
+  }
+
+  .anim-hero {
+    animation: scaleIn 0.8s ease-out both;
+
+    img {
+      animation: fadeIn 1s ease-out both;
+    }
+  }
+
+  h1 span {
+    animation: wordIn 0.4s ease-out both;
+    animation-delay: var(--delay, 0s);
+  }
+
+  .anim-fade {
+    animation: fadeIn 0.5s ease-out 0.3s both;
+  }
+
+  .anim-fade-up {
+    animation: fadeInUp 0.6s ease-out 0.4s both;
+  }
+
   /* Print styles */
   @media print {
     .hero-image {
@@ -373,3 +434,4 @@ const { Content } = await render(post);
     }
   }
 </style>
+
