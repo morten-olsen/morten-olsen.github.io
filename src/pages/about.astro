@@ -16,216 +16,535 @@ const jsonLd = await profile.getJsonLd();
   jsonLd={jsonLd}
 >
   <main class="main">
-    <div class="content">
-      <Content />
-    </div>
+    <header class="cv-header">
+      <div class="intro">
+        <Content />
+      </div>
+      <aside class="profiles">
+        <h2>Links</h2>
+        <ul>
+          {Object.entries(profile.profiles).map(([id, profile]) => (
+            <li class="profile">
+              <a href={profile.url} target="_blank">{profile.network?.name || id}</a>
+            </li>
+          ))}
+        </ul>
+      </aside>
+    </header>
 
-    <div class="profiles">
-      <h2>Profiles</h2>
-      <ul>
-      {Object.entries(profile.profiles).map(([id, profile]) => (
-        <li class="profile">
-          <a href={profile.url} target="_blank">{profile.network?.name || id}</a>
-        </li>
-      ))}
-      </ul> 
-    </div>
+    <div class="cv-body">
+      <section class="experiences">
+        <div class="section-title">
+          <h2>Experience</h2>
+        </div>
+        <div class="timeline">
+          {experiences.map((experience, index) => (
+            <article data-fadein class="experience" style={`--accent: ${['var(--accent-primary)', 'var(--accent-tertiary)', 'var(--accent-lavender)', 'var(--accent-lime)'][index % 4]}`}>
+              <div class="time-badge">
+                <span class="from">{formatMonthYear(experience.data.startDate)}</span>
+                <span class="to">{formatMonthYear(experience.data.endDate)}</span>
+              </div>
+              <div class="experience-card">
+                {experience.data.logo && (
+                  <div class="logo">
+                    <Picture
+                      alt='Company logo'
+                      fetchpriority="auto"
+                      src={experience.data.logo}
+                      formats={['avif', 'webp', 'jpeg']}
+                      width={60}
+                    />
+                  </div>
+                )}
+                <div class="details">
+                  <a class="companyName" href={`/experiences/${experience.id}`}>
+                    <h3>{experience.data.company.name}</h3>
+                  </a>
+                  <a class="position" href={`/experiences/${experience.id}`}>
+                    {positionWithTeam(experience.data.position.name, experience.data.position.team)}
+                  </a>
+                  {experience.data.stack && (
+                    <div class="stack">
+                      {experience.data.stack.map((item) => (
+                        <span class="tech">{item}</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
 
-    <div class="experiences">
-      <h2>Experiences</h2>
-      <div class="content">
-        {experiences.map((experience) => (
-          <div data-fadein class="experience">
-            {experience.data.logo && (
-              <div class="logo">
-                <Picture
-                  alt='thumbnail image'
-                  fetchpriority="auto"
-                  src={experience.data.logo}
-                  formats={['avif', 'webp', 'jpeg']}
-                  width={50}
-                />
-              </div>
-            )}
-            <div class="header">
-              <a class="companyName" href={`/experiences/${experience.id}`}><h3>{experience.data.company.name}</h3></a>
-              <a class="position" href={`/experiences/${experience.id}`}><h3>{positionWithTeam(experience.data.position.name, experience.data.position.team)}</h3></a>
+      <aside class="skills-sidebar">
+        <div class="section-title">
+          <h2>Skills</h2>
+        </div>
+        {skills.map((skill, index) => (
+          <div class="skill" data-fadein style={`--accent: ${['var(--accent-secondary)', 'var(--accent-tertiary)', 'var(--accent-lime)', 'var(--accent-lavender)'][index % 4]}`}>
+            <a class="skill-name" href={`/skills/${skill.id}`}>
+              <h3>{skill.data.name}</h3>
+            </a>
+            <div class="technologies">
+              {skill.data.technologies.map((technology) => (
+                <span class="tech">{technology}</span>
+              ))}
             </div>
-            <div class="time">
-              <div class="from">
-                {formatMonthYear(experience.data.startDate)}
-              </div>
-              <div class="to">
-                {formatMonthYear(experience.data.endDate)}
-              </div>
-            </div>
-            {experience.data.stack && (
-              <div class="stack">
-                <ul>
-                {experience.data.stack.map((item) => (
-                  <li>{item}</li> 
-                ))}
-                </ul>
-              </div>
-            )}
           </div>
         ))}
-      </div>
-    </div>
-
-    <div class="skills">
-      <h2>Technologies</h2>
-      {skills.map((skill) => (
-        <div class="skill" data-fadein>
-          <a class="name" href={`/skills/${skill.id}`}><h3>{skill.data.name}</h3></a>
-          <div class="technologies">
-            <ul>
-            {skill.data.technologies.map((technology) => (
-              <li>{technology}</li>
-            ))}
-            </ul>
-          </div>
-        </div>
-      ))}
+      </aside>
     </div>
   </main>
 </Html>
 
 <style>
 .main {
-  padding: 30px;
   max-width: var(--content-width);
-  margin: auto;
+  margin: 0 auto;
+  padding: 0 30px calc(var(--gap) * 4);
+}
+
+/* Header section */
+.cv-header {
   display: grid;
+  grid-template-columns: 1fr 280px;
   gap: calc(var(--gap) * 3);
-  grid-template-columns: 200px 1fr;
-  grid-template-rows: auto;
-  grid-template-areas:
-    "content content"
-    "profiles profiles"
-    "skills experiences";
+  padding: calc(var(--gap) * 3) 0;
+  border-bottom: var(--border-width) solid var(--border-color);
+  margin-bottom: calc(var(--gap) * 3);
+
+  .intro {
+    font-size: var(--font-lg);
+    line-height: 1.7;
+
+    :global(p:first-child) {
+      font-size: var(--font-xl);
+      font-weight: var(--fw-md);
+      line-height: 1.4;
+    }
+  }
+
+  .profiles {
+    h2 {
+      font-weight: var(--fw-md);
+      font-size: var(--font-lg);
+      text-transform: uppercase;
+      margin-bottom: var(--gap);
+      background: var(--accent-tertiary);
+      padding: 0.5rem 1rem;
+      border: var(--border-width) solid var(--border-color);
+      box-shadow: var(--shadow-brutal);
+      display: inline-block;
+    }
+
+    ul {
+      display: flex;
+      flex-direction: column;
+      gap: calc(var(--gap) / 2);
+    }
+
+    .profile a {
+      display: block;
+      padding: 0.75rem 1rem;
+      border: var(--border-width) solid var(--border-color);
+      background: var(--card-bg);
+      box-shadow: var(--shadow-brutal);
+      font-weight: var(--fw-md);
+      text-transform: uppercase;
+      font-size: var(--fs-sm);
+      transition: all 0.1s ease;
+
+      &:hover {
+        background: var(--accent-primary);
+        transform: translate(-3px, -3px);
+        box-shadow: 9px 9px 0 var(--border-color);
+      }
+    }
+  }
+}
+
+/* Body layout */
+.cv-body {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: calc(var(--gap) * 3);
+}
+
+/* Section titles */
+.section-title {
+  margin-bottom: calc(var(--gap) * 2);
 
   h2 {
     font-weight: var(--fw-md);
-  }
-
-  @media (max-width: 1024px) {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "content"
-      "profiles"
-      "skills"
-      "experiences";
+    font-size: var(--font-xxl);
+    text-transform: uppercase;
+    display: inline-block;
+    background: var(--accent-secondary);
+    padding: 0.5rem 1.5rem;
+    border: var(--border-width) solid var(--border-color);
+    box-shadow: var(--shadow-brutal-lg);
   }
 }
 
-.content {
-  grid-area: content;
-}
-
-.profiles {
-  grid-area: profiles;
-  display: flex;
-  gap: var(--gap);
-
-  ul {
-    display: contents;
-  }
-}
-
-.skills {
-  grid-area: skills;
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap);
-
-  .skill {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap);
-
-    .technologies ul {
-      display: flex;
-      flex-wrap: wrap;
-      gap: calc(var(--gap) / 2);
-
-      li {
-        border: solid var(--c-line) 1px;
-        padding: 3px 8px;
-        border-radius: var(--radius);
-        font-size: 12px;
-      }
-    }
-  }
-}
-
+/* Experiences timeline */
 .experiences {
-  grid-area: experiences;
-
-  .content {
+  .timeline {
     display: flex;
     flex-direction: column;
     gap: calc(var(--gap) * 2);
+    position: relative;
+    padding-left: calc(var(--gap) * 2);
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: var(--border-width);
+      background: var(--border-color);
+    }
   }
 
   .experience {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    grid-template-rows: auto;
-    column-gap: var(--gap);
-    row-gap: calc(var(--gap) / 2);
-    align-items: center;
-    grid-template-areas:
-      "logo header time"
-      "logo stack time";
+    position: relative;
 
-    .logo {
-      grid-area: logo;
+    .time-badge {
+      position: absolute;
+      left: calc(-1 * var(--gap) * 2 - 80px);
+      top: 0;
+      width: 75px;
+      text-align: right;
+      font-size: var(--fs-sm);
+      font-weight: 500;
+      display: flex;
+      flex-direction: column;
 
-      img {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        object-fit: cover;
-        object-position: center center;
+      .from, .to {
+        white-space: nowrap;
       }
     }
 
-    .time {
-      grid-area: time;
-      display: flex;
-      flex-direction: column;
-      text-align: center;
-      justify-content: center;
-      align-items: center;
+    &::before {
+      content: '';
+      position: absolute;
+      left: calc(-1 * var(--gap) * 2 - 8px);
+      top: 20px;
+      width: 16px;
+      height: 16px;
+      background: var(--accent, var(--accent-primary));
+      border: var(--border-width) solid var(--border-color);
     }
 
-    .companyName {
-      grid-area: companyName;
+    .experience-card {
+      display: flex;
+      gap: var(--gap);
+      padding: calc(var(--gap) * 1.5);
+      border: var(--border-width) solid var(--border-color);
+      background: var(--card-bg);
+      box-shadow: var(--shadow-brutal);
+      transition: all 0.1s ease;
+
+      &:hover {
+        transform: translate(-3px, -3px);
+        box-shadow: 9px 9px 0 var(--border-color);
+      }
+    }
+
+    .logo img {
+      width: 60px;
+      height: 60px;
+      border: var(--border-width) solid var(--border-color);
+      object-fit: cover;
+    }
+
+    .details {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: calc(var(--gap) / 2);
+    }
+
+    .companyName h3 {
       font-weight: var(--fw-md);
+      font-size: var(--font-lg);
+      text-transform: uppercase;
+      background: var(--accent, var(--accent-primary));
+      padding: 0.2rem 0.6rem;
+      border: 2px solid var(--border-color);
+      display: inline-block;
     }
 
     .position {
-      grid-area: position;
-      font-size: var(--fs-sm);
-    }
-
-    .summary{
-      grid-area: summary;
+      font-size: var(--fs-md);
+      font-weight: 500;
     }
 
     .stack {
-      grid-area: stack;
-      ul {
-        display: flex;
-        flex-wrap: wrap;
-        gap: calc(var(--gap) / 4);
+      display: flex;
+      flex-wrap: wrap;
+      gap: calc(var(--gap) / 3);
+      margin-top: calc(var(--gap) / 2);
 
-        li {
-          border: solid var(--c-line) 1px;
-          padding: 3px 8px;
-          border-radius: var(--radius);
-          font-size: 12px;
+      .tech {
+        font-size: 11px;
+        font-weight: 500;
+        padding: 3px 8px;
+        border: 2px solid var(--border-color);
+        background: var(--c-bg-em);
+        text-transform: uppercase;
+      }
+    }
+  }
+}
+
+/* Skills sidebar */
+.skills-sidebar {
+  .section-title h2 {
+    background: var(--accent-lime);
+  }
+
+  .skill {
+    margin-bottom: calc(var(--gap) * 1.5);
+    padding: var(--gap);
+    border: var(--border-width) solid var(--border-color);
+    background: var(--card-bg);
+    box-shadow: var(--shadow-brutal);
+
+    .skill-name h3 {
+      font-weight: var(--fw-md);
+      font-size: var(--font-lg);
+      text-transform: uppercase;
+      background: var(--accent, var(--accent-secondary));
+      padding: 0.3rem 0.8rem;
+      border: 2px solid var(--border-color);
+      display: inline-block;
+      margin-bottom: calc(var(--gap) / 2);
+    }
+
+    .technologies {
+      display: flex;
+      flex-wrap: wrap;
+      gap: calc(var(--gap) / 3);
+
+      .tech {
+        font-size: 11px;
+        font-weight: 500;
+        padding: 3px 8px;
+        border: 2px solid var(--border-color);
+        background: var(--c-bg-em);
+      }
+    }
+  }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .cv-header {
+    grid-template-columns: 1fr;
+
+    .profiles ul {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+  }
+
+  .cv-body {
+    grid-template-columns: 1fr;
+  }
+
+  .experiences .timeline {
+    padding-left: var(--gap);
+
+    .time-badge {
+      position: static;
+      width: auto;
+      text-align: left;
+      flex-direction: row;
+      gap: 0.5rem;
+      margin-bottom: calc(var(--gap) / 2);
+      padding: 0.3rem 0.6rem;
+      background: var(--c-bg-em);
+      border: 2px solid var(--border-color);
+      display: inline-flex;
+      width: fit-content;
+
+      .from::after {
+        content: ' — ';
+      }
+    }
+
+    .experience::before {
+      left: calc(-1 * var(--gap) - 8px);
+    }
+  }
+}
+
+/* Print styles for CV/Resume */
+@media print {
+  .main {
+    padding: 0;
+    max-width: none;
+  }
+
+  .cv-header {
+    display: block;
+    border-bottom: 2px solid #000;
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+
+    .intro {
+      font-size: 11pt;
+      margin-bottom: 1rem;
+
+      :global(p:first-child) {
+        font-size: 12pt;
+      }
+    }
+
+    .profiles {
+      h2 { display: none; }
+
+      ul {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .profile a {
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        font-size: 9pt;
+
+        &::after {
+          content: " (" attr(href) ")";
+          font-size: 8pt;
+          color: #666;
+        }
+      }
+    }
+  }
+
+  .cv-body {
+    display: block;
+  }
+
+  .section-title {
+    margin-bottom: 0.75rem;
+
+    h2 {
+      background: none !important;
+      border: none;
+      box-shadow: none;
+      padding: 0;
+      font-size: 14pt;
+      border-bottom: 2px solid #000;
+      display: block;
+    }
+  }
+
+  .experiences {
+    margin-bottom: 1.5rem;
+
+    .timeline {
+      padding-left: 0;
+
+      &::before { display: none; }
+    }
+
+    .experience {
+      page-break-inside: avoid;
+      margin-bottom: 0.75rem;
+
+      &::before { display: none; }
+
+      .time-badge {
+        position: static;
+        flex-direction: row;
+        gap: 0;
+        font-size: 9pt;
+        color: #666;
+        margin-bottom: 0.25rem;
+        padding: 0;
+        background: none;
+        border: none;
+
+        .from::after { content: ' — '; }
+      }
+
+      .experience-card {
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #ccc;
+      }
+
+      .logo { display: none; }
+
+      .companyName h3 {
+        font-size: 11pt;
+        background: none;
+        border: none;
+        padding: 0;
+        display: inline;
+      }
+
+      .position {
+        font-size: 10pt;
+        color: #444;
+      }
+
+      .stack {
+        margin-top: 0.25rem;
+
+        .tech {
+          border: none;
+          background: none;
+          padding: 0;
+          font-size: 9pt;
+          color: #444;
+
+          &::after { content: ', '; }
+          &:last-child::after { content: ''; }
+        }
+      }
+    }
+  }
+
+  .skills-sidebar {
+    .skill {
+      border: none;
+      box-shadow: none;
+      padding: 0;
+      margin-bottom: 0.5rem;
+      page-break-inside: avoid;
+
+      .skill-name h3 {
+        font-size: 11pt;
+        background: none;
+        border: none;
+        padding: 0;
+        display: inline;
+        margin-bottom: 0;
+
+        &::after { content: ': '; }
+      }
+
+      .technologies {
+        display: inline;
+
+        .tech {
+          display: inline;
+          border: none;
+          background: none;
+          padding: 0;
+          font-size: 10pt;
+
+          &::after { content: ', '; }
+          &:last-child::after { content: ''; }
         }
       }
     }

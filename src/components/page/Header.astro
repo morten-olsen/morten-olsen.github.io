@@ -12,85 +12,126 @@ const links = {
 ---
 
 <header class="header">
-  <a class="image" href="/">
-    <Picture
-      class="picture"
-      alt='Profile Picture'
-      src={profile.image}
-      fetchpriority="high"
-      formats={['avif', 'webp', 'jpeg']}
-      width={120}
-    />
-  </a>
-  <a class="info" href="/">
-    <div class="name">{profile.name}</div>
-    {currentExperience && (
-      <div  class="work">
-      {currentExperience.data.position.name} @ {currentExperience.data.company.name}
-      </div>
-    )}
-  </a>
-  <div class="links">
-    {Object.entries(links).map(([target, name]) => (
-      <a class={currentPath === target ? 'link active' : 'link'} href={target}>{name}</a>
-    ))}
+  <div class="header-inner">
+    <a class="image" href="/">
+      <Picture
+        class="picture"
+        alt='Profile Picture'
+        src={profile.image}
+        fetchpriority="high"
+        formats={['avif', 'webp', 'jpeg']}
+        width={120}
+      />
+    </a>
+    <a class="info" href="/">
+      <div class="name">{profile.name}</div>
+      {currentExperience && (
+        <div class="work">
+          {currentExperience.data.position.name} @ {currentExperience.data.company.name}
+        </div>
+      )}
+    </a>
+    <nav class="links">
+      {Object.entries(links).map(([target, name]) => (
+        <a class={currentPath === target ? 'link active' : 'link'} href={target}>{name}</a>
+      ))}
+    </nav>
   </div>
 </header>
 
 <style>
   .header {
+    background: var(--accent-primary);
+    border-bottom: var(--border-width) solid var(--border-color);
+    padding: 0 30px;
+  }
+
+  .header-inner {
     max-width: var(--content-width);
-    margin: 80px auto 0 auto;
-    padding: 30px;
-    display: grid;
-    gap: var(--gap);
+    margin: 0 auto;
+    padding: 20px 0;
+    display: flex;
+    gap: calc(var(--gap) * 1.5);
     align-items: center;
-    grid-template-columns: auto auto 1fr auto;
-    grid-template-rows: auto;
-    grid-template-areas:
-      "image info . links";
   }
 
   img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-  }
-
-  .image {
-    grid-area: image;
+    width: 70px;
+    height: 70px;
+    border: var(--border-width) solid var(--border-color);
+    box-shadow: var(--shadow-brutal);
   }
 
   .info {
-    grid-area: info;
     display: flex;
     flex-direction: column;
+    flex: 1;
 
     .name {
       font-weight: var(--fw-md);
+      font-size: var(--font-xl);
       color: var(--t-fg);
       text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .work {
-      font-size: var(--fs-sm);
+      font-size: var(--fs-md);
       color: var(--t-fg);
       text-decoration: none;
+      font-weight: 500;
     }
   }
 
   .links {
-    grid-area: links;
     display: flex;
-    gap: var(--gap);
+    gap: calc(var(--gap) / 2);
 
     .link {
-      padding: 7px 12px;
-      border-radius: var(--radius);
+      padding: 12px 24px;
+      border: var(--border-width) solid var(--border-color);
+      font-weight: var(--fw-md);
+      font-size: var(--font-lg);
+      text-transform: uppercase;
+      background: var(--card-bg);
+      box-shadow: var(--shadow-brutal);
+      transition: all 0.1s ease;
+
+      &:hover {
+        transform: translate(-3px, -3px);
+        box-shadow: 9px 9px 0 var(--border-color);
+      }
 
       &.active {
-        background: var(--c-bg-em);
+        background: var(--accent-tertiary);
       }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .header-inner {
+      flex-wrap: wrap;
+    }
+
+    .info .name {
+      font-size: var(--font-lg);
+    }
+
+    .links {
+      width: 100%;
+      justify-content: flex-start;
+
+      .link {
+        padding: 10px 16px;
+        font-size: var(--fs-md);
+      }
+    }
+  }
+
+  @media print {
+    .header {
+      display: none;
     }
   }
 </style>

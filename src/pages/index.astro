@@ -15,36 +15,43 @@ const jsonLd = await profile.getJsonLd();
   jsonLd={jsonLd}
 >
   <main class="main">
-    <div class="content">
-      <Content />
-    </div>
+    <section class="hero">
+      <div class="hero-label">About</div>
+      <div class="hero-content">
+        <Content />
+      </div>
+    </section>
 
+    <section class="posts-section">
+      <h2 class="section-title">Writing</h2>
 
-
-    <h2>Posts</h2>
-    <div class="posts">
-      {posts.map((post) => (
-        <div class="post" data-fadein>
-          <a href={`/posts/${post.id}`}>
-          <Picture
-            alt='thumbnail image'
-            src={post.data.heroImage}
-            formats={['avif', 'webp', 'jpeg']}
-            fetchpriority="auto"
-            widths={[100, 200, 300]}
-          />
-          </a>
-          <a class="title" href={`/posts/${post.id}`}><h3>{post.data.title}</h3></a>
-          <div class="subtitle">
-            <AbsoluteTime
-              datetime={post.data.pubDate}
-              format={{ month: "long", day: "numeric", year: "numeric" }}
-            />
-            {" "}&bull; {post.readingTime} min read
-          </div>
-        </div>
-      ))}
-    </div>
+      <div class="posts">
+        {posts.map((post, index) => (
+          <article class={`post ${index === 0 ? 'featured' : ''}`} data-fadein>
+            <a href={`/posts/${post.id}`} class="post-link">
+              <div class="post-image">
+                <Picture
+                  alt='thumbnail image'
+                  src={post.data.heroImage}
+                  formats={['avif', 'webp', 'jpeg']}
+                  fetchpriority={index === 0 ? "high" : "auto"}
+                  widths={[200, 400, 600]}
+                />
+              </div>
+              <div class="post-content">
+                <h3>{post.data.title}</h3>
+                <div class="post-meta">
+                  <AbsoluteTime
+                    datetime={post.data.pubDate}
+                    format={{ month: "short", year: "numeric" }}
+                  /> · {post.readingTime} min
+                </div>
+              </div>
+            </a>
+          </article>
+        ))}
+      </div>
+    </section>
   </main>
 </Html>
 
@@ -52,45 +59,199 @@ const jsonLd = await profile.getJsonLd();
 
 <style>
 .main {
-  padding: 30px;
   max-width: var(--content-width);
-  margin: 80px auto;
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--gap) * 3);
-  padding-bottom: 50px;
+  margin: 0 auto;
+  padding: 0 30px 80px;
+}
 
-  h2 {
+/* Hero section */
+.hero {
+  padding: calc(var(--gap) * 4) 0 calc(var(--gap) * 3);
+  position: relative;
+
+  .hero-label {
+    position: absolute;
+    left: -40px;
+    top: calc(var(--gap) * 4);
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    background: var(--border-color);
+    color: var(--card-bg);
     font-weight: var(--fw-md);
+    font-size: var(--fs-sm);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding: 1rem 0.5rem;
+  }
+
+  .hero-content {
+    font-size: var(--font-lg);
+    line-height: 1.8;
+    padding: calc(var(--gap) * 2);
+    border: var(--border-width) solid var(--border-color);
+    background: var(--card-bg);
+    box-shadow: var(--shadow-brutal);
+
+    :global(p:first-child) {
+      font-size: var(--font-xxl);
+      font-weight: var(--fw-md);
+      line-height: 1.4;
+      margin-bottom: var(--gap);
+    }
+
+    :global(p:last-child) {
+      margin-bottom: 0;
+    }
+  }
+}
+
+/* Posts section */
+.posts-section {
+  .section-title {
+    font-weight: var(--fw-md);
+    font-size: var(--font-xxl);
+    text-transform: uppercase;
+    margin-bottom: calc(var(--gap) * 2);
+    background: var(--accent-secondary);
+    padding: 0.5rem 1.5rem;
+    border: var(--border-width) solid var(--border-color);
+    box-shadow: var(--shadow-brutal);
+    display: inline-block;
   }
 }
 
 .posts {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: calc(var(--gap) * 2);
+  grid-template-columns: repeat(3, 1fr);
+  gap: calc(var(--gap) * 1.5);
+}
 
-  .post {
+.post {
+  border: var(--border-width) solid var(--border-color);
+  background: var(--card-bg);
+  box-shadow: var(--shadow-brutal);
+  transition: all 0.15s ease;
+
+  .post-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  /* First post spans 2 columns and 2 rows */
+  &.featured {
+    grid-column: span 2;
+    grid-row: span 2;
+
+    .post-image img {
+      height: 100%;
+      min-height: 400px;
+    }
+
+    .post-content {
+      padding: calc(var(--gap) * 1.5);
+    }
+
+    .post-content h3 {
+      font-size: var(--font-xl);
+    }
+  }
+
+  .post-image {
+    overflow: hidden;
+    flex: 1;
+
     img {
+      display: block;
       width: 100%;
-      max-height: 250px;
+      height: 160px;
       object-fit: cover;
-      border-radius: var(--radius);
-      box-shadow: 0 0 40px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease;
     }
+  }
 
-    .title {
+  .post-content {
+    padding: var(--gap);
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--gap) / 2);
+    border-top: var(--border-width) solid var(--border-color);
+
+    h3 {
       font-weight: var(--fw-md);
+      font-size: var(--fs-md);
+      line-height: 1.3;
+      text-transform: uppercase;
     }
+  }
 
-    .subtitle {
-      font-size: var(--fs-sm);
-    }
+  .post-meta {
+    font-size: var(--fs-sm);
+    color: var(--color-text-light);
+  }
 
-    &:hover {
+  &:hover {
+    transform: translate(-4px, -4px);
+    box-shadow: 10px 10px 0 var(--border-color);
+
+    .post-image img {
       transform: scale(1.05);
     }
   }
 }
 
+@media (max-width: 900px) {
+  .posts {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .post.featured {
+    grid-column: span 2;
+    grid-row: span 1;
+
+    .post-image img {
+      min-height: 250px;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .hero {
+    padding: calc(var(--gap) * 2) 0;
+
+    .hero-label {
+      display: none;
+    }
+
+    .hero-content {
+      font-size: var(--fs-md);
+      padding: var(--gap);
+
+      :global(p:first-child) {
+        font-size: var(--font-xl);
+      }
+    }
+  }
+
+  .posts-section .section-title {
+    font-size: var(--font-xl);
+  }
+
+  .posts {
+    grid-template-columns: 1fr;
+  }
+
+  .post.featured {
+    grid-column: span 1;
+
+    .post-image img {
+      min-height: 200px;
+    }
+  }
+
+  .post .post-content h3 {
+    font-size: var(--fs-md);
+  }
+}
 </style>

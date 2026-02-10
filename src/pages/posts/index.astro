@@ -3,15 +3,142 @@ import { getCollection } from 'astro:content';
 import Html from '~/components/page/Html.astro';
 
 const posts = await getCollection('posts');
+const colors = ['var(--accent-primary)', 'var(--accent-tertiary)', 'var(--accent-lime)', 'var(--accent-lavender)'];
 ---
 
 <Html
   title="Morten Olsen's Posts"
-  description='Foo'
+  description='All blog posts'
 >
-  <h1>Posts</h1>
+  <main class="main">
+    <header class="page-header">
+      <h1>All Posts</h1>
+      <div class="count">{posts.length} articles</div>
+    </header>
 
-  {posts.map((post) => (
-    <a href={`/posts/${post.id}`}>{post.data.title}</a>
-  ))}
+    <ul class="posts">
+      {posts.map((post, index) => (
+        <li class="post" style={`--accent: ${colors[index % colors.length]}`}>
+          <span class="number">{String(index + 1).padStart(2, '0')}</span>
+          <a href={`/posts/${post.id}`}>{post.data.title}</a>
+          <span class="arrow">→</span>
+        </li>
+      ))}
+    </ul>
+  </main>
 </Html>
+
+<style>
+  .main {
+    max-width: var(--content-width);
+    margin: 0 auto;
+    padding: 0 30px calc(var(--gap) * 4);
+  }
+
+  .page-header {
+    padding: calc(var(--gap) * 4) 0 calc(var(--gap) * 3);
+    display: flex;
+    align-items: flex-end;
+    gap: calc(var(--gap) * 2);
+
+    h1 {
+      font-weight: var(--fw-md);
+      font-size: var(--font-xxl);
+      text-transform: uppercase;
+      background: var(--accent-secondary);
+      padding: 0.6rem 1.5rem;
+      border: var(--border-width) solid var(--border-color);
+      box-shadow: var(--shadow-brutal-lg);
+    }
+
+    .count {
+      font-size: var(--font-lg);
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      background: var(--c-bg-em);
+      border: var(--border-width) solid var(--border-color);
+    }
+  }
+
+  .posts {
+    display: flex;
+    flex-direction: column;
+
+    .post {
+      display: flex;
+      align-items: center;
+      gap: var(--gap);
+      border: var(--border-width) solid var(--border-color);
+      border-bottom: none;
+      background: var(--card-bg);
+      transition: all 0.1s ease;
+      position: relative;
+
+      &:last-child {
+        border-bottom: var(--border-width) solid var(--border-color);
+      }
+
+      .number {
+        font-weight: var(--fw-md);
+        font-size: var(--font-lg);
+        padding: calc(var(--gap) * 1.5);
+        background: var(--accent, var(--accent-primary));
+        border-right: var(--border-width) solid var(--border-color);
+        min-width: 70px;
+        text-align: center;
+      }
+
+      a {
+        flex: 1;
+        padding: calc(var(--gap) * 1.5) var(--gap);
+        font-weight: var(--fw-md);
+        font-size: var(--font-lg);
+        text-transform: uppercase;
+      }
+
+      .arrow {
+        font-size: var(--font-xl);
+        padding-right: calc(var(--gap) * 1.5);
+        opacity: 0;
+        transform: translateX(-10px);
+        transition: all 0.15s ease;
+      }
+
+      &:hover {
+        background: var(--accent, var(--accent-primary));
+        transform: translateX(-6px);
+        box-shadow: 6px 0 0 var(--border-color);
+
+        .arrow {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+    }
+  }
+
+  @media (max-width: 600px) {
+    .page-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--gap);
+    }
+
+    .posts .post {
+      .number {
+        min-width: 50px;
+        padding: var(--gap);
+        font-size: var(--fs-md);
+      }
+
+      a {
+        font-size: var(--fs-md);
+        padding: var(--gap);
+      }
+
+      .arrow {
+        display: none;
+      }
+    }
+  }
+</style>

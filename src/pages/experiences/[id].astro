@@ -21,27 +21,160 @@ const { Content } = await render(experience);
   title={experience.data.slug}
   description={experience.data.slug}
 >
-  <main>
-    <h1>{experience.data.company.name}</h1>
-    <h2>{positionWithTeam(experience.data.position.name, experience.data.position.team)}</h2>
-    {experience.data.logo && (
-      <Picture
-        alt='thumbnail image'
-        fetchpriority="auto"
-        src={experience.data.logo}
-        formats={['avif', 'webp', 'jpeg']}
-        width={50}
-      />
-    )}
-    {formatMonthYear(experience.data.startDate)}
-    {formatMonthYear(experience.data.endDate)}
-    <Content />
+  <main class="main">
+    <a href="/about/" class="back-link">← Back to CV</a>
+
+    <header class="header-section">
+      <div class="header-top">
+        {experience.data.logo && (
+          <Picture
+            class="logo"
+            alt='Company logo'
+            fetchpriority="auto"
+            src={experience.data.logo}
+            formats={['avif', 'webp', 'jpeg']}
+            width={100}
+          />
+        )}
+        <div class="time-badge">
+          <span class="from">{formatMonthYear(experience.data.startDate)}</span>
+          <span class="to">{formatMonthYear(experience.data.endDate)}</span>
+        </div>
+      </div>
+      <h1>{experience.data.company.name}</h1>
+      <h2>{positionWithTeam(experience.data.position.name, experience.data.position.team)}</h2>
+    </header>
+
+    <div class="content">
+      <Content />
+    </div>
   </main>
 </Html>
 
 <style>
-main {
-  max-width: var(--content-width);
-  margin: auto;
+.main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 30px calc(var(--gap) * 4);
+}
+
+.back-link {
+  display: inline-block;
+  margin: calc(var(--gap) * 2) 0;
+  padding: 0.75rem 1.5rem;
+  border: var(--border-width) solid var(--border-color);
+  background: var(--card-bg);
+  box-shadow: var(--shadow-brutal);
+  font-weight: var(--fw-md);
+  text-transform: uppercase;
+  transition: all 0.1s ease;
+
+  &:hover {
+    background: var(--accent-primary);
+    transform: translate(-3px, -3px);
+    box-shadow: 9px 9px 0 var(--border-color);
+  }
+}
+
+.header-section {
+  margin-bottom: calc(var(--gap) * 2);
+  padding: calc(var(--gap) * 2);
+  border: var(--border-width) solid var(--border-color);
+  box-shadow: var(--shadow-brutal-lg);
+  background: var(--accent-tertiary);
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--gap);
+  }
+
+  .logo {
+    width: 100px;
+    height: 100px;
+    border: var(--border-width) solid var(--border-color);
+    box-shadow: var(--shadow-brutal);
+    object-fit: cover;
+    background: var(--card-bg);
+  }
+
+  .time-badge {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+    padding: 0.75rem 1rem;
+    background: var(--card-bg);
+    border: var(--border-width) solid var(--border-color);
+    box-shadow: var(--shadow-brutal);
+    font-weight: 500;
+
+    .from::after {
+      content: ' —';
+    }
+  }
+
+  h1 {
+    font-weight: var(--fw-md);
+    font-size: var(--font-xxl);
+    text-transform: uppercase;
+    margin-bottom: calc(var(--gap) / 2);
+  }
+
+  h2 {
+    font-size: var(--font-lg);
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    background: var(--card-bg);
+    border: var(--border-width) solid var(--border-color);
+    display: inline-block;
+  }
+}
+
+.content {
+  padding: calc(var(--gap) * 2);
+  border: var(--border-width) solid var(--border-color);
+  box-shadow: var(--shadow-brutal);
+  background: var(--card-bg);
+  font-size: var(--font-lg);
+  line-height: 1.7;
+
+  :global(p) {
+    margin-bottom: var(--gap);
+  }
+
+  :global(ul) {
+    margin-bottom: var(--gap);
+    padding-left: var(--gap);
+  }
+
+  :global(li) {
+    list-style: square;
+    margin-left: var(--gap);
+    padding-bottom: calc(var(--gap) / 2);
+  }
+}
+
+@media (max-width: 600px) {
+  .header-section {
+    .header-top {
+      flex-direction: column;
+      gap: var(--gap);
+    }
+
+    .time-badge {
+      align-self: flex-start;
+      flex-direction: row;
+      gap: 0.5rem;
+
+      .from::after {
+        content: ' —';
+      }
+    }
+
+    h1 {
+      font-size: var(--font-xl);
+    }
+  }
 }
 </style>

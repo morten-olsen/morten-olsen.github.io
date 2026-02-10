@@ -1,6 +1,7 @@
 ---
 import type { GetStaticPaths } from "astro";
 import { render } from "astro:content";
+import Html from "~/components/page/Html.astro";
 import { data } from "~/data/data";
 
 export const getStaticPaths = (async () => {
@@ -10,9 +11,141 @@ export const getStaticPaths = (async () => {
   }));
 }) satisfies GetStaticPaths;
 
-const skill= await data.skills.get(Astro.params.id)
+const skill = await data.skills.get(Astro.params.id)
 const { Content } = await render(skill);
 ---
 
-<h1>Hello {skill.data.name}</h1>
-<Content />
+<Html
+  title={skill.data.name}
+  description={skill.data.name}
+>
+  <main class="main">
+    <a href="/about/" class="back-link">← Back to CV</a>
+
+    <header class="header-section">
+      <h1>{skill.data.name}</h1>
+      {skill.data.technologies && skill.data.technologies.length > 0 && (
+        <div class="technologies">
+          {skill.data.technologies.map((tech: string, index: number) => (
+            <span class="tech" style={`--accent: ${['var(--accent-primary)', 'var(--accent-tertiary)', 'var(--accent-lime)', 'var(--accent-lavender)'][index % 4]}`}>{tech}</span>
+          ))}
+        </div>
+      )}
+    </header>
+
+    <div class="content">
+      <Content />
+    </div>
+  </main>
+</Html>
+
+<style>
+.main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 30px calc(var(--gap) * 4);
+}
+
+.back-link {
+  display: inline-block;
+  margin: calc(var(--gap) * 2) 0;
+  padding: 0.75rem 1.5rem;
+  border: var(--border-width) solid var(--border-color);
+  background: var(--card-bg);
+  box-shadow: var(--shadow-brutal);
+  font-weight: var(--fw-md);
+  text-transform: uppercase;
+  transition: all 0.1s ease;
+
+  &:hover {
+    background: var(--accent-primary);
+    transform: translate(-3px, -3px);
+    box-shadow: 9px 9px 0 var(--border-color);
+  }
+}
+
+.header-section {
+  margin-bottom: calc(var(--gap) * 2);
+  padding: calc(var(--gap) * 2);
+  border: var(--border-width) solid var(--border-color);
+  box-shadow: var(--shadow-brutal-lg);
+  background: var(--accent-lime);
+
+  h1 {
+    font-weight: var(--fw-md);
+    font-size: var(--font-xxl);
+    text-transform: uppercase;
+    margin-bottom: calc(var(--gap) * 1.5);
+  }
+
+  .technologies {
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--gap) / 2);
+
+    .tech {
+      border: var(--border-width) solid var(--border-color);
+      padding: 0.5rem 1rem;
+      font-size: var(--fs-md);
+      font-weight: 500;
+      background: var(--accent, var(--accent-primary));
+      box-shadow: var(--shadow-brutal);
+      transition: all 0.1s ease;
+
+      &:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 8px 8px 0 var(--border-color);
+      }
+    }
+  }
+}
+
+.content {
+  padding: calc(var(--gap) * 2);
+  border: var(--border-width) solid var(--border-color);
+  box-shadow: var(--shadow-brutal);
+  background: var(--card-bg);
+  font-size: var(--font-lg);
+  line-height: 1.7;
+
+  :global(p) {
+    margin-bottom: var(--gap);
+  }
+
+  :global(ul) {
+    margin-bottom: var(--gap);
+    padding-left: var(--gap);
+  }
+
+  :global(li) {
+    list-style: square;
+    margin-left: var(--gap);
+    padding-bottom: calc(var(--gap) / 2);
+  }
+
+  :global(h2) {
+    font-weight: var(--fw-md);
+    font-size: var(--font-xl);
+    text-transform: uppercase;
+    margin-bottom: var(--gap);
+    margin-top: calc(var(--gap) * 2);
+    padding: 0.4rem 1rem;
+    background: var(--accent-secondary);
+    border: var(--border-width) solid var(--border-color);
+    display: inline-block;
+  }
+}
+
+@media (max-width: 600px) {
+  .header-section {
+    h1 {
+      font-size: var(--font-xl);
+    }
+
+    .technologies .tech {
+      font-size: var(--fs-sm);
+      padding: 0.4rem 0.8rem;
+    }
+  }
+}
+</style>
