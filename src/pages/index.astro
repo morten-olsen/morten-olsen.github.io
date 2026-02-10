@@ -6,6 +6,7 @@ import { data } from "~/data/data"
 
 const { Content, ...profile } = data.profile;
 const posts = await data.posts.getPublished();
+const currentExperience = await data.experiences.getCurrent();
 const jsonLd = await profile.getJsonLd();
 ---
 
@@ -13,16 +14,27 @@ const jsonLd = await profile.getJsonLd();
   title={profile.name}
   description={profile.name}
   jsonLd={jsonLd}
+  hideHeader
 >
   <main class="main">
     <section class="hero">
-      <div class="hero-label">About</div>
+      <div class="hero-image">
+        <Picture
+          alt='Profile picture'
+          src={profile.image}
+          formats={['avif', 'webp', 'jpeg']}
+          fetchpriority="high"
+          widths={[300, 400, 500]}
+        />
+      </div>
       <div class="hero-content">
-        <Content />
+        <h1 class="hero-name">Morten Olsen</h1>
+        <p class="hero-role">Software Engineer</p>
+        <a href="/about/" class="hero-cta">About & CV →</a>
       </div>
     </section>
 
-    <section class="posts-section">
+    <section class="posts-section" id="writing">
       <h2 class="section-title">Writing</h2>
 
       <div class="posts">
@@ -66,42 +78,63 @@ const jsonLd = await profile.getJsonLd();
 
 /* Hero section */
 .hero {
-  padding: calc(var(--gap) * 4) 0 calc(var(--gap) * 3);
-  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--gap) * 4);
+  padding: calc(var(--gap) * 8) 0 calc(var(--gap) * 5);
 
-  .hero-label {
-    position: absolute;
-    left: -40px;
-    top: calc(var(--gap) * 4);
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-    transform: rotate(180deg);
-    background: var(--border-color);
-    color: var(--card-bg);
-    font-weight: var(--fw-md);
-    font-size: var(--fs-sm);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    padding: 1rem 0.5rem;
+  .hero-image {
+    img {
+      display: block;
+      width: 220px;
+      height: 220px;
+      object-fit: cover;
+      border: var(--border-width) solid var(--border-color);
+      box-shadow: var(--shadow-brutal-lg);
+    }
   }
 
   .hero-content {
-    font-size: var(--font-lg);
-    line-height: 1.8;
-    padding: calc(var(--gap) * 2);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+  }
+
+  .hero-name {
+    font-size: 4rem;
+    font-weight: var(--fw-md);
+    text-transform: uppercase;
+    line-height: 1;
+    margin: 0;
+  }
+
+  .hero-role {
+    font-size: var(--font-xl);
+    text-transform: uppercase;
+    padding: 0.5rem 1rem;
+    background: var(--accent-primary);
+    border: var(--border-width) solid var(--border-color);
+    box-shadow: var(--shadow-brutal);
+    width: fit-content;
+    margin: 0;
+  }
+
+  .hero-cta {
+    padding: 1rem 2rem;
     border: var(--border-width) solid var(--border-color);
     background: var(--card-bg);
+    font-weight: var(--fw-md);
+    text-transform: uppercase;
+    font-size: var(--font-lg);
     box-shadow: var(--shadow-brutal);
+    transition: all 0.1s ease;
+    width: fit-content;
 
-    :global(p:first-child) {
-      font-size: var(--font-xxl);
-      font-weight: var(--fw-md);
-      line-height: 1.4;
-      margin-bottom: var(--gap);
-    }
-
-    :global(p:last-child) {
-      margin-bottom: 0;
+    &:hover {
+      transform: translate(-4px, -4px);
+      box-shadow: 10px 10px 0 var(--border-color);
+      background: var(--accent-secondary);
     }
   }
 }
@@ -216,21 +249,42 @@ const jsonLd = await profile.getJsonLd();
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 900px) {
   .hero {
-    padding: calc(var(--gap) * 2) 0;
-
-    .hero-label {
-      display: none;
-    }
+    flex-direction: column;
+    text-align: center;
+    gap: calc(var(--gap) * 2);
 
     .hero-content {
-      font-size: var(--fs-md);
-      padding: var(--gap);
+      align-items: center;
+    }
 
-      :global(p:first-child) {
-        font-size: var(--font-xl);
-      }
+    .hero-name {
+      font-size: 3rem;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .hero {
+    padding: calc(var(--gap) * 5) 0 calc(var(--gap) * 3);
+
+    .hero-image img {
+      width: 160px;
+      height: 160px;
+    }
+
+    .hero-name {
+      font-size: 2.2rem;
+    }
+
+    .hero-role {
+      font-size: var(--fs-md);
+    }
+
+    .hero-cta {
+      padding: 0.75rem 1.5rem;
+      font-size: var(--fs-md);
     }
   }
 

@@ -11,9 +11,10 @@ type Props = {
   jsonLd?: unknown;
   image?: string;
   themeColor?: string;
+  hideHeader?: boolean;
 }
 
-const { title, description, jsonLd, themeColor, image }= Astro.props;
+const { title, description, jsonLd, themeColor, image, hideHeader }= Astro.props;
 const schema = JSON.stringify(jsonLd)
 ---
 <!doctype html>
@@ -49,7 +50,7 @@ const schema = JSON.stringify(jsonLd)
     <title>{title}</title>
 	</head>
 	<body>
-    <Header />
+    {!hideHeader && <Header />}
 		<slot />
 	</body>
 </html>
