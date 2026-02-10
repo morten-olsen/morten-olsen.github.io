@@ -10,6 +10,9 @@ withFadeIn.forEach((node) => {
         node.classList.add('hidden');
       }
     })
+  }, {
+    rootMargin: '0px 0px 100px 0px', // Trigger when element is 100px below viewport
+    threshold: 0
   })
 
   observer.observe(node);
