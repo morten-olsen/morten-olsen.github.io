@@ -30,8 +30,6 @@ const hasToC = tocHeadings.length >= 3;
   jsonLd={post.jsonLd}
   image={`/posts/${post.id}/share.png`}
 >
-  <!-- Reading progress bar -->
-  <div class="progress-bar" id="progress-bar"></div>
 
   <article>
     <div class="hero-image anim-hero" data-parallax-bg>
@@ -535,17 +533,6 @@ const hasToC = tocHeadings.length >= 3;
     }
   }
 
-  /* Progress bar */
-  .progress-bar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 4px;
-    background: var(--accent-primary);
-    width: 0%;
-    z-index: 1000;
-    transition: width 0.1s ease-out;
-  }
 
   /* Content wrapper */
   .content-wrapper {
@@ -591,21 +578,26 @@ const hasToC = tocHeadings.length >= 3;
     }
 
     .toc h4 {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       text-transform: uppercase;
       font-weight: 700;
-      margin-bottom: var(--gap);
-      color: var(--color-text-light);
+      letter-spacing: 0.05em;
+      margin-bottom: calc(var(--gap) * 0.75);
+      padding: 0.3rem 0.6rem;
+      background: var(--accent-tertiary);
+      border: 2px solid var(--border-color);
+      display: inline-block;
     }
 
     .toc ul {
       list-style: none;
       padding: 0;
       margin: 0;
+      border-left: 3px solid var(--border-color);
     }
 
     .toc li {
-      margin-bottom: 0.4rem;
+      margin: 0;
       padding-left: 0;
       list-style-type: none;
 
@@ -618,17 +610,22 @@ const hasToC = tocHeadings.length >= 3;
       font-size: 0.8rem;
       color: var(--color-text-light);
       text-decoration: none;
-      transition: all 0.15s ease;
+      transition: all 0.1s ease;
       display: block;
-      padding: 0.25rem 0;
+      padding: 0.4rem 0.75rem;
+      margin-left: -3px;
+      border-left: 3px solid transparent;
 
       &:hover {
         color: var(--t-fg);
+        background: var(--c-bg-em);
       }
 
       &.active {
         color: var(--t-fg);
         font-weight: 600;
+        border-left-color: var(--accent-primary);
+        background: var(--accent-primary);
       }
     }
   }
@@ -709,20 +706,6 @@ const hasToC = tocHeadings.length >= 3;
 </style>
 
 <script>
-  // Reading progress bar
-  const progressBar = document.getElementById('progress-bar');
-  const article = document.querySelector('article');
-
-  function updateProgress() {
-    const scrollTop = window.scrollY;
-    const docHeight = article?.scrollHeight || document.documentElement.scrollHeight;
-    const winHeight = window.innerHeight;
-    const scrollPercent = (scrollTop / (docHeight - winHeight)) * 100;
-    if (progressBar) {
-      progressBar.style.width = `${Math.min(100, Math.max(0, scrollPercent))}%`;
-    }
-  }
-
   // Hero image parallax
   const heroBg = document.querySelector('[data-parallax-bg] img') as HTMLElement | null;
 
@@ -733,12 +716,7 @@ const hasToC = tocHeadings.length >= 3;
     }
   }
 
-  window.addEventListener('scroll', () => {
-    updateProgress();
-    updateParallax();
-  }, { passive: true });
-
-  updateProgress();
+  window.addEventListener('scroll', updateParallax, { passive: true });
   updateParallax();
 
   // ToC active section highlighting
