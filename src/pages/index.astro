@@ -70,30 +70,39 @@ const jsonLd = await profile.getJsonLd();
       <h2 class="section-title" data-fadein>Writing</h2>
 
       <div class="posts">
-        {posts.map((post, index) => (
-          <article class={`post ${index === 0 ? 'featured' : ''}`} data-fadein style={`--delay: ${index * 0.1}s`}>
-            <a href={`/posts/${post.id}`} class="post-link">
-              <div class="post-image">
-                <Picture
-                  alt='thumbnail image'
-                  src={post.data.heroImage}
-                  formats={['avif', 'webp', 'jpeg']}
-                  fetchpriority={index === 0 ? "high" : "auto"}
-                  widths={[200, 400, 600]}
-                />
-              </div>
-              <div class="post-content">
-                <h3>{post.data.title}</h3>
-                <div class="post-meta">
-                  <AbsoluteTime
-                    datetime={post.data.pubDate}
-                    format={{ month: "short", year: "numeric" }}
-                  /> · {post.readingTime} min
+        {posts.map((post, index) => {
+          const isFeatured = index === 0;
+          const isWide = index >= 3 && (index - 3) % 4 === 0;
+          return (
+            <article
+              class:list={['post', { featured: isFeatured, wide: isWide }]}
+              data-fadein
+              style={`--delay: ${index * 0.1}s`}
+            >
+              <a href={`/posts/${post.id}`} class="post-link">
+                <div class="post-image">
+                  <Picture
+                    alt='thumbnail image'
+                    src={post.data.heroImage}
+                    formats={['avif', 'webp', 'jpeg']}
+                    fetchpriority={index === 0 ? "high" : "auto"}
+                    widths={[200, 400, 600]}
+                  />
                 </div>
-              </div>
-            </a>
-          </article>
-        ))}
+                <div class="post-content">
+                  <h3>{post.data.title}</h3>
+                  <p class="post-description">{post.data.description}</p>
+                  <div class="post-meta">
+                    <AbsoluteTime
+                      datetime={post.data.pubDate}
+                      format={{ month: "short", year: "numeric" }}
+                    /> · {post.readingTime} min
+                  </div>
+                </div>
+              </a>
+            </article>
+          );
+        })}
       </div>
     </section>
   </main>
@@ -501,14 +510,33 @@ const jsonLd = await profile.getJsonLd();
 .posts {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  grid-auto-flow: dense;
   gap: calc(var(--gap) * 1.5);
 }
 
 .post {
+  position: relative;
   border: var(--border-width) solid var(--border-color);
   background: var(--card-bg);
   box-shadow: var(--shadow-brutal);
   transition: all 0.15s ease, opacity 0.5s ease var(--delay, 0s), translate 0.5s ease var(--delay, 0s);
+
+  /* Slight rotations for visual interest */
+  &:nth-child(4n+1):not(.featured):not(.wide) {
+    rotate: -1deg;
+  }
+  &:nth-child(4n+3):not(.featured):not(.wide) {
+    rotate: 1.5deg;
+  }
+  &:nth-child(6n):not(.featured):not(.wide) {
+    rotate: -0.75deg;
+  }
+  &.wide:nth-child(odd) {
+    rotate: 0.5deg;
+  }
+  &.wide:nth-child(even) {
+    rotate: -0.5deg;
+  }
 
   .post-link {
     display: flex;
@@ -535,14 +563,51 @@ const jsonLd = await profile.getJsonLd();
     }
   }
 
+  /* Wide horizontal cards */
+  &.wide {
+    grid-column: span 2;
+
+    .post-link {
+      flex-direction: row;
+    }
+
+    .post-image {
+      flex: 0 0 40%;
+      max-width: 40%;
+
+      img {
+        height: 100%;
+        min-height: 200px;
+      }
+    }
+
+    .post-content {
+      border-top: none;
+      border-left: var(--border-width) solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: calc(var(--gap) * 1.25);
+
+      h3 {
+        font-size: var(--font-lg);
+      }
+
+      .post-description {
+        -webkit-line-clamp: 3;
+      }
+    }
+
+  }
+
   .post-image {
     overflow: hidden;
-    flex: 1;
+    flex: 0 0 auto;
 
     img {
       display: block;
       width: 100%;
-      height: 160px;
+      height: 140px;
       object-fit: cover;
       transition: transform 0.3s ease;
     }
@@ -568,9 +633,20 @@ const jsonLd = await profile.getJsonLd();
     color: var(--color-text-light);
   }
 
+  .post-description {
+    font-size: var(--fs-sm);
+    line-height: 1.5;
+    color: var(--color-text-light);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
   &:hover {
     transform: translate(-4px, -4px);
     box-shadow: 10px 10px 0 var(--border-color);
+    rotate: 0deg;
 
     .post-image img {
       transform: scale(1.05);
@@ -589,6 +665,15 @@ const jsonLd = await profile.getJsonLd();
 
     .post-image img {
       min-height: 250px;
+    }
+  }
+
+  .post.wide {
+    grid-column: span 2;
+
+    .post-image {
+      flex: 0 0 35%;
+      max-width: 35%;
     }
   }
 }
@@ -755,6 +840,28 @@ const jsonLd = await profile.getJsonLd();
 
     .post-image img {
       min-height: 200px;
+    }
+  }
+
+  .post.wide {
+    grid-column: span 1;
+
+    .post-link {
+      flex-direction: column;
+    }
+
+    .post-image {
+      flex: none;
+      max-width: 100%;
+
+      img {
+        min-height: 160px;
+      }
+    }
+
+    .post-content {
+      border-left: none;
+      border-top: var(--border-width) solid var(--border-color);
     }
   }
 
