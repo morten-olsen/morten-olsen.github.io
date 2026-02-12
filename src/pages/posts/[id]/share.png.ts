@@ -31,69 +31,130 @@ safeRegisterFont(fontPathRegular, { family: 'Space Grotesk', weight: 'normal' })
 
 const WIDTH = 1200;
 const HEIGHT = 630;
-const PADDING = 48;
-const IMAGE_WIDTH = 580;
-const GRADIENT_WIDTH = 120;
-const INFO_X = IMAGE_WIDTH + 40;
-const INFO_WIDTH = WIDTH - INFO_X - PADDING;
-const MAX_TITLE_FONT_SIZE = 52;
-const MIN_TITLE_FONT_SIZE = 28;
+const BORDER_WIDTH = 4;
+const SHADOW_OFFSET = 6;
+const CONTENT_PADDING = 48;
+
+// Neo-brutalist color palette
+const COLORS = ['#00ffff', '#c8ff00', '#ffee00', '#ff6b6b', '#c084fc'];
+const BORDER_COLOR = '#000000';
 
 const getStaticPaths = (async () => {
   const posts = await data.posts.getPublished();
   return posts.map((post) => ({
     params: { id: post.id },
     props: {
-      // Store the fsPath during build so it's available on refresh
       heroImagePath: (post.data.heroImage as { fsPath?: string }).fsPath,
     }
   }));
 }) satisfies GetStaticPaths;
 
-const wrapText = (
+// Draw a neo-brutalist box with border and shadow
+const drawBrutalistBox = (
   ctx: CanvasRenderingContext2D,
-  text: string,
-  maxWidth: number
-): string[] => {
-  const words = text.split(' ');
-  const lines: string[] = [];
-  let currentLine = '';
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  fillColor: string
+) => {
+  // Shadow
+  ctx.fillStyle = BORDER_COLOR;
+  ctx.fillRect(x + SHADOW_OFFSET, y + SHADOW_OFFSET, width, height);
 
-  for (const word of words) {
-    const testLine = currentLine ? `${currentLine} ${word}` : word;
-    const metrics = ctx.measureText(testLine);
-    if (metrics.width > maxWidth && currentLine) {
-      lines.push(currentLine);
-      currentLine = word;
-    } else {
-      currentLine = testLine;
-    }
-  }
-  if (currentLine) {
-    lines.push(currentLine);
-  }
-  return lines;
+  // Border
+  ctx.fillStyle = BORDER_COLOR;
+  ctx.fillRect(x - BORDER_WIDTH, y - BORDER_WIDTH, width + BORDER_WIDTH * 2, height + BORDER_WIDTH * 2);
+
+  // Fill
+  ctx.fillStyle = fillColor;
+  ctx.fillRect(x, y, width, height);
 };
 
-const findFontSize = (
+// Measure word and return box dimensions
+const measureWord = (
   ctx: CanvasRenderingContext2D,
-  text: string,
+  word: string,
+  fontSize: number,
+  paddingX: number,
+  paddingY: number
+): { width: number; height: number } => {
+  ctx.font = `bold ${fontSize}px "Space Grotesk"`;
+  const metrics = ctx.measureText(word);
+  return {
+    width: metrics.width + paddingX * 2,
+    height: fontSize + paddingY * 2
+  };
+};
+
+// Layout words into rows that fit within maxWidth
+const layoutWords = (
+  ctx: CanvasRenderingContext2D,
+  words: string[],
+  fontSize: number,
+  paddingX: number,
+  paddingY: number,
+  maxWidth: number,
+  gap: number
+): { word: string; x: number; y: number; width: number; height: number; color: string }[][] => {
+  const rows: { word: string; x: number; y: number; width: number; height: number; color: string }[][] = [];
+  let currentRow: typeof rows[0] = [];
+  let currentX = 0;
+  let colorIndex = 0;
+
+  for (const word of words) {
+    const { width, height } = measureWord(ctx, word, fontSize, paddingX, paddingY);
+    const totalWidth = width + SHADOW_OFFSET + BORDER_WIDTH * 2;
+
+    if (currentX + totalWidth > maxWidth && currentRow.length > 0) {
+      rows.push(currentRow);
+      currentRow = [];
+      currentX = 0;
+    }
+
+    currentRow.push({
+      word,
+      x: currentX,
+      y: 0,
+      width,
+      height,
+      color: COLORS[colorIndex % COLORS.length]
+    });
+
+    currentX += totalWidth + gap;
+    colorIndex++;
+  }
+
+  if (currentRow.length > 0) {
+    rows.push(currentRow);
+  }
+
+  return rows;
+};
+
+// Find optimal font size that fits all words
+const findOptimalFontSize = (
+  ctx: CanvasRenderingContext2D,
+  words: string[],
   maxWidth: number,
   maxHeight: number,
   maxFontSize: number,
-  minFontSize: number
-): { fontSize: number; lines: string[] } => {
+  minFontSize: number,
+  paddingX: number,
+  paddingY: number,
+  gap: number,
+  rowGap: number
+): number => {
   for (let fontSize = maxFontSize; fontSize >= minFontSize; fontSize -= 2) {
-    ctx.font = `bold ${fontSize}px "Space Grotesk"`;
-    const lines = wrapText(ctx, text, maxWidth);
-    const lineHeight = fontSize * 1.25;
-    const totalHeight = lines.length * lineHeight;
+    const rows = layoutWords(ctx, words, fontSize, paddingX, paddingY, maxWidth, gap);
+    const rowHeight = fontSize + paddingY * 2 + SHADOW_OFFSET + BORDER_WIDTH * 2;
+    const totalHeight = rows.length * rowHeight + (rows.length - 1) * rowGap;
+
     if (totalHeight <= maxHeight) {
-      return { fontSize, lines };
+      return fontSize;
     }
   }
-  ctx.font = `bold ${minFontSize}px "Space Grotesk"`;
-  return { fontSize: minFontSize, lines: wrapText(ctx, text, maxWidth) };
+  return minFontSize;
 };
 
 const GET = async (context: APIContext<{ heroImagePath?: string }, { id: string }>) => {
@@ -104,19 +165,12 @@ const GET = async (context: APIContext<{ heroImagePath?: string }, { id: string 
   const canvas = createCanvas(WIDTH, HEIGHT);
   const ctx = canvas.getContext('2d');
 
-  // Background
-  ctx.fillStyle = '#f0f0e8';
-  ctx.fillRect(0, 0, WIDTH, HEIGHT);
-
-  // Load and draw cover image on the left
+  // Load and draw hero image edge-to-edge
   const heroImage = post.data.heroImage as { fsPath?: string; src?: string };
-
-  // Try multiple ways to get the image path
   let imagePath = propsImagePath ?? heroImage.fsPath;
 
-  // In dev mode, extract path from src URL (e.g., "/@fs/path/to/file?query...")
   if (!imagePath && heroImage.src) {
-    const src = heroImage.src.split('?')[0]; // Remove query params
+    const src = heroImage.src.split('?')[0];
     if (src.startsWith('/@fs')) {
       imagePath = src.replace('/@fs', '');
     } else if (src.startsWith('/src/')) {
@@ -130,79 +184,111 @@ const GET = async (context: APIContext<{ heroImagePath?: string }, { id: string 
       const img = await loadImage(imagePath);
       imageLoaded = true;
 
-      // Calculate scaling to cover the image area
-      const scaleX = IMAGE_WIDTH / img.width;
+      // Calculate scaling to cover the entire canvas
+      const scaleX = WIDTH / img.width;
       const scaleY = HEIGHT / img.height;
       const scale = Math.max(scaleX, scaleY);
 
       const scaledWidth = img.width * scale;
       const scaledHeight = img.height * scale;
 
-      // Center crop
-      const srcX = (scaledWidth - IMAGE_WIDTH) / 2 / scale;
+      const srcX = (scaledWidth - WIDTH) / 2 / scale;
       const srcY = (scaledHeight - HEIGHT) / 2 / scale;
 
       ctx.drawImage(
         img,
         srcX, srcY, img.width - srcX * 2, img.height - srcY * 2,
-        0, 0, IMAGE_WIDTH, HEIGHT
+        0, 0, WIDTH, HEIGHT
       );
     } catch {
-      // Image failed to load - use fallback color
+      // Image failed to load
     }
   }
 
   if (!imageLoaded) {
     ctx.fillStyle = post.data.color || '#1a1a2e';
-    ctx.fillRect(0, 0, IMAGE_WIDTH, HEIGHT);
+    ctx.fillRect(0, 0, WIDTH, HEIGHT);
   }
 
-  // Gradient transition from image to info section
-  const gradient = ctx.createLinearGradient(IMAGE_WIDTH - GRADIENT_WIDTH, 0, IMAGE_WIDTH + 20, 0);
-  gradient.addColorStop(0, 'rgba(240, 240, 232, 0)');
-  gradient.addColorStop(0.6, 'rgba(240, 240, 232, 0.85)');
-  gradient.addColorStop(1, 'rgba(240, 240, 232, 1)');
+  // Gradient overlay from bottom for text readability
+  const gradient = ctx.createLinearGradient(0, HEIGHT * 0.15, 0, HEIGHT);
+  gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+  gradient.addColorStop(0.4, 'rgba(0, 0, 0, 0.5)');
+  gradient.addColorStop(1, 'rgba(0, 0, 0, 0.85)');
   ctx.fillStyle = gradient;
-  ctx.fillRect(IMAGE_WIDTH - GRADIENT_WIDTH, 0, GRADIENT_WIDTH + 20, HEIGHT);
+  ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
-  // Info section on the right
-  const infoY = PADDING;
-  const maxTextHeight = HEIGHT - PADDING * 2 - 80;
+  // Title section - positioned at bottom (extra right margin for shadow)
+  const titleMaxWidth = WIDTH - CONTENT_PADDING * 2 - SHADOW_OFFSET - BORDER_WIDTH;
+  const paddingX = 16;
+  const paddingY = 8;
+  const gap = 12;
+  const rowGap = 8;
 
-  // Find optimal font size and wrap title
-  const { fontSize, lines } = findFontSize(
-    ctx,
-    post.data.title,
-    INFO_WIDTH,
-    maxTextHeight,
-    MAX_TITLE_FONT_SIZE,
-    MIN_TITLE_FONT_SIZE
+  const words = post.data.title.toUpperCase().split(' ');
+
+  // Calculate title layout to position from bottom
+  const fontSize = findOptimalFontSize(
+    ctx, words, titleMaxWidth, 200,
+    48, 28, paddingX, paddingY, gap, rowGap
   );
-  const lineHeight = fontSize * 1.25;
 
-  // Draw title
-  ctx.font = `bold ${fontSize}px "Space Grotesk"`;
-  ctx.fillStyle = '#000';
-  ctx.textBaseline = 'top';
+  const rows = layoutWords(ctx, words, fontSize, paddingX, paddingY, titleMaxWidth, gap);
+  const rowHeight = fontSize + paddingY * 2 + SHADOW_OFFSET + BORDER_WIDTH * 2;
+  const totalTitleHeight = rows.length * rowHeight + (rows.length - 1) * rowGap;
 
-  for (let i = 0; i < lines.length; i++) {
-    const y = infoY + i * lineHeight;
-    ctx.fillText(lines[i], INFO_X, y);
+  // Position title above the meta info
+  const metaHeight = 32 + SHADOW_OFFSET + BORDER_WIDTH * 2;
+  const titleY = HEIGHT - CONTENT_PADDING - metaHeight - 24 - totalTitleHeight;
+
+  ctx.textBaseline = 'middle';
+
+  for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
+    const row = rows[rowIndex];
+    const rowY = titleY + rowIndex * (rowHeight + rowGap);
+
+    for (const box of row) {
+      const boxX = CONTENT_PADDING + box.x;
+      const boxY = rowY;
+
+      drawBrutalistBox(ctx, boxX, boxY, box.width, box.height, box.color);
+
+      // Draw text
+      ctx.font = `bold ${fontSize}px "Space Grotesk"`;
+      ctx.fillStyle = BORDER_COLOR;
+      ctx.fillText(box.word, boxX + paddingX, boxY + box.height / 2 + 2);
+    }
   }
 
-  // Draw byline and reading time at bottom
-  const metaY = HEIGHT - PADDING - 50;
+  // Author info at bottom left
+  const metaY = HEIGHT - CONTENT_PADDING - 16;
   ctx.font = `bold 18px "Space Grotesk"`;
-  ctx.fillStyle = '#000';
-  ctx.fillText(`By ${data.profile.name}`, INFO_X, metaY);
+  ctx.fillStyle = BORDER_COLOR;
+  ctx.textBaseline = 'middle';
 
-  ctx.font = `normal 18px "Space Grotesk"`;
-  ctx.fillStyle = '#555';
-  ctx.fillText(`${post.readingTime} min read`, INFO_X, metaY + 28);
+  const authorText = `BY ${data.profile.name.toUpperCase()}`;
+  const readTimeText = `${post.readingTime} MIN READ`;
 
-  // Accent bar
-  ctx.fillStyle = post.data.color || '#ffee00';
-  ctx.fillRect(INFO_X, metaY + 58, 60, 6);
+  const authorMetrics = ctx.measureText(authorText);
+  const readTimeMetrics = ctx.measureText(readTimeText);
+
+  // Draw author box
+  const authorBoxWidth = authorMetrics.width + 24;
+  const authorBoxHeight = 32;
+  const authorBoxX = CONTENT_PADDING;
+  const authorBoxY = metaY - authorBoxHeight / 2;
+
+  drawBrutalistBox(ctx, authorBoxX, authorBoxY, authorBoxWidth, authorBoxHeight, '#ffffff');
+  ctx.fillStyle = BORDER_COLOR;
+  ctx.fillText(authorText, authorBoxX + 12, authorBoxY + authorBoxHeight / 2 + 1);
+
+  // Draw reading time box to the right
+  const readTimeBoxWidth = readTimeMetrics.width + 24;
+  const readTimeBoxX = authorBoxX + authorBoxWidth + SHADOW_OFFSET + BORDER_WIDTH * 2 + gap;
+
+  drawBrutalistBox(ctx, readTimeBoxX, authorBoxY, readTimeBoxWidth, authorBoxHeight, '#ffffff');
+  ctx.fillStyle = BORDER_COLOR;
+  ctx.fillText(readTimeText, readTimeBoxX + 12, authorBoxY + authorBoxHeight / 2 + 1);
 
   const buffer = canvas.toBuffer('image/png');
 
