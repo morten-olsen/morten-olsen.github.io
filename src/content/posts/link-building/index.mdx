@@ -7,7 +7,7 @@ heroImage: ./assets/cover.png
 slug: reinventing-the-link-from-seo-bait-to-semantic-trust
 ---
 
-import { Image } from 'astro:assets'
+import ContentImage from '~/components/content/ContentImage.astro'
 import OldWeb from './assets/old-web.png'
 
 It’s not exactly a controversial take to say the modern internet is a mess. In fact, complaining about the state of the web is the developer equivalent of an old man yelling at a cloud. But in my defense, the cloud started it.
@@ -18,7 +18,7 @@ I miss the *weird* web. I miss the feeling of traversing a chaotic graph of inte
 
 So, I started looking into how we might get a bit of that back.
 
-<Image src={OldWeb} alt='Old web versus the new reality' />
+<ContentImage src={OldWeb} alt='Old web versus the new reality' title="Back when 'cookies' were just a dessert and 'spam' was canned meat." />
 
 It began with [Webmentions](https://indieweb.org/Webmention)—a lovely little W3C standard that allows websites to notify each other when they link. It’s like a decentralized comment section. Since my blog currently doesn't support comments (a limitation I’m actually quite fond of, until I’m not), I was curious if this was a way to enable a more federated discourse. I wasn't trying to solve search; I just wanted to see if websites could still talk to each other like it was 1999.
 

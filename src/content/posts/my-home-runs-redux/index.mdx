@@ -7,8 +7,8 @@ heroImage: ./assets/cover.png
 slug: my-home-runs-redux
 ---
 
+import ContentImage from '~/components/content/ContentImage.astro'
 import graph from './assets/graph.png'
-import { Image } from 'astro:assets'
 
 I have been playing with smart homes for a long time. I have used most of the platforms out there, developed quite a few myself, and one thing I keep coming back to is **Redux**.
 
@@ -73,7 +73,7 @@ I have separated the events going into Redux into two types:
 
 Now comes the part I have feared, where I need to draw a diagram... sorry.
 
-<Image src={graph} alt='graph' /> 
+<ContentImage src={graph} alt='graph' /> 
 
 So this shows our final setup.
 
