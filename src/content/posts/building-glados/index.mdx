@@ -8,6 +8,7 @@ slug: grown-ups-guide-personal-ai
 ---
 
 import ContentImage from '~/components/content/ContentImage.astro'
+import BotMessage from '~/components/content/BotMessage.astro'
 import Genius from './assets/genius.png'
 import VibeCode from './assets/vibecode.png'
 import Firewall from './assets/firewall.png'
@@ -78,20 +79,21 @@ My hypothesis is that **Memory + Time-based Triggers = Proactivity**. You don't 
 
 Another piece of the puzzle is giving the agent eyes on the outside world. Here is the actual morning briefing GLaDOS sent me on Telegram today:
 
-> **📢 Morning Briefing: Feb 10**
->
-> 📅 **Calendar:**
->
-> * 09:30 AM: Daily Standup
-> * 01:00 PM: Architecture Review - Project Titan
->
-> ❄️ **Weather:** 4°C and overcast. Heavy rain expected around 3 PM.
->
-> 🚆 **Trains:** Partial closure on Line B. Replacement buses running between Central Station and The Office due to technical difficulties. Next update expected at 7:30.
->
-> 📰 **News:** Government announces new green energy initiative; Local zoo welcomes baby giraffe.
->
-> 🍕 **Dinner:** Homemade Pizza.
+<BotMessage title="GLaDOS — Morning Briefing: Feb 10">
+
+📅 **Calendar:**
+- 09:30 AM: Daily Standup
+- 01:00 PM: Architecture Review - Project Titan
+
+❄️ **Weather:** 4°C and overcast. Heavy rain expected around 3 PM.
+
+🚆 **Trains:** Partial closure on Line B. Replacement buses running between Central Station and The Office due to technical difficulties. Next update expected at 7:30.
+
+📰 **News:** Government announces new green energy initiative; Local zoo welcomes baby giraffe.
+
+🍕 **Dinner:** Homemade Pizza.
+
+</BotMessage>
 
 I didn't write code for this. I just told it:
 *"Send a daily brief each morning at 7. Include my calendar, the weather (use weather.com), my commute status (use trains.com), and news (use news.com)."*

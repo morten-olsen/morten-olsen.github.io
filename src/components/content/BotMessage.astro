@@ -1,0 +1,95 @@
+---
+interface Props {
+  title?: string;
+}
+
+const { title } = Astro.props;
+---
+
+<div class="bot-message">
+  {title && <div class="bot-header">{title}</div>}
+  <div class="bot-content">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .bot-message {
+    margin: var(--space-lg) 0;
+    border: var(--border-width) solid var(--border-color);
+    box-shadow: var(--shadow-brutal);
+    background: var(--card-bg);
+    font-style: normal;
+  }
+
+  .bot-header {
+    background: var(--accent-tertiary);
+    padding: 0.5rem 1rem;
+    font-weight: var(--fw-md);
+    text-transform: uppercase;
+    font-size: var(--fs-sm);
+    border-bottom: var(--border-width) solid var(--border-color);
+  }
+
+  .bot-content {
+    padding: var(--space-md) var(--space-lg);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .bot-content :global(p) {
+    margin-bottom: 0.75rem;
+  }
+
+  .bot-content :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .bot-content :global(ul) {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+    list-style: none;
+  }
+
+  .bot-content :global(li) {
+    margin-bottom: 0.25rem;
+    margin-left: 0;
+    list-style: none;
+  }
+
+  .bot-content :global(li)::before {
+    content: "→ ";
+    color: var(--color-text-light);
+  }
+
+  .bot-content :global(li)::marker {
+    content: none;
+  }
+
+  .bot-content :global(strong) {
+    background: none;
+    border: none;
+    padding: 0;
+    font-weight: 700;
+  }
+
+  .bot-content :global(img) {
+    border: none;
+    box-shadow: none;
+    margin: 0;
+    display: inline;
+    vertical-align: middle;
+  }
+
+  .bot-content :global(p:first-of-type::first-letter) {
+    font-size: inherit;
+    border: none;
+    background: none;
+    float: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+    line-height: inherit;
+  }
+</style>
