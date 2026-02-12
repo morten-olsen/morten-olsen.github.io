@@ -8,7 +8,10 @@
       "Bash(pnpm build:*)",
       "Bash(tail:*)",
       "Bash(ls:*)",
-      "Bash(file:*)"
+      "Bash(file:*)",
+      "Bash(curl:*)",
+      "WebSearch",
+      "WebFetch(domain:api.github.com)"
     ]
   }
 }

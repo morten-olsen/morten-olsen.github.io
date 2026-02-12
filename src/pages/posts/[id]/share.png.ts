@@ -20,11 +20,11 @@ const safeRegisterFont = (fontPath: string, options: { family: string; weight: s
 
 const fontPathBold = path.join(
   process.cwd(),
-  'node_modules/@fontsource/space-grotesk/files/space-grotesk-latin-700-normal.woff'
+  'src/fonts/SpaceGrotesk-Bold.ttf'
 );
 const fontPathRegular = path.join(
   process.cwd(),
-  'node_modules/@fontsource/space-grotesk/files/space-grotesk-latin-400-normal.woff'
+  'src/fonts/SpaceGrotesk-Regular.ttf'
 );
 safeRegisterFont(fontPathBold, { family: 'Space Grotesk', weight: 'bold' });
 safeRegisterFont(fontPathRegular, { family: 'Space Grotesk', weight: 'normal' });
