@@ -133,9 +133,10 @@ const jsonLd = await profile.getJsonLd();
       margin-bottom: var(--gap);
       background: var(--accent-tertiary);
       padding: 0.5rem 1rem;
-      border: var(--border-width) solid var(--border-color);
+      border: var(--border-width) solid var(--on-accent);
       box-shadow: var(--shadow-brutal);
       display: inline-block;
+      color: var(--on-accent);
     }
 
     ul {
@@ -182,8 +183,9 @@ const jsonLd = await profile.getJsonLd();
     display: inline-block;
     background: var(--accent-secondary);
     padding: 0.5rem 1.5rem;
-    border: var(--border-width) solid var(--border-color);
+    border: var(--border-width) solid var(--on-accent);
     box-shadow: var(--shadow-brutal-lg);
+    color: var(--on-accent);
   }
 }
 
@@ -272,8 +274,9 @@ const jsonLd = await profile.getJsonLd();
       text-transform: uppercase;
       background: var(--accent, var(--accent-primary));
       padding: 0.2rem 0.6rem;
-      border: 2px solid var(--border-color);
+      border: 2px solid var(--on-accent);
       display: inline-block;
+      color: var(--on-accent);
     }
 
     .position {
@@ -318,9 +321,10 @@ const jsonLd = await profile.getJsonLd();
       text-transform: uppercase;
       background: var(--accent, var(--accent-secondary));
       padding: 0.3rem 0.8rem;
-      border: 2px solid var(--border-color);
+      border: 2px solid var(--on-accent);
       display: inline-block;
       margin-bottom: calc(var(--gap) / 2);
+      color: var(--on-accent);
     }
 
     .technologies {

@@ -42,8 +42,13 @@ const links = {
 <style>
   .header {
     background: var(--accent-primary);
-    border-bottom: var(--border-width) solid var(--border-color);
+    border-bottom: var(--border-width) solid var(--on-accent);
     padding: 0 30px;
+    /* Keep dark text/borders on accent header in both themes */
+    --t-fg: var(--on-accent);
+    --border-color: var(--on-accent);
+    --card-bg: #fff;
+    --shadow-brutal: var(--shadow-offset) var(--shadow-offset) 0 var(--on-accent);
   }
 
   .header-inner {

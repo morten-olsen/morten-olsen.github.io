@@ -28,7 +28,8 @@ const { title } = Astro.props;
     font-weight: var(--fw-md);
     text-transform: uppercase;
     font-size: var(--fs-sm);
-    border-bottom: var(--border-width) solid var(--border-color);
+    border-bottom: var(--border-width) solid var(--on-accent);
+    color: var(--on-accent);
   }
 
   .bot-content {
@@ -72,6 +73,7 @@ const { title } = Astro.props;
     border: none;
     padding: 0;
     font-weight: 700;
+    color: inherit;
   }
 
   .bot-content :global(img) {

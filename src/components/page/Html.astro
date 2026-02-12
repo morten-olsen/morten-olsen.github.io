@@ -1,6 +1,7 @@
 ---
 import { icons } from '~/assets/images/images.icons';
 import Header from './Header.astro';
+import ThemeToggle from '~/components/base/ThemeToggle.astro';
 import '@fontsource/space-grotesk/400.css';
 import '@fontsource/space-grotesk/500.css';
 import '@fontsource/space-grotesk/700.css';
@@ -31,6 +32,14 @@ const imageUrl = image && Astro.site ? new URL(image, Astro.site).href : image;
     <meta http-equiv='X-UA-Compatible' content='IE=edge' />
     <meta name='HandheldFriendly' content='True' />
 		<meta name="viewport" content="width=device-width" />
+    <script is:inline>
+      (function() {
+        const stored = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = stored || (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
 		<meta name="generator" content={Astro.generator} />
     <link rel='sitemap' href='/sitemap-index.xml' />
     <link rel='manifest' href='/manifest.webmanifest' />
@@ -88,6 +97,9 @@ const imageUrl = image && Astro.site ? new URL(image, Astro.site).href : image;
 	<body>
     {!hideHeader && <Header />}
 		<slot />
+    <div class="theme-toggle-fixed">
+      <ThemeToggle />
+    </div>
 	</body>
 </html>
 
@@ -190,6 +202,70 @@ body {
   --color-text-light: #333;
   --color-border: #000;
   --color-link: #000;
+
+  /* Text/border color for elements with accent backgrounds */
+  --on-accent: #000;
+}
+
+/* Dark mode overrides */
+[data-theme="dark"] {
+  --page-bg: #1a1a1f;
+  --card-bg: #252530;
+  --t-fg: #f0f0e8;
+  --color: #f0f0e8;
+  --border-color: #f0f0e8;
+  --shadow-brutal: var(--shadow-offset) var(--shadow-offset) 0 rgba(240, 240, 232, 0.3);
+  --shadow-brutal-lg: 8px 8px 0 rgba(240, 240, 232, 0.3);
+  --c-bg-em: #2f2f3a;
+  --c-line: #f0f0e8;
+  --bg: #252530;
+  --background-color: var(--page-bg);
+  --color-text-light: #b0b0a8;
+  --color-border: #f0f0e8;
+  --color-link: #f0f0e8;
+
+  /* Vibrant accents for dark mode - same as light mode */
+  --accent-primary: #ffee00;
+  --accent-secondary: #ff5757;
+  --accent-tertiary: #00d4ff;
+  --accent-lime: #c8ff00;
+  --accent-lavender: #e4c1f9;
+
+  /* Text/border on accent backgrounds stays dark */
+  --on-accent: #000;
+}
+
+/* Dark mode: hero grid pattern */
+[data-theme="dark"] .hero {
+  background-image:
+    linear-gradient(rgba(240, 240, 232, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(240, 240, 232, 0.05) 1px, transparent 1px);
+}
+
+/* Dark mode: elements with accent backgrounds need dark text */
+[data-theme="dark"] .photo-label,
+[data-theme="dark"] .hero-headline span,
+[data-theme="dark"] .hero-desc,
+[data-theme="dark"] .floating-badge,
+[data-theme="dark"] .section-title,
+[data-theme="dark"] .section-title h2,
+[data-theme="dark"] .profiles h2,
+[data-theme="dark"] .companyName h3,
+[data-theme="dark"] .skill-name h3 {
+  color: var(--on-accent);
+}
+
+/* Dark mode: link hover states with accent backgrounds */
+[data-theme="dark"] p a:hover,
+[data-theme="dark"] .content a:hover {
+  color: var(--on-accent);
+}
+
+/* Dark mode: button/CTA hover states */
+[data-theme="dark"] .hero-cta:hover,
+[data-theme="dark"] .scroll-btn:hover,
+[data-theme="dark"] .profile a:hover {
+  color: var(--on-accent);
 }
 
 html {
@@ -297,6 +373,18 @@ p {
   [data-fadein] {
     opacity: 1 !important;
   }
+
+  .theme-toggle-fixed {
+    display: none !important;
+  }
+}
+
+/* Fixed theme toggle */
+.theme-toggle-fixed {
+  position: fixed;
+  bottom: var(--gap);
+  right: var(--gap);
+  z-index: 1000;
 }
 
 </style>

@@ -262,13 +262,14 @@ const jsonLd = await profile.getJsonLd();
 
   .photo-label {
     background: var(--accent-primary);
-    border: var(--border-width) solid var(--border-color);
+    border: var(--border-width) solid var(--on-accent);
     padding: 0.4rem 1rem;
     font-weight: var(--fw-md);
     text-transform: uppercase;
     text-align: center;
     margin-top: calc(var(--gap) * 0.75);
     font-size: var(--font-lg);
+    color: var(--on-accent);
   }
 }
 
@@ -284,6 +285,7 @@ const jsonLd = await profile.getJsonLd();
   text-transform: uppercase;
   line-height: 0.95;
   margin: 0 0 calc(var(--gap) * 1.5);
+  color: var(--on-accent);
 
   span {
     display: block;
@@ -293,7 +295,7 @@ const jsonLd = await profile.getJsonLd();
     &:first-child {
       background: var(--accent-primary);
       padding: 0.2rem 0.5rem;
-      border: var(--border-width) solid var(--border-color);
+      border: var(--border-width) solid var(--on-accent);
       display: inline-block;
       rotate: -2deg;
       margin-bottom: 0.5rem;
@@ -302,7 +304,7 @@ const jsonLd = await profile.getJsonLd();
     &:last-child {
       background: var(--accent-tertiary);
       padding: 0.2rem 0.5rem;
-      border: var(--border-width) solid var(--border-color);
+      border: var(--border-width) solid var(--on-accent);
       display: inline-block;
       rotate: 1deg;
     }
@@ -316,13 +318,14 @@ const jsonLd = await profile.getJsonLd();
   line-height: 1.4;
   background: var(--accent-lavender);
   padding: 0.5rem 1rem;
-  border: var(--border-width) solid var(--border-color);
-  box-shadow: var(--shadow-brutal);
+  border: var(--border-width) solid var(--on-accent);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--on-accent);
   display: inline-block;
   rotate: 1deg;
   max-width: 100%;
   --parallax-x: 0px;
   translate: var(--parallax-x) 0;
+  color: var(--on-accent);
 }
 
 .hero-cta {
@@ -346,13 +349,14 @@ const jsonLd = await profile.getJsonLd();
 /* Floating badges */
 .floating-badge {
   position: absolute;
-  border: var(--border-width) solid var(--border-color);
-  box-shadow: var(--shadow-brutal);
+  border: var(--border-width) solid var(--on-accent);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--on-accent);
   font-weight: var(--fw-md);
   text-transform: uppercase;
   z-index: 5;
   --parallax-y: 0px;
   translate: 0 var(--parallax-y);
+  color: var(--on-accent);
 }
 
 .badge-location {
@@ -490,10 +494,11 @@ const jsonLd = await profile.getJsonLd();
     margin-bottom: calc(var(--gap) * 2);
     background: var(--accent-secondary);
     padding: 0.5rem 1.5rem;
-    border: var(--border-width) solid var(--border-color);
-    box-shadow: var(--shadow-brutal);
+    border: var(--border-width) solid var(--on-accent);
+    box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--on-accent);
     display: inline-block;
     transition: opacity 0.5s ease, translate 0.5s ease;
+    color: var(--on-accent);
 
     &.hidden {
       opacity: 0;
