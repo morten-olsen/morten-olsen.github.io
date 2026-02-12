@@ -26,6 +26,7 @@ export default defineConfig({
   },
   integrations: [mdx(), sitemap(), icon(), compress({
     HTML: false,
+    Image: false,
   }), robotsTxt()],
   devToolbar: {
     enabled: false,
