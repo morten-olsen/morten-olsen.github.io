@@ -4,16 +4,24 @@ import type { GetStaticPaths } from "astro";
 import { render } from "astro:content";
 import { data } from '~/data/data'
 import { Picture } from 'astro:assets';
+import AbsoluteTime from '~/components/base/time/AbsoluteTime.astro';
 
 export const getStaticPaths = (async () => {
   const posts = await data.posts.getPublished();
-  return posts.map((post) => ({
-    params: { id: post.id }
+  return posts.map((post, index) => ({
+    params: { id: post.id },
+    props: {
+      prevPost: posts[index + 1] || null,
+      nextPost: posts[index - 1] || null,
+    }
   }));
 }) satisfies GetStaticPaths;
 
+const { prevPost, nextPost } = Astro.props;
 const post = await data.posts.get(Astro.params.id);
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
+const tocHeadings = headings.filter(h => h.depth === 2);
+const hasToC = tocHeadings.length >= 3;
 ---
 
 <Html
@@ -22,8 +30,11 @@ const { Content } = await render(post);
   jsonLd={post.jsonLd}
   image={`/posts/${post.id}/share.png`}
 >
+  <!-- Reading progress bar -->
+  <div class="progress-bar" id="progress-bar"></div>
+
   <article>
-    <div class="hero-image anim-hero">
+    <div class="hero-image anim-hero" data-parallax-bg>
       <Picture
         loading='eager'
         class='img'
@@ -39,11 +50,54 @@ const { Content } = await render(post);
         <h1>
           {post.data.title.split(' ').map((word, i) => <span style={`--delay: ${i * 0.05}s`}>{word}</span>)}
         </h1>
-        <a href='/' class="author anim-fade">By {data.profile.name}</a>
+        <p class="description anim-fade">{post.data.description}</p>
+        <div class="meta anim-fade">
+          <a href='/' class="author">By {data.profile.name}</a>
+          <span class="meta-item">
+            <AbsoluteTime datetime={post.data.pubDate} format={{ month: "long", day: "numeric", year: "numeric" }} />
+          </span>
+          <span class="meta-item">{post.readingTime} min read</span>
+        </div>
+        {post.data.tags && post.data.tags.length > 0 && (
+          <div class="tags anim-fade">
+            {post.data.tags.map((tag, i) => (
+              <span class="tag" style={`--tag-delay: ${i * 0.05}s`}>{tag}</span>
+            ))}
+          </div>
+        )}
       </header>
-      <div class='content anim-fade-up'>
-        <Content />
+
+      <div class="content-wrapper">
+        {hasToC && (
+          <aside class="toc">
+            <h4>Contents</h4>
+            <ul>
+              {tocHeadings.map(h => (
+                <li><a href={`#${h.slug}`}>{h.text}</a></li>
+              ))}
+            </ul>
+          </aside>
+        )}
+        <div class='content anim-fade-up'>
+          <Content />
+        </div>
       </div>
+
+      <!-- Previous/Next navigation -->
+      <nav class="post-nav">
+        {prevPost ? (
+          <a href={`/posts/${prevPost.id}`} class="nav-link nav-prev">
+            <span class="nav-label">Previous</span>
+            <span class="nav-title">{prevPost.data.title}</span>
+          </a>
+        ) : <div />}
+        {nextPost ? (
+          <a href={`/posts/${nextPost.id}`} class="nav-link nav-next">
+            <span class="nav-label">Next</span>
+            <span class="nav-title">{nextPost.data.title}</span>
+          </a>
+        ) : <div />}
+      </nav>
     </div>
   </article>
 </Html>
@@ -72,13 +126,15 @@ const { Content } = await render(post);
     overflow: hidden;
     border-bottom: var(--border-width) solid var(--border-color);
     background: var(--accent-tertiary);
+    position: relative;
 
     img {
       display: block;
       width: 100%;
-      height: 100%;
+      height: 120%;
       object-fit: cover;
       object-position: center;
+      transform: scale(1.1);
     }
   }
 
@@ -122,14 +178,59 @@ const { Content } = await render(post);
     }
   }
 
+  .description {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: var(--color-text-light);
+    margin-bottom: var(--gap);
+    max-width: 600px;
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+    margin-bottom: var(--gap);
+  }
+
+  .meta-item {
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+  }
+
   .author {
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 500;
     text-transform: uppercase;
-    padding: 0.5rem 1rem;
+    padding: 0.4rem 0.8rem;
     background: var(--c-bg-em);
     border: 2px solid var(--border-color);
     display: inline-block;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tag {
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    padding: 0.3rem 0.7rem;
+    background: var(--accent-lavender);
+    border: 2px solid var(--border-color);
+    animation: fadeIn 0.3s ease-out both;
+    animation-delay: calc(0.4s + var(--tag-delay, 0s));
+
+    &:nth-child(3n+2) {
+      background: var(--accent-secondary);
+    }
+    &:nth-child(3n) {
+      background: var(--accent-lime);
+    }
   }
 
   .content {
@@ -433,5 +534,236 @@ const { Content } = await render(post);
       }
     }
   }
+
+  /* Progress bar */
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 4px;
+    background: var(--accent-primary);
+    width: 0%;
+    z-index: 1000;
+    transition: width 0.1s ease-out;
+  }
+
+  /* Content wrapper */
+  .content-wrapper {
+    display: flex;
+    gap: calc(var(--gap) * 2);
+  }
+
+  .content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* Table of Contents */
+  .toc {
+    display: none;
+  }
+
+  @media (min-width: 1100px) {
+    .article-container {
+      max-width: calc(750px + 220px + var(--gap) * 2);
+    }
+
+    header,
+    .post-nav {
+      max-width: 750px;
+    }
+
+    .content {
+      max-width: 750px;
+    }
+
+    .toc {
+      display: block;
+      flex: 0 0 200px;
+      align-self: flex-start;
+      position: sticky;
+      top: calc(var(--gap) * 2);
+      order: 2;
+    }
+
+    .content {
+      order: 1;
+    }
+
+    .toc h4 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: var(--gap);
+      color: var(--color-text-light);
+    }
+
+    .toc ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .toc li {
+      margin-bottom: 0.4rem;
+      padding-left: 0;
+      list-style-type: none;
+
+      &::marker {
+        content: none;
+      }
+    }
+
+    .toc a {
+      font-size: 0.8rem;
+      color: var(--color-text-light);
+      text-decoration: none;
+      transition: all 0.15s ease;
+      display: block;
+      padding: 0.25rem 0;
+
+      &:hover {
+        color: var(--t-fg);
+      }
+
+      &.active {
+        color: var(--t-fg);
+        font-weight: 600;
+      }
+    }
+  }
+
+  /* Previous/Next navigation */
+  .post-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--gap);
+    padding: calc(var(--gap) * 2) 0;
+    border-top: 1px solid var(--border-color);
+    margin-top: calc(var(--gap) * 2);
+  }
+
+  .nav-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    text-decoration: none;
+    max-width: 45%;
+    transition: all 0.15s ease;
+
+    &:hover .nav-title {
+      text-decoration-color: var(--accent-primary);
+    }
+  }
+
+  .nav-prev {
+    text-align: left;
+  }
+
+  .nav-next {
+    text-align: right;
+    margin-left: auto;
+  }
+
+  .nav-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--color-text-light);
+    letter-spacing: 0.05em;
+  }
+
+  .nav-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    line-height: 1.4;
+    text-decoration: underline;
+    text-decoration-color: var(--border-color);
+    text-underline-offset: 3px;
+    text-decoration-thickness: 2px;
+    transition: text-decoration-color 0.15s ease;
+  }
+
+  /* Hero parallax */
+  [data-parallax-bg] img {
+    transition: transform 0.1s ease-out;
+  }
+
+  @media (max-width: 768px) {
+    .post-nav {
+      flex-direction: column;
+    }
+
+    .nav-link {
+      max-width: 100%;
+    }
+
+    .nav-next {
+      text-align: left;
+    }
+
+    .description {
+      font-size: 1.05rem;
+    }
+  }
 </style>
+
+<script>
+  // Reading progress bar
+  const progressBar = document.getElementById('progress-bar');
+  const article = document.querySelector('article');
+
+  function updateProgress() {
+    const scrollTop = window.scrollY;
+    const docHeight = article?.scrollHeight || document.documentElement.scrollHeight;
+    const winHeight = window.innerHeight;
+    const scrollPercent = (scrollTop / (docHeight - winHeight)) * 100;
+    if (progressBar) {
+      progressBar.style.width = `${Math.min(100, Math.max(0, scrollPercent))}%`;
+    }
+  }
+
+  // Hero image parallax
+  const heroBg = document.querySelector('[data-parallax-bg] img') as HTMLElement | null;
+
+  function updateParallax() {
+    const scrollY = window.scrollY;
+    if (heroBg && scrollY < window.innerHeight) {
+      heroBg.style.transform = `translateY(${scrollY * 0.3}px) scale(1.1)`;
+    }
+  }
+
+  window.addEventListener('scroll', () => {
+    updateProgress();
+    updateParallax();
+  }, { passive: true });
+
+  updateProgress();
+  updateParallax();
+
+  // ToC active section highlighting
+  const tocLinks = document.querySelectorAll('.toc a');
+  const headings = document.querySelectorAll('.content h2[id]');
+
+  if (tocLinks.length > 0 && headings.length > 0) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('id');
+            tocLinks.forEach((link) => {
+              link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+            });
+          }
+        });
+      },
+      {
+        rootMargin: '-80px 0px -70% 0px',
+        threshold: 0,
+      }
+    );
+
+    headings.forEach((heading) => observer.observe(heading));
+  }
+</script>
 
