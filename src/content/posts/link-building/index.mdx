@@ -1,0 +1,110 @@
+---
+title: 'Reinventing the Link: From SEO Bait to Semantic Trust'
+pubDate: 2026-02-12
+color: '#FFD700'
+description: 'Can we fix search by moving from global authority to a personal web of trust?'
+heroImage: ./assets/cover.png
+slug: reinventing-the-link-from-seo-bait-to-semantic-trust
+---
+
+It’s not exactly a controversial take to say the modern internet is a mess. In fact, complaining about the state of the web is the developer equivalent of an old man yelling at a cloud. But in my defense, the cloud started it.
+
+The web has become a machine optimized for the wrong metrics. It is incredibly efficient at serving me ads for things I bought yesterday. It is world-class at making me agree to legal terms I haven't read just to view a salad recipe. But it is getting progressively worse at the one thing it was actually built for: connecting people with information, or—wild concept—other people.
+
+I miss the *weird* web. I miss the feeling of traversing a chaotic graph of interconnected ideas, stumbling from a blog post to a forum to a fan site about 1980s mechanical keyboards, without a single popup asking me to subscribe to a newsletter.
+
+So, I started looking into how we might get a bit of that back.
+
+It began with [Webmentions](https://indieweb.org/Webmention)—a lovely little W3C standard that allows websites to notify each other when they link. It’s like a decentralized comment section. Since my blog currently doesn't support comments (a limitation I’m actually quite fond of, until I’m not), I was curious if this was a way to enable a more federated discourse. I wasn't trying to solve search; I just wanted to see if websites could still talk to each other like it was 1999.
+
+## The "Brilliant" Idea
+
+As I was tinkering with these webmentions, a thought struck me. A dangerous, seductive thought.
+
+*"If I have all these mentions,"* I whispered to my empty coffee mug, *"I can build a graph."*
+
+I could map out how Site A links to Site B, which links to Site C. And if I knew that, I could determine which sites were important! If lots of people link to Site B, it must be good, right? I could assign a score to every page based on how many incoming links it had!
+
+In my head, I was already architecting the solution. A crawler would traverse the web, weighting pages by their inbound connections and mapping the pulse of the internet. For a brief, intoxicating ten minutes, I felt like a visionary. I had cracked the code to organizing the world's information. It was elegant, it was pure, and it was entirely my own.
+
+## The Horror
+
+And then, the caffeine wore off.
+
+I sat back in my chair, stared at the mental map I had just constructed, and realized with dawning horror that I had just reinvented **PageRank**.
+
+I hadn't discovered a new way to organize the web. I had just stumbled, twenty-five years late, into the exact algorithm Larry Page and Sergey Brin wrote at Stanford in 1996. The very algorithm that gave birth to Google. The very algorithm that birthed the SEO industry. The very algorithm that, one could argue, led to the hyper-optimized, spam-filled, content-farmed internet I was trying to escape.
+
+I didn't need a pat on the back; I needed a history book.
+
+## The Pivot: Humans are Messy
+
+But once the shame subsided (it took a minute), I started thinking about *why* PageRank feels broken today.
+
+The original premise of PageRank was that a link is a vote of confidence. If I link to you, I am vouching for you. But that's not how the web works anymore. We link to things we hate. We link to things to mock them. SEO spammers create millions of links just to game the system.
+
+The "Global Authority" model assumes there is one objective truth about what is "important." But trust isn't global. It's personal.
+
+I trust my friend who obsesses over coffee grinders. I trust the tech blogger who writes 5,000-word essays on CSS grid. I do *not* trust the "Top 10 Coffee Grinders" article from a site called `best-kitchen-gadget-reviews-2026.com`.
+
+So, what if we stopped trying to find the "best" sites for everyone, and started looking for the "best" sites for *me*?
+
+## The Fix: A Web of Trust
+
+Here is the revised, slightly-less-naive-but-still-mad-scientist proposal: **The Personal Web of Trust.**
+
+Imagine a graph where the nodes are websites and the edges are links. But instead of calculating a global score, we calculate the **shortest path** from *me* to any other node.
+
+1.  I start with a "seed list" of 10-20 sites I genuinely respect.
+2.  I look at who *they* link to. (Distance: 1 hop)
+3.  I look at who *those* sites link to. (Distance: 2 hops)
+
+If I search for "sourdough recipe," I don't want the result with the most backlinks in the world. I want the result that is closest to my seed list.
+
+### The Power of Semantic Trust
+
+"But wait," I hear you cry (or maybe that's just the voices in my head), "What if a site you trust links to a scam site to warn you about it?"
+
+In a traditional PageRank world, that warning is actually a *gift* to the scammer. Google's robots see the link, count the vote, and the scammer's "authority" goes up. This is the fundamental flaw of the current web: we treat a link as a binary signal. It exists, or it doesn't. 
+
+But humans don't link in binary. We link for context. We link to endorse, to critique, to reference, or to warn.
+
+This is where **semantic trust** comes in. If we extend the `<a>` tag to include the *intent* of the link, we suddenly have a multidimensional graph.
+
+Imagine if we could do this:
+
+```html
+<a href="https://example-scam.com" trust="avoid">
+  Don't ever buy from this provider it is a scam
+</a>
+```
+
+Or:
+
+```html
+<a href="https://awesome-blog.com" trust="endorse">
+  Check out this amazing article
+</a>
+```
+
+By adding a simple `trust` attribute, we move from a "flat" web to a "nuanced" one. My crawler isn't just following lines on a map anymore; it's reading the *reputation* of the path. If `Site A` (which I trust) links to `Site B` with `trust="avoid"`, the connection isn't just ignored—it's actively treated as a negative signal for `Site B` and everything `Site B` recommends.
+
+This turns the SEO arms race on its head. In a semantic web, you can't just buy a thousand links to boost your score. You need links that actually *vouch* for you. It forces the web to move back toward being a web of people, rather than a web of robots gaming other robots.
+
+## Conclusion
+
+Would this work at scale? I have no idea. The computational cost of calculating a unique graph for every user is probably horrific. Google does what it does because pre-calculating a global index is efficient.
+
+But I don't care about efficient. I care about *good*.
+
+I want a search engine that feels like asking a knowledgeable friend for a recommendation, not like querying a database of whoever hired the best SEO consultant.
+
+I am currently hacking together a prototype that crawls my bookmarks and builds a limited version of this graph. 
+
+Now, I’ll be the first to admit this is less than perfect. For one, no one is actually using my self-invented link semantics yet, which makes the trust-filtering a bit... sparse. And since I don't exactly have the server farm required to index the entire internet, my plan is to combine this graph with a search provider that already prioritizes the "small web"—specifically [Kagi](https://help.kagi.com/kagi/api/search.html), which I already pay for to avoid ads. 
+
+The idea is to take their results and re-rank them based on my personal web of trust. Is it as efficient as a global search index? Absolutely not. Is it more realistic than me trying to out-crawl Google from my home office? Definitely.
+
+It will probably be slow. It will probably break. But for a brief, shining moment, it might just find me a weather site that doesn't try to sell me an umbrella.
+
+And if I accidentally reinvent Yahoo! Directory next, someone please stop me.
