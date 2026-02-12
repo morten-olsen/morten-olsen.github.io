@@ -7,6 +7,9 @@ heroImage: ./assets/cover.png
 slug: reinventing-the-link-from-seo-bait-to-semantic-trust
 ---
 
+import { Image } from 'astro:assets'
+import OldWeb from './assets/old-web.png'
+
 It’s not exactly a controversial take to say the modern internet is a mess. In fact, complaining about the state of the web is the developer equivalent of an old man yelling at a cloud. But in my defense, the cloud started it.
 
 The web has become a machine optimized for the wrong metrics. It is incredibly efficient at serving me ads for things I bought yesterday. It is world-class at making me agree to legal terms I haven't read just to view a salad recipe. But it is getting progressively worse at the one thing it was actually built for: connecting people with information, or—wild concept—other people.
@@ -14,6 +17,8 @@ The web has become a machine optimized for the wrong metrics. It is incredibly e
 I miss the *weird* web. I miss the feeling of traversing a chaotic graph of interconnected ideas, stumbling from a blog post to a forum to a fan site about 1980s mechanical keyboards, without a single popup asking me to subscribe to a newsletter.
 
 So, I started looking into how we might get a bit of that back.
+
+<Image src={OldWeb} alt='Old web versus the new reality' />
 
 It began with [Webmentions](https://indieweb.org/Webmention)—a lovely little W3C standard that allows websites to notify each other when they link. It’s like a decentralized comment section. Since my blog currently doesn't support comments (a limitation I’m actually quite fond of, until I’m not), I was curious if this was a way to enable a more federated discourse. I wasn't trying to solve search; I just wanted to see if websites could still talk to each other like it was 1999.
 
@@ -55,9 +60,9 @@ Here is the revised, slightly-less-naive-but-still-mad-scientist proposal: **The
 
 Imagine a graph where the nodes are websites and the edges are links. But instead of calculating a global score, we calculate the **shortest path** from *me* to any other node.
 
-1.  I start with a "seed list" of 10-20 sites I genuinely respect.
-2.  I look at who *they* link to. (Distance: 1 hop)
-3.  I look at who *those* sites link to. (Distance: 2 hops)
+1. I start with a "seed list" of 10-20 sites I genuinely respect.
+2. I look at who *they* link to. (Distance: 1 hop)
+3. I look at who *those* sites link to. (Distance: 2 hops)
 
 If I search for "sourdough recipe," I don't want the result with the most backlinks in the world. I want the result that is closest to my seed list.
 
@@ -65,7 +70,7 @@ If I search for "sourdough recipe," I don't want the result with the most backli
 
 "But wait," I hear you cry (or maybe that's just the voices in my head), "What if a site you trust links to a scam site to warn you about it?"
 
-In a traditional PageRank world, that warning is actually a *gift* to the scammer. Google's robots see the link, count the vote, and the scammer's "authority" goes up. This is the fundamental flaw of the current web: we treat a link as a binary signal. It exists, or it doesn't. 
+In a traditional PageRank world, that warning is actually a *gift* to the scammer. Google's robots see the link, count the vote, and the scammer's "authority" goes up. This is the fundamental flaw of the current web: we treat a link as a binary signal. It exists, or it doesn't.
 
 But humans don't link in binary. We link for context. We link to endorse, to critique, to reference, or to warn.
 
@@ -99,9 +104,9 @@ But I don't care about efficient. I care about *good*.
 
 I want a search engine that feels like asking a knowledgeable friend for a recommendation, not like querying a database of whoever hired the best SEO consultant.
 
-I am currently hacking together a prototype that crawls my bookmarks and builds a limited version of this graph. 
+I am currently hacking together a prototype that crawls my bookmarks and builds a limited version of this graph.
 
-Now, I’ll be the first to admit this is less than perfect. For one, no one is actually using my self-invented link semantics yet, which makes the trust-filtering a bit... sparse. And since I don't exactly have the server farm required to index the entire internet, my plan is to combine this graph with a search provider that already prioritizes the "small web"—specifically [Kagi](https://help.kagi.com/kagi/api/search.html), which I already pay for to avoid ads. 
+Now, I’ll be the first to admit this is less than perfect. For one, no one is actually using my self-invented link semantics yet, which makes the trust-filtering a bit... sparse. And since I don't exactly have the server farm required to index the entire internet, my plan is to combine this graph with a search provider that already prioritizes the "small web"—specifically [Kagi](https://help.kagi.com/kagi/api/search.html), which I already pay for to avoid ads.
 
 The idea is to take their results and re-rank them based on my personal web of trust. Is it as efficient as a global search index? Absolutely not. Is it more realistic than me trying to out-crawl Google from my home office? Definitely.
 

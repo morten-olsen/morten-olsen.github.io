@@ -42,7 +42,11 @@ const MIN_TITLE_FONT_SIZE = 28;
 const getStaticPaths = (async () => {
   const posts = await data.posts.getPublished();
   return posts.map((post) => ({
-    params: { id: post.id }
+    params: { id: post.id },
+    props: {
+      // Store the fsPath during build so it's available on refresh
+      heroImagePath: (post.data.heroImage as { fsPath?: string }).fsPath,
+    }
   }));
 }) satisfies GetStaticPaths;
 
@@ -92,8 +96,9 @@ const findFontSize = (
   return { fontSize: minFontSize, lines: wrapText(ctx, text, maxWidth) };
 };
 
-const GET = async (context: APIContext<Record<string, string>, { id: string }>) => {
+const GET = async (context: APIContext<{ heroImagePath?: string }, { id: string }>) => {
   const { id } = context.params;
+  const { heroImagePath: propsImagePath } = context.props;
   const post = await data.posts.get(id);
 
   const canvas = createCanvas(WIDTH, HEIGHT);
@@ -104,30 +109,50 @@ const GET = async (context: APIContext<Record<string, string>, { id: string }>) 
   ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
   // Load and draw cover image on the left
-  const heroImage = post.data.heroImage;
-  const imagePath = (heroImage as { fsPath?: string }).fsPath;
+  const heroImage = post.data.heroImage as { fsPath?: string; src?: string };
 
+  // Try multiple ways to get the image path
+  let imagePath = propsImagePath ?? heroImage.fsPath;
+
+  // In dev mode, extract path from src URL (e.g., "/@fs/path/to/file?query...")
+  if (!imagePath && heroImage.src) {
+    const src = heroImage.src.split('?')[0]; // Remove query params
+    if (src.startsWith('/@fs')) {
+      imagePath = src.replace('/@fs', '');
+    } else if (src.startsWith('/src/')) {
+      imagePath = path.join(process.cwd(), src);
+    }
+  }
+
+  let imageLoaded = false;
   if (imagePath) {
-    const img = await loadImage(imagePath);
+    try {
+      const img = await loadImage(imagePath);
+      imageLoaded = true;
 
-    // Calculate scaling to cover the image area
-    const scaleX = IMAGE_WIDTH / img.width;
-    const scaleY = HEIGHT / img.height;
-    const scale = Math.max(scaleX, scaleY);
+      // Calculate scaling to cover the image area
+      const scaleX = IMAGE_WIDTH / img.width;
+      const scaleY = HEIGHT / img.height;
+      const scale = Math.max(scaleX, scaleY);
 
-    const scaledWidth = img.width * scale;
-    const scaledHeight = img.height * scale;
+      const scaledWidth = img.width * scale;
+      const scaledHeight = img.height * scale;
 
-    // Center crop
-    const srcX = (scaledWidth - IMAGE_WIDTH) / 2 / scale;
-    const srcY = (scaledHeight - HEIGHT) / 2 / scale;
+      // Center crop
+      const srcX = (scaledWidth - IMAGE_WIDTH) / 2 / scale;
+      const srcY = (scaledHeight - HEIGHT) / 2 / scale;
 
-    ctx.drawImage(
-      img,
-      srcX, srcY, img.width - srcX * 2, img.height - srcY * 2,
-      0, 0, IMAGE_WIDTH, HEIGHT
-    );
-  } else {
+      ctx.drawImage(
+        img,
+        srcX, srcY, img.width - srcX * 2, img.height - srcY * 2,
+        0, 0, IMAGE_WIDTH, HEIGHT
+      );
+    } catch {
+      // Image failed to load - use fallback color
+    }
+  }
+
+  if (!imageLoaded) {
     ctx.fillStyle = post.data.color || '#1a1a2e';
     ctx.fillRect(0, 0, IMAGE_WIDTH, HEIGHT);
   }
