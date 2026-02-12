@@ -131,6 +131,7 @@ const jsonLd = await profile.getJsonLd();
   max-width: var(--content-width);
   margin: 0 auto;
   padding: 0 30px 80px;
+  overflow-x: clip;
 }
 
 /* Hero section - full width */
@@ -141,7 +142,7 @@ const jsonLd = await profile.getJsonLd();
   align-items: center;
   justify-content: center;
   padding: calc(var(--gap) * 2);
-  overflow: visible;
+  overflow: clip;
   background-image:
     linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
@@ -483,18 +484,18 @@ const jsonLd = await profile.getJsonLd();
     border: var(--border-width) solid var(--border-color);
     box-shadow: var(--shadow-brutal);
     display: inline-block;
-    transition: opacity 0.5s ease, transform 0.5s ease;
+    transition: opacity 0.5s ease, translate 0.5s ease;
 
     &.hidden {
       opacity: 0;
-      transform: translateY(20px);
+      translate: 0 20px;
     }
   }
 }
 
 .post.hidden {
   opacity: 0;
-  transform: translateY(30px);
+  translate: 0 30px;
 }
 
 .posts {
@@ -507,7 +508,7 @@ const jsonLd = await profile.getJsonLd();
   border: var(--border-width) solid var(--border-color);
   background: var(--card-bg);
   box-shadow: var(--shadow-brutal);
-  transition: all 0.15s ease, opacity 0.5s ease var(--delay, 0s), transform 0.5s ease var(--delay, 0s);
+  transition: all 0.15s ease, opacity 0.5s ease var(--delay, 0s), translate 0.5s ease var(--delay, 0s);
 
   .post-link {
     display: flex;
