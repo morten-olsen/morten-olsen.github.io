@@ -85,7 +85,7 @@ const jsonLd = await profile.getJsonLd();
                     alt='thumbnail image'
                     src={post.data.heroImage}
                     formats={['avif', 'webp', 'jpeg']}
-                    fetchpriority={index === 0 ? "high" : "auto"}
+                    fetchpriority='auto'
                     widths={[200, 400, 600]}
                   />
                 </div>
