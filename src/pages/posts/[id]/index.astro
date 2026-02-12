@@ -29,6 +29,11 @@ const hasToC = tocHeadings.length >= 3;
   description={post.data.description}
   jsonLd={post.jsonLd}
   image={`/posts/${post.id}/share.png`}
+  type="article"
+  publishedTime={post.data.pubDate}
+  modifiedTime={post.data.updatedDate}
+  author={data.profile.name}
+  tags={post.data.tags}
 >
 
   <article>

@@ -3,21 +3,33 @@ import { profile } from "./data.profile";
 
 class Posts {
   #map = (post: CollectionEntry<'posts'>) => {
-    const readingTime = Math.ceil(post.body?.split(/\s+/g).length / 200) || 1;
+    const readingTime = Math.ceil((post.body?.split(/\s+/g).length ?? 0) / 200) || 1;
     return Object.assign(post, {
       readingTime,
       jsonLd: {
         '@context': 'https://schema.org',
         '@type': 'BlogPosting',
         headline: post.data.title,
-        image: post.data.heroImage.src,
+        description: post.data.description,
+        image: `/posts/${post.id}/share.png`,
         datePublished: post.data.pubDate.toISOString(),
-        keywords: post.data.tags,
+        dateModified: (post.data.updatedDate ?? post.data.pubDate).toISOString(),
+        keywords: post.data.tags?.join(', '),
         inLanguage: 'en-US',
         author: {
           '@type': 'Person',
           name: profile.name,
-        }
+          url: profile.url,
+        },
+        publisher: {
+          '@type': 'Person',
+          name: profile.name,
+          url: profile.url,
+        },
+        mainEntityOfPage: {
+          '@type': 'WebPage',
+          '@id': `/posts/${post.id}`,
+        },
       },
     });
   }

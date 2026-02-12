@@ -6,7 +6,9 @@
       "Bash(pnpm add:*)",
       "Bash(npx tsc:*)",
       "Bash(pnpm build:*)",
-      "Bash(tail:*)"
+      "Bash(tail:*)",
+      "Bash(ls:*)",
+      "Bash(file:*)"
     ]
   }
 }
