@@ -41,29 +41,32 @@ const links = {
 
 <style>
   .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
     background: var(--accent-primary);
     border-bottom: var(--border-width) solid var(--on-accent);
-    padding: 0 30px;
+    padding: 0 20px;
     /* Keep dark text/borders on accent header in both themes */
     --t-fg: var(--on-accent);
     --border-color: var(--on-accent);
     --card-bg: #fff;
-    --shadow-brutal: var(--shadow-offset) var(--shadow-offset) 0 var(--on-accent);
+    --shadow-brutal: 3px 3px 0 var(--on-accent);
   }
 
   .header-inner {
     max-width: var(--content-width);
     margin: 0 auto;
-    padding: 20px 0;
+    padding: 12px 0;
     display: flex;
-    gap: calc(var(--gap) * 1.5);
+    gap: var(--gap);
     align-items: center;
   }
 
   img {
-    width: 70px;
-    height: 70px;
-    border: var(--border-width) solid var(--border-color);
+    width: 44px;
+    height: 44px;
+    border: 2px solid var(--border-color);
     box-shadow: var(--shadow-brutal);
   }
 
@@ -71,41 +74,43 @@ const links = {
     display: flex;
     flex-direction: column;
     flex: 1;
+    gap: 0;
 
     .name {
       font-weight: var(--fw-md);
-      font-size: var(--font-xl);
-      color: var(--t-fg);
-      text-decoration: none;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .work {
       font-size: var(--fs-md);
       color: var(--t-fg);
       text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .work {
+      font-size: var(--fs-sm);
+      color: var(--t-fg);
+      text-decoration: none;
       font-weight: 500;
+      opacity: 0.85;
     }
   }
 
   .links {
     display: flex;
-    gap: calc(var(--gap) / 2);
+    gap: 8px;
 
     .link {
-      padding: 12px 24px;
-      border: var(--border-width) solid var(--border-color);
+      padding: 8px 16px;
+      border: 2px solid var(--border-color);
       font-weight: var(--fw-md);
-      font-size: var(--font-lg);
+      font-size: var(--fs-sm);
       text-transform: uppercase;
       background: var(--card-bg);
       box-shadow: var(--shadow-brutal);
       transition: all 0.1s ease;
 
       &:hover {
-        transform: translate(-3px, -3px);
-        box-shadow: 9px 9px 0 var(--border-color);
+        transform: translate(-2px, -2px);
+        box-shadow: 5px 5px 0 var(--border-color);
       }
 
       &.active {
@@ -114,23 +119,13 @@ const links = {
     }
   }
 
-  @media (max-width: 768px) {
-    .header-inner {
-      flex-wrap: wrap;
+  @media (max-width: 600px) {
+    .info .work {
+      display: none;
     }
 
-    .info .name {
-      font-size: var(--font-lg);
-    }
-
-    .links {
-      width: 100%;
-      justify-content: flex-start;
-
-      .link {
-        padding: 10px 16px;
-        font-size: var(--fs-md);
-      }
+    .links .link {
+      padding: 6px 12px;
     }
   }
 
