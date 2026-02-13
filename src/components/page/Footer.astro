@@ -1,0 +1,123 @@
+---
+import { data } from "~/data/data";
+
+const { ...profile } = data.profile;
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-left">
+      <span class="footer-name">{profile.name}</span>
+      <span class="footer-location">{profile.location.city}</span>
+    </div>
+    <nav class="footer-links">
+      {Object.entries(profile.profiles).map(([id, p]) => (
+        <a href={p.url} target="_blank" rel="noopener noreferrer">{p.network?.name || id}</a>
+      ))}
+      <a href="/posts/rss.xml">RSS</a>
+    </nav>
+    <div class="footer-right">
+      <span class="footer-copy">&copy; {year}</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: var(--border-width) solid var(--border-color);
+    background: var(--accent-primary);
+    padding: 0 20px;
+    --t-fg: var(--on-accent);
+    --border-color: var(--on-accent);
+    --card-bg: #fff;
+  }
+
+  .footer-inner {
+    max-width: var(--content-width);
+    margin: 0 auto;
+    padding: calc(var(--gap) * 1.5) 0;
+    display: flex;
+    align-items: center;
+    gap: calc(var(--gap) * 2);
+  }
+
+  .footer-left {
+    display: flex;
+    align-items: center;
+    gap: var(--gap);
+  }
+
+  .footer-name {
+    font-family: var(--font-family-display);
+    font-weight: 400;
+    font-size: var(--font-lg);
+    text-transform: uppercase;
+    color: var(--on-accent);
+  }
+
+  .footer-location {
+    font-size: var(--fs-sm);
+    padding: 0.3rem 0.6rem;
+    border: 2px solid var(--on-accent);
+    background: var(--card-bg);
+    font-weight: 500;
+    text-transform: uppercase;
+    color: var(--on-accent);
+  }
+
+  .footer-links {
+    flex: 1;
+    display: flex;
+    gap: calc(var(--gap) / 2);
+    justify-content: center;
+
+    a {
+      padding: 0.4rem 0.8rem;
+      border: 2px solid var(--on-accent);
+      font-size: var(--fs-sm);
+      font-weight: var(--fw-md);
+      text-transform: uppercase;
+      background: var(--card-bg);
+      color: var(--on-accent);
+      transition: all 0.1s ease;
+
+      &:hover {
+        background: var(--on-accent);
+        color: var(--accent-primary);
+        transform: translate(-2px, -2px);
+        box-shadow: 4px 4px 0 var(--on-accent);
+      }
+    }
+  }
+
+  .footer-copy {
+    font-size: var(--fs-sm);
+    font-weight: 500;
+    color: var(--on-accent);
+  }
+
+  @media (max-width: 768px) {
+    .footer-inner {
+      flex-direction: column;
+      gap: var(--gap);
+      text-align: center;
+    }
+
+    .footer-left {
+      flex-direction: column;
+      gap: calc(var(--gap) / 2);
+    }
+
+    .footer-links {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+  }
+
+  @media print {
+    .footer {
+      display: none;
+    }
+  }
+</style>

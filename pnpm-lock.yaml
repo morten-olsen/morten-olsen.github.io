@@ -17,6 +17,9 @@ importers:
       '@astrojs/sitemap':
         specifier: ^3.6.0
         version: 3.6.0
+      '@fontsource/archivo-black':
+        specifier: ^5.2.8
+        version: 5.2.8
       '@fontsource/space-grotesk':
         specifier: ^5.2.10
         version: 5.2.10
@@ -749,6 +752,9 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
+
+  '@fontsource/archivo-black@5.2.8':
+    resolution: {integrity: sha512-3zNj/o9LzWyDl/UEpY5IOHpAQyUtFr3hQaFS7NSKwCLLkXOfH/CMCt1L2b2Z+OF25OURtOYenCadgAebALz7/A==}
 
   '@fontsource/space-grotesk@5.2.10':
     resolution: {integrity: sha512-XNXEbT74OIITPqw2H6HXwPDp85fy43uxfBwFR5PU+9sLnjuLj12KlhVM9nZVN6q6dlKjkuN8JisW/OBxwxgUew==}
@@ -4632,6 +4638,8 @@ snapshots:
 
   '@esbuild/win32-x64@0.25.12':
     optional: true
+
+  '@fontsource/archivo-black@5.2.8': {}
 
   '@fontsource/space-grotesk@5.2.10': {}
 

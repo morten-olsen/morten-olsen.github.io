@@ -1,10 +1,12 @@
 ---
 import { icons } from '~/assets/images/images.icons';
 import Header from './Header.astro';
+import Footer from './Footer.astro';
 import ThemeToggle from '~/components/base/ThemeToggle.astro';
 import '@fontsource/space-grotesk/400.css';
 import '@fontsource/space-grotesk/500.css';
 import '@fontsource/space-grotesk/700.css';
+import '@fontsource/archivo-black/400.css';
 
 type Props = {
   title: string;
@@ -95,8 +97,17 @@ const imageUrl = image && Astro.site ? new URL(image, Astro.site).href : image;
     <title>{title}</title>
 	</head>
 	<body>
+    <!-- Grain noise overlay -->
+    <svg class="grain-overlay" aria-hidden="true">
+      <filter id="grain-filter">
+        <feTurbulence type="fractalNoise" baseFrequency="0.55" numOctaves="4" stitchTiles="stitch" />
+        <feColorMatrix type="saturate" values="0" />
+      </filter>
+      <rect width="100%" height="100%" filter="url(#grain-filter)" />
+    </svg>
     {!hideHeader && <Header />}
 		<slot />
+    <Footer />
     <div class="theme-toggle-fixed">
       <ThemeToggle />
     </div>
@@ -180,7 +191,8 @@ body {
   /* Typography */
   --font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
-  --font-family-heading: 'Space Grotesk', var(--font-family);
+  --font-family-display: 'Archivo Black', 'Impact', sans-serif;
+  --font-family-heading: var(--font-family-display);
   --font-size: 16px;
   --letter-spacing: 0.5px;
   --color: #000;
@@ -209,37 +221,31 @@ body {
 
 /* Dark mode overrides */
 [data-theme="dark"] {
-  --page-bg: #1a1a1f;
-  --card-bg: #252530;
+  --page-bg: #111118;
+  --card-bg: #1c1c26;
   --t-fg: #f0f0e8;
   --color: #f0f0e8;
   --border-color: #f0f0e8;
-  --shadow-brutal: var(--shadow-offset) var(--shadow-offset) 0 rgba(240, 240, 232, 0.3);
-  --shadow-brutal-lg: 8px 8px 0 rgba(240, 240, 232, 0.3);
-  --c-bg-em: #2f2f3a;
+  /* Opaque shadows for hard brutalist edge in dark mode */
+  --shadow-brutal: var(--shadow-offset) var(--shadow-offset) 0 #0a0a10;
+  --shadow-brutal-lg: 8px 8px 0 #0a0a10;
+  --c-bg-em: #26263a;
   --c-line: #f0f0e8;
-  --bg: #252530;
+  --bg: #1c1c26;
   --background-color: var(--page-bg);
-  --color-text-light: #b0b0a8;
+  --color-text-light: #a0a0a8;
   --color-border: #f0f0e8;
   --color-link: #f0f0e8;
 
-  /* Vibrant accents for dark mode - same as light mode */
-  --accent-primary: #ffee00;
-  --accent-secondary: #ff5757;
-  --accent-tertiary: #00d4ff;
-  --accent-lime: #c8ff00;
-  --accent-lavender: #e4c1f9;
+  /* Slightly boosted accents for dark mode - more neon/vivid */
+  --accent-primary: #ffe600;
+  --accent-secondary: #ff4d4d;
+  --accent-tertiary: #00e5ff;
+  --accent-lime: #d4ff00;
+  --accent-lavender: #d8b4fe;
 
   /* Text/border on accent backgrounds stays dark */
   --on-accent: #000;
-}
-
-/* Dark mode: hero grid pattern */
-[data-theme="dark"] .hero {
-  background-image:
-    linear-gradient(rgba(240, 240, 232, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(240, 240, 232, 0.05) 1px, transparent 1px);
 }
 
 /* Dark mode: elements with accent backgrounds need dark text */
@@ -284,6 +290,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-heading);
   font-weight: inherit;
   font-size: inherit;
 }
@@ -376,6 +383,54 @@ p {
 
   .theme-toggle-fixed {
     display: none !important;
+  }
+}
+
+/* Grain texture overlay */
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+}
+
+[data-theme="dark"] .grain-overlay {
+  opacity: 0.15;
+  mix-blend-mode: screen;
+}
+
+/* View transition: brutal wipe */
+::view-transition-old(root) {
+  animation: brutal-wipe-out 0.3s ease-in both;
+}
+
+::view-transition-new(root) {
+  animation: brutal-wipe-in 0.3s ease-out 0.15s both;
+}
+
+@keyframes brutal-wipe-out {
+  from {
+    clip-path: inset(0);
+    opacity: 1;
+  }
+  to {
+    clip-path: inset(0 0 0 100%);
+    opacity: 0.5;
+  }
+}
+
+@keyframes brutal-wipe-in {
+  from {
+    clip-path: inset(0 100% 0 0);
+    opacity: 0.5;
+  }
+  to {
+    clip-path: inset(0);
+    opacity: 1;
   }
 }
 

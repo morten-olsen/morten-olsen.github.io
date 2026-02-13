@@ -119,15 +119,17 @@ const jsonLd = await profile.getJsonLd();
     line-height: 1.7;
 
     :global(p:first-child) {
+      font-family: var(--font-family-display);
       font-size: var(--font-xl);
-      font-weight: var(--fw-md);
+      font-weight: 400;
       line-height: 1.4;
     }
   }
 
   .profiles {
     h2 {
-      font-weight: var(--fw-md);
+      font-family: var(--font-family-display);
+      font-weight: 400;
       font-size: var(--font-lg);
       text-transform: uppercase;
       margin-bottom: var(--gap);
@@ -177,7 +179,8 @@ const jsonLd = await profile.getJsonLd();
   margin-bottom: calc(var(--gap) * 2);
 
   h2 {
-    font-weight: var(--fw-md);
+    font-family: var(--font-family-display);
+    font-weight: 400;
     font-size: var(--font-xxl);
     text-transform: uppercase;
     display: inline-block;
@@ -269,7 +272,8 @@ const jsonLd = await profile.getJsonLd();
     }
 
     .companyName h3 {
-      font-weight: var(--fw-md);
+      font-family: var(--font-family-display);
+      font-weight: 400;
       font-size: var(--font-lg);
       text-transform: uppercase;
       background: var(--accent, var(--accent-primary));
@@ -316,7 +320,8 @@ const jsonLd = await profile.getJsonLd();
     box-shadow: var(--shadow-brutal);
 
     .skill-name h3 {
-      font-weight: var(--fw-md);
+      font-family: var(--font-family-display);
+      font-weight: 400;
       font-size: var(--font-lg);
       text-transform: uppercase;
       background: var(--accent, var(--accent-secondary));

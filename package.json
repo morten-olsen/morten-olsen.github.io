@@ -12,6 +12,7 @@
     "@astrojs/mdx": "^4.3.12",
     "@astrojs/rss": "^4.0.14",
     "@astrojs/sitemap": "^3.6.0",
+    "@fontsource/archivo-black": "^5.2.8",
     "@fontsource/space-grotesk": "^5.2.10",
     "@fontsource/vt323": "^5.2.7",
     "@playform/compress": "^0.2.0",

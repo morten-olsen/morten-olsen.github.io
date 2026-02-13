@@ -36,11 +36,11 @@ const jsonLd = await profile.getJsonLd();
           fetchpriority="high"
           widths={[300, 400, 500]}
         />
-        <div class="photo-label">Morten</div>
       </div>
 
       <!-- Center content -->
       <div class="hero-center">
+        <div class="hero-name">Morten Olsen</div>
         <h1 class="hero-headline">
           <span data-parallax-x="-0.15">Software</span>
           <span data-parallax-x="0.12">Engineer</span>
@@ -63,6 +63,39 @@ const jsonLd = await profile.getJsonLd();
       </svg>
     </a>
   </section>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>Frontend</span>
+      <span class="marquee-dot"></span>
+      <span>Backend</span>
+      <span class="marquee-dot"></span>
+      <span>DevOps</span>
+      <span class="marquee-dot"></span>
+      <span>Copenhagen</span>
+      <span class="marquee-dot"></span>
+      <span>TypeScript</span>
+      <span class="marquee-dot"></span>
+      <span>React</span>
+      <span class="marquee-dot"></span>
+      <span>Kubernetes</span>
+      <span class="marquee-dot"></span>
+      <span>Frontend</span>
+      <span class="marquee-dot"></span>
+      <span>Backend</span>
+      <span class="marquee-dot"></span>
+      <span>DevOps</span>
+      <span class="marquee-dot"></span>
+      <span>Copenhagen</span>
+      <span class="marquee-dot"></span>
+      <span>TypeScript</span>
+      <span class="marquee-dot"></span>
+      <span>React</span>
+      <span class="marquee-dot"></span>
+      <span>Kubernetes</span>
+      <span class="marquee-dot"></span>
+    </div>
+  </div>
 
   <main class="main">
 
@@ -143,6 +176,47 @@ const jsonLd = await profile.getJsonLd();
   overflow-x: clip;
 }
 
+/* Marquee ticker */
+.marquee {
+  overflow: hidden;
+  background: var(--accent-secondary);
+  border-top: var(--border-width) solid var(--border-color);
+  border-bottom: var(--border-width) solid var(--border-color);
+  padding: 0.6rem 0;
+  white-space: nowrap;
+  margin-bottom: calc(var(--gap) * 3);
+}
+
+.marquee-track {
+  display: inline-flex;
+  gap: 1.5rem;
+  animation: marquee-scroll 20s linear infinite;
+  will-change: transform;
+
+  span {
+    font-family: var(--font-family-display);
+    font-size: var(--font-xl);
+    font-weight: 400;
+    text-transform: uppercase;
+    color: var(--on-accent);
+    flex-shrink: 0;
+  }
+}
+
+.marquee-dot {
+  width: 12px;
+  height: 12px;
+  background: var(--on-accent);
+  display: inline-block;
+  align-self: center;
+  flex-shrink: 0;
+}
+
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
 /* Hero section - full width */
 .hero {
   position: relative;
@@ -156,6 +230,12 @@ const jsonLd = await profile.getJsonLd();
     linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
   background-size: 40px 40px;
+}
+
+:global([data-theme="dark"]) .hero {
+  background-image:
+    linear-gradient(rgba(240, 240, 232, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(240, 240, 232, 0.05) 1px, transparent 1px);
 }
 
 /* Floating decorations */
@@ -242,35 +322,39 @@ const jsonLd = await profile.getJsonLd();
   z-index: 10;
 }
 
-/* Photo card */
+/* Photo card - round peel sticker */
 .photo-card {
   position: relative;
-  background: var(--card-bg);
-  padding: var(--gap);
-  border: var(--border-width) solid var(--border-color);
-  box-shadow: var(--shadow-brutal-lg);
-  transform: rotate(-4deg);
   flex-shrink: 0;
+  transform: rotate(-4deg);
 
   img {
     display: block;
-    width: 200px;
-    height: 240px;
+    width: 220px;
+    height: 260px;
     object-fit: cover;
-    border: var(--border-width) solid var(--border-color);
+    border: 8px solid #fff;
+    outline: var(--border-width) solid var(--border-color);
+    outline-offset: -1px;
+    box-shadow: var(--shadow-brutal-lg);
   }
 
-  .photo-label {
-    background: var(--accent-primary);
-    border: var(--border-width) solid var(--on-accent);
-    padding: 0.4rem 1rem;
-    font-weight: var(--fw-md);
-    text-transform: uppercase;
-    text-align: center;
-    margin-top: calc(var(--gap) * 0.75);
-    font-size: var(--font-lg);
-    color: var(--on-accent);
-  }
+}
+
+/* Name above headline */
+.hero-name {
+  font-family: var(--font-family-display);
+  font-size: var(--font-lg);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-bottom: calc(var(--gap) * 0.75);
+  padding: 0.35rem 1.2rem;
+  background: var(--accent-primary);
+  border: var(--border-width) solid var(--on-accent);
+  box-shadow: var(--shadow-brutal);
+  display: inline-block;
+  color: var(--on-accent);
 }
 
 /* Center content */
@@ -280,8 +364,9 @@ const jsonLd = await profile.getJsonLd();
 }
 
 .hero-headline {
-  font-size: 5rem;
-  font-weight: var(--fw-md);
+  font-family: var(--font-family-display);
+  font-size: 5.5rem;
+  font-weight: 400;
   text-transform: uppercase;
   line-height: 0.95;
   margin: 0 0 calc(var(--gap) * 1.5);
@@ -317,15 +402,36 @@ const jsonLd = await profile.getJsonLd();
   margin-bottom: calc(var(--gap) * 1.5);
   line-height: 1.4;
   background: var(--accent-lavender);
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 2.8rem;
   border: var(--border-width) solid var(--on-accent);
-  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--on-accent);
+  box-shadow: var(--shadow-brutal);
   display: inline-block;
-  rotate: 1deg;
   max-width: 100%;
+  color: var(--on-accent);
   --parallax-x: 0px;
   translate: var(--parallax-x) 0;
-  color: var(--on-accent);
+  position: relative;
+
+  &::before,
+  &::after {
+    font-family: var(--font-family-display);
+    font-size: 4.5rem;
+    line-height: 0;
+    position: absolute;
+    color: var(--accent-secondary);
+  }
+
+  &::before {
+    content: '\201C';
+    top: 0.35em;
+    left: 0.3rem;
+  }
+
+  &::after {
+    content: '\201D';
+    bottom: -0.1em;
+    right: 0.3rem;
+  }
 }
 
 .hero-cta {
@@ -416,7 +522,89 @@ const jsonLd = await profile.getJsonLd();
   50% { transform: translateY(5px); }
 }
 
-/* Entry animations */
+/* Entry animations - theatrical hero entrance */
+
+/* Photo card: drops in with bounce overshoot */
+@keyframes dropBounce {
+  0% {
+    opacity: 0;
+    transform: translateY(-80px) rotate(-8deg);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(8px) rotate(-3deg);
+  }
+  70% {
+    transform: translateY(-4px) rotate(-4.5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotate(-4deg);
+  }
+}
+
+/* Heading blocks: clip-path wipe reveal from left */
+@keyframes wipeReveal {
+  from {
+    clip-path: inset(0 100% 0 0);
+    opacity: 0;
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+    opacity: 1;
+  }
+}
+
+/* Description/CTA: slide up with slight overshoot */
+@keyframes slideUpBounce {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Decorations: fly in from off-screen edges */
+@keyframes flyInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-120px) scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes flyInRight {
+  from {
+    opacity: 0;
+    transform: translateX(120px) scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes spinIn {
+  from {
+    opacity: 0;
+    transform: scale(0) rotate(180deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -428,67 +616,51 @@ const jsonLd = await profile.getJsonLd();
   }
 }
 
-@keyframes fadeInScale {
-  from {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-50px) rotate(-4deg);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0) rotate(-4deg);
-  }
-}
-
 .photo-card {
-  animation: slideInLeft 0.6s ease-out both;
+  animation: dropBounce 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
 }
 
-.hero-headline {
-  animation: fadeInUp 0.6s ease-out 0.15s both;
+.hero-name {
+  animation: slideUpBounce 0.4s ease-out 0.25s both;
+}
+
+.hero-headline span:first-child {
+  animation: wipeReveal 0.5s ease-out 0.35s both;
+}
+
+.hero-headline span:last-child {
+  animation: wipeReveal 0.5s ease-out 0.55s both;
 }
 
 .hero-desc {
-  animation: fadeInUp 0.6s ease-out 0.3s both;
+  animation: slideUpBounce 0.5s ease-out 0.7s both;
 }
 
 .hero-cta {
-  animation: fadeInUp 0.6s ease-out 0.45s both;
+  animation: slideUpBounce 0.5s ease-out 0.85s both;
 }
 
-.deco {
-  animation: fadeInScale 0.5s ease-out both;
-}
-
-.deco-rect-1 { animation-delay: 0.1s; }
-.deco-rect-2 { animation-delay: 0.2s; }
-.deco-rect-3 { animation-delay: 0.3s; }
-.deco-star-1 { animation-delay: 0.15s; }
-.deco-star-2 { animation-delay: 0.25s; }
-.deco-circle { animation-delay: 0.35s; }
+/* Decorations fly in from their respective sides */
+.deco-rect-1 { animation: flyInLeft 0.6s ease-out 0.15s both; }
+.deco-rect-2 { animation: flyInRight 0.6s ease-out 0.25s both; }
+.deco-rect-3 { animation: flyInLeft 0.6s ease-out 0.35s both; }
+.deco-star-1 { animation: spinIn 0.5s ease-out 0.2s both; }
+.deco-star-2 { animation: spinIn 0.5s ease-out 0.3s both; }
+.deco-circle { animation: flyInRight 0.5s ease-out 0.4s both; }
 
 .floating-badge {
-  animation: fadeInScale 0.5s ease-out 0.4s both;
+  animation: slideUpBounce 0.4s ease-out 0.5s both;
 }
 
 .scroll-btn {
-  animation: fadeInUp 0.5s ease-out 0.6s both;
+  animation: fadeInUp 0.5s ease-out 0.9s both;
 }
 
 /* Posts section */
 .posts-section {
   .section-title {
-    font-weight: var(--fw-md);
+    font-family: var(--font-family-display);
+    font-weight: 400;
     font-size: var(--font-xxl);
     text-transform: uppercase;
     margin-bottom: calc(var(--gap) * 2);
@@ -626,7 +798,8 @@ const jsonLd = await profile.getJsonLd();
     border-top: var(--border-width) solid var(--border-color);
 
     h3 {
-      font-weight: var(--fw-md);
+      font-family: var(--font-family-display);
+      font-weight: 400;
       font-size: var(--fs-md);
       line-height: 1.3;
       text-transform: uppercase;
@@ -693,9 +866,11 @@ const jsonLd = await profile.getJsonLd();
     transform: rotate(-2deg);
 
     img {
-      width: 160px;
-      height: 200px;
+      width: 170px;
+      height: 210px;
+      border-width: 6px;
     }
+
   }
 
   .hero-headline {
@@ -750,8 +925,8 @@ const jsonLd = await profile.getJsonLd();
 
 @media (max-width: 600px) {
   .hero {
-    min-height: auto;
-    padding: calc(var(--gap) * 4) var(--gap) calc(var(--gap) * 6);
+    min-height: 100svh;
+    padding: calc(var(--gap) * 3) var(--gap) calc(var(--gap) * 5);
   }
 
   .scroll-btn {
@@ -766,21 +941,16 @@ const jsonLd = await profile.getJsonLd();
   }
 
   .photo-card {
-    padding: calc(var(--gap) * 0.75);
-
     img {
       width: 130px;
       height: 160px;
+      border-width: 5px;
     }
 
-    .photo-label {
-      font-size: var(--fs-md);
-      padding: 0.3rem 0.75rem;
-    }
   }
 
   .hero-headline {
-    font-size: 2.5rem;
+    font-size: 3rem;
 
     span {
       padding: 0.15rem 0.4rem;
@@ -789,7 +959,22 @@ const jsonLd = await profile.getJsonLd();
 
   .hero-desc {
     font-size: var(--fs-md);
-    padding: 0.4rem 0.75rem;
+    padding: 0.4rem 2rem;
+
+    &::before,
+    &::after {
+      font-size: 3rem;
+    }
+
+    &::before {
+      top: 0.1em;
+      left: 0.1rem;
+    }
+
+    &::after {
+      bottom: -0.1em;
+      right: 0.1rem;
+    }
   }
 
   .hero-cta {
@@ -797,34 +982,50 @@ const jsonLd = await profile.getJsonLd();
     padding: 0.75rem 1.5rem;
   }
 
-  .badge-location,
-  .badge-arrow,
-  .scroll-btn {
+  /* Keep badges visible on mobile - just reposition */
+  .badge-location {
+    top: auto;
+    bottom: 18%;
+    right: 5%;
+    font-size: var(--fs-sm);
+    padding: 0.3rem 0.6rem;
+  }
+
+  .badge-arrow {
     display: none;
   }
 
-  .deco-rect-1,
+  /* Keep a couple of decorations scaled down for mobile personality */
+  .deco-rect-1 {
+    width: 80px;
+    height: 80px;
+    top: 3%;
+    left: -15px;
+    opacity: 0.8;
+  }
+
   .deco-rect-3,
   .deco-circle {
     display: none;
   }
 
   .deco-rect-2 {
-    width: 60px;
-    height: 100px;
+    width: 50px;
+    height: 80px;
+    right: -10px;
   }
 
   .deco-star-1 {
-    width: 45px;
-    height: 45px;
+    width: 40px;
+    height: 40px;
     top: 5%;
     right: 5%;
   }
 
   .deco-star-2 {
-    width: 35px;
-    height: 35px;
-    bottom: 10%;
+    width: 30px;
+    height: 30px;
+    bottom: 12%;
     left: 5%;
   }
 
@@ -838,6 +1039,7 @@ const jsonLd = await profile.getJsonLd();
 
   .posts {
     grid-template-columns: 1fr;
+    gap: var(--gap);
   }
 
   .post.featured {
