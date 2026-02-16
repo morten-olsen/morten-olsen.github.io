@@ -1,11 +1,25 @@
 import { getCollection, getEntry, type CollectionEntry } from "astro:content";
 import { profile } from "./data.profile";
 
+const audios = import.meta.glob('/src/content/posts/**/assets/*.mp3', { eager: true, query: '?url', import: 'default' });
+
 class Posts {
   #map = (post: CollectionEntry<'posts'>) => {
     const readingTime = Math.ceil((post.body?.split(/\s+/g).length ?? 0) / 200) || 1;
+    
+    let audioUrl: string | undefined = undefined;
+    if (post.data.audio) {
+      // Resolve audio URL if it exists
+      // The path in post.data.audio is relative to the post directory
+      // e.g., ./assets/audio.mp3
+      // We need to match it against the keys in import.meta.glob
+      const audioPath = `/src/content/posts/${post.id}/${post.data.audio.replace('./', '')}`;
+      audioUrl = audios[audioPath] as string | undefined;
+    }
+
     return Object.assign(post, {
       readingTime,
+      audioUrl,
       jsonLd: {
         '@context': 'https://schema.org',
         '@type': 'BlogPosting',

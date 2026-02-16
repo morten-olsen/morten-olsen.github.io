@@ -68,6 +68,15 @@ const hasToC = tocHeadings.length >= 3;
             ))}
           </div>
         )}
+
+        {post.audioUrl && (
+          <div class="audio-player anim-fade" style="margin-top: var(--gap);">
+            <p style="font-size: 0.8rem; text-transform: uppercase; font-weight: 600; color: var(--color-text-light); margin-bottom: 0.5rem;">Listen to this article</p>
+            <audio controls src={post.audioUrl} style="width: 100%;">
+              Your browser does not support the audio element.
+            </audio>
+          </div>
+        )}
       </header>
 
       <div class="content-wrapper">

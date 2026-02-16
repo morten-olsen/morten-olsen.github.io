@@ -14,6 +14,7 @@ const posts = defineCollection({
     updatedDate: z.coerce.date().optional(),
     tags: z.array(z.string()).optional(),
     heroImage: image(),
+    audio: z.string().optional(),
   })
 });
 
