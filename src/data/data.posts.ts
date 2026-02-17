@@ -1,25 +1,46 @@
 import { getCollection, getEntry, type CollectionEntry } from "astro:content";
+import { statSync } from "node:fs";
+import { execSync } from "node:child_process";
 import { profile } from "./data.profile";
 
 const audios = import.meta.glob('/src/content/posts/**/assets/*.mp3', { eager: true, query: '?url', import: 'default' });
+
+const getAudioMeta = (globKey: string): { size: number; duration: number } => {
+  try {
+    const filePath = globKey.replace(/^\//, '');
+    const size = statSync(filePath).size;
+    const raw = execSync(
+      `ffprobe -v error -show_entries format=duration -of csv=p=0 "${filePath}"`,
+    ).toString().trim();
+    const duration = Math.round(parseFloat(raw));
+    return { size, duration };
+  } catch {
+    return { size: 0, duration: 0 };
+  }
+};
 
 class Posts {
   #map = (post: CollectionEntry<'posts'>) => {
     const readingTime = Math.ceil((post.body?.split(/\s+/g).length ?? 0) / 200) || 1;
     
     let audioUrl: string | undefined = undefined;
+    let audioDuration = 0;
+    let audioSize = 0;
     if (post.data.audio) {
-      // Resolve audio URL if it exists
-      // The path in post.data.audio is relative to the post directory
-      // e.g., ./assets/audio.mp3
-      // We need to match it against the keys in import.meta.glob
       const audioPath = `/src/content/posts/${post.id}/${post.data.audio.replace('./', '')}`;
       audioUrl = audios[audioPath] as string | undefined;
+      if (audioUrl) {
+        const meta = getAudioMeta(audioPath);
+        audioDuration = meta.duration;
+        audioSize = meta.size;
+      }
     }
 
     return Object.assign(post, {
       readingTime,
       audioUrl,
+      audioDuration,
+      audioSize,
       jsonLd: {
         '@context': 'https://schema.org',
         '@type': 'BlogPosting',

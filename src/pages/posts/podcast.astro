@@ -1,0 +1,262 @@
+---
+import Html from '~/components/page/Html.astro';
+import { data } from '~/data/data';
+
+const posts = await data.posts.getPublished();
+const episodes = posts.filter((p) => p.audioUrl);
+const colors = ['var(--accent-primary)', 'var(--accent-tertiary)', 'var(--accent-lime)', 'var(--accent-lavender)'];
+
+const site = Astro.site?.toString().replace(/\/$/, '') || '';
+const feedUrl = `${site}/posts/podcast.xml`;
+const feedPath = '/posts/podcast.xml';
+
+const formatDuration = (seconds: number): string => {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m}:${String(s).padStart(2, '0')}`;
+};
+---
+
+<Html
+  title="Podcast"
+  description="Subscribe to audio versions of blog posts"
+>
+  <main class="main">
+    <header class="page-header">
+      <h1>Podcast</h1>
+      <div class="count">{episodes.length} episodes</div>
+    </header>
+
+    <section class="subscribe">
+      <h2 class="section-title">Subscribe</h2>
+      <div class="subscribe-grid">
+        <a class="subscribe-btn" href={feedPath}>
+          RSS Feed
+        </a>
+        <a class="subscribe-btn" href={`itpc://${feedUrl.replace(/^https?:\/\//, '')}`}>
+          Apple Podcasts
+        </a>
+        <a class="subscribe-btn" href={`overcast://x-callback-url/add?url=${encodeURIComponent(feedUrl)}`}>
+          Overcast
+        </a>
+        <a class="subscribe-btn" href={`pktc://subscribe/${encodeURIComponent(feedUrl)}`}>
+          Pocket Casts
+        </a>
+        <button class="subscribe-btn copy-btn" data-url={feedUrl}>
+          Copy RSS URL
+        </button>
+      </div>
+    </section>
+
+    <section class="episodes">
+      <h2 class="section-title">Episodes</h2>
+      <ul class="posts">
+        {episodes.map((post, index) => (
+          <li class="post" style={`--accent: ${colors[index % colors.length]}`}>
+            <span class="number">{String(index + 1).padStart(2, '0')}</span>
+            <a href={`/posts/${post.id}`}>
+              <span class="title">{post.data.title}</span>
+              <span class="duration">{formatDuration(post.audioDuration)}</span>
+            </a>
+            <span class="arrow">→</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </main>
+</Html>
+
+<script>
+  document.querySelector('.copy-btn')?.addEventListener('click', (e) => {
+    const btn = e.currentTarget as HTMLButtonElement;
+    const url = btn.dataset.url;
+    if (url) {
+      navigator.clipboard.writeText(url).then(() => {
+        const original = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = original; }, 2000);
+      });
+    }
+  });
+</script>
+
+<style>
+  .main {
+    max-width: var(--content-width);
+    margin: 0 auto;
+    padding: 0 30px calc(var(--gap) * 4);
+  }
+
+  .page-header {
+    padding: calc(var(--gap) * 4) 0 calc(var(--gap) * 3);
+    display: flex;
+    align-items: flex-end;
+    gap: calc(var(--gap) * 2);
+
+    h1 {
+      font-family: var(--font-family-display);
+      font-weight: 400;
+      font-size: var(--font-xxl);
+      text-transform: uppercase;
+      background: var(--accent-secondary);
+      padding: 0.6rem 1.5rem;
+      border: var(--border-width) solid var(--border-color);
+      box-shadow: var(--shadow-brutal-lg);
+    }
+
+    .count {
+      font-size: var(--font-lg);
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      background: var(--c-bg-em);
+      border: var(--border-width) solid var(--border-color);
+    }
+  }
+
+  .section-title {
+    font-family: var(--font-family-display);
+    font-weight: 400;
+    font-size: var(--font-xl);
+    text-transform: uppercase;
+    margin-bottom: calc(var(--gap) * 1.5);
+  }
+
+  .subscribe {
+    margin-bottom: calc(var(--gap) * 4);
+  }
+
+  .subscribe-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: var(--gap);
+  }
+
+  .subscribe-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: calc(var(--gap) * 1.5);
+    border: var(--border-width) solid var(--border-color);
+    background: var(--card-bg);
+    font-family: var(--font-family-display);
+    font-weight: 400;
+    font-size: var(--font-lg);
+    text-transform: uppercase;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.1s ease;
+    box-shadow: var(--shadow-brutal);
+    color: var(--t-fg);
+
+    &:hover {
+      transform: translate(-3px, -3px);
+      box-shadow: 6px 6px 0 var(--border-color);
+    }
+
+    &:active {
+      transform: translate(0, 0);
+      box-shadow: var(--shadow-brutal);
+    }
+  }
+
+  .episodes {
+    .posts {
+      display: flex;
+      flex-direction: column;
+
+      .post {
+        display: flex;
+        align-items: center;
+        gap: var(--gap);
+        border: var(--border-width) solid var(--border-color);
+        border-bottom: none;
+        background: var(--card-bg);
+        transition: all 0.1s ease;
+        position: relative;
+
+        &:last-child {
+          border-bottom: var(--border-width) solid var(--border-color);
+        }
+
+        .number {
+          font-weight: var(--fw-md);
+          font-size: var(--font-lg);
+          padding: calc(var(--gap) * 1.5);
+          background: var(--accent, var(--accent-primary));
+          border-right: var(--border-width) solid var(--border-color);
+          min-width: 70px;
+          text-align: center;
+        }
+
+        a {
+          flex: 1;
+          padding: calc(var(--gap) * 1.5) var(--gap);
+          font-family: var(--font-family-display);
+          font-weight: 400;
+          font-size: var(--font-lg);
+          text-transform: uppercase;
+          display: flex;
+          align-items: center;
+          gap: var(--gap);
+
+          .duration {
+            font-size: var(--fs-sm);
+            padding: 0.2rem 0.5rem;
+            border: var(--border-width) solid var(--border-color);
+            background: var(--c-bg-em);
+            white-space: nowrap;
+          }
+        }
+
+        .arrow {
+          font-size: var(--font-xl);
+          padding-right: calc(var(--gap) * 1.5);
+          opacity: 0;
+          transform: translateX(-10px);
+          transition: all 0.15s ease;
+        }
+
+        &:hover {
+          background: var(--accent, var(--accent-primary));
+          transform: translateX(-6px);
+          box-shadow: 6px 0 0 var(--border-color);
+
+          .arrow {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 600px) {
+    .page-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--gap);
+    }
+
+    .subscribe-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .episodes .posts .post {
+      .number {
+        min-width: 50px;
+        padding: var(--gap);
+        font-size: var(--fs-md);
+      }
+
+      a {
+        font-size: var(--fs-md);
+        padding: var(--gap);
+        flex-wrap: wrap;
+      }
+
+      .arrow {
+        display: none;
+      }
+    }
+  }
+</style>
