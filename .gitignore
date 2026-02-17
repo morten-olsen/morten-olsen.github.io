@@ -17,6 +17,9 @@ pnpm-debug.log*
 .env
 .env.production
 
+# audio generation working files
+**/audio-work/
+
 # macOS-specific files
 .DS_Store
 

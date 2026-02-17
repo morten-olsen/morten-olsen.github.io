@@ -11,7 +11,12 @@
       "Bash(file:*)",
       "Bash(curl:*)",
       "WebSearch",
-      "WebFetch(domain:api.github.com)"
+      "WebFetch(domain:api.github.com)",
+      "Bash(git -C /Users/alice/Projects/private/self/morten-olsen.github.io log --oneline --all -10)",
+      "Bash(node --version:*)",
+      "Bash(npx tsx:*)",
+      "mcp__plugin_context7_context7__resolve-library-id",
+      "mcp__plugin_context7_context7__query-docs"
     ]
   }
 }
