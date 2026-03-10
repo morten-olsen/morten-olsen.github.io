@@ -13,6 +13,7 @@ interface Post {
   title: string;
   description: string;
   pubDate: Date;
+  // Only set when the post has an explicit publishOn field — absence means "don't share externally"
   publishOn: Date;
   tags: string[];
   body: string;
@@ -50,9 +51,11 @@ const getPosts = async (): Promise<Post[]> => {
 
     const { data, content } = matter(raw);
 
-    // publishOn falls back to pubDate if not set
+    // Skip posts without an explicit publishOn — absence means "don't share externally"
+    if (!data.publishOn) continue;
+
     const pubDate = new Date(data.pubDate as string);
-    const publishOn = data.publishOn ? new Date(data.publishOn as string) : pubDate;
+    const publishOn = new Date(data.publishOn as string);
 
     posts.push({
       dirName,

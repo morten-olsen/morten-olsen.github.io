@@ -5,7 +5,8 @@ import { join } from 'node:path';
 const TRACKING_FILE = join(process.cwd(), '.github', 'published.json');
 
 interface TrackingEntry {
-  devto?: number;
+  // number = ID from our script; string = pre-existing URL (manually seeded)
+  devto?: number | string;
   hashnode?: string;
 }
 
