@@ -1,0 +1,180 @@
+---
+import { render } from "astro:content";
+import Html from "~/components/page/Html.astro";
+import { data } from "~/data/data";
+
+const projects = await data.projects.getAll();
+---
+
+<Html
+  title="Projects"
+  description="Open source projects by Morten Olsen"
+>
+  <main class="main">
+    <header class="page-header">
+      <h1>Projects</h1>
+      <p>Open source tools and infrastructure I build and maintain.</p>
+    </header>
+
+    <div class="projects">
+      {projects.map((project, index) => (
+        <article
+          class="project"
+          data-fadein
+          style={`--delay: ${index * 0.1}s; --accent: ${['var(--accent-primary)', 'var(--accent-tertiary)', 'var(--accent-lime)', 'var(--accent-lavender)'][index % 4]}`}
+        >
+          <a href={`/projects/${project.id}`} class="project-link">
+            <div class="project-header">
+              <h2>{project.data.name}</h2>
+              {project.data.status && (
+                <span class:list={['status', project.data.status]}>{project.data.status}</span>
+              )}
+            </div>
+            <p class="project-description">{project.data.description}</p>
+            <div class="project-stack">
+              {project.data.stack.map((tech: string) => (
+                <span class="tech">{tech}</span>
+              ))}
+            </div>
+          </a>
+        </article>
+      ))}
+    </div>
+  </main>
+</Html>
+
+<script src="../../scripts/fadein.ts"></script>
+
+<style>
+.main {
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 0 30px calc(var(--gap) * 4);
+}
+
+.page-header {
+  padding: calc(var(--gap) * 3) 0;
+  margin-bottom: calc(var(--gap) * 2);
+
+  h1 {
+    font-family: var(--font-family-display);
+    font-weight: 400;
+    font-size: var(--font-xxl);
+    text-transform: uppercase;
+    background: var(--accent-secondary);
+    padding: 0.5rem 1.5rem;
+    border: var(--border-width) solid var(--on-accent);
+    box-shadow: var(--shadow-brutal-lg);
+    display: inline-block;
+    margin-bottom: var(--gap);
+    color: var(--on-accent);
+  }
+
+  p {
+    font-size: var(--font-lg);
+    max-width: 600px;
+  }
+}
+
+.projects {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: calc(var(--gap) * 1.5);
+}
+
+.project {
+  border: var(--border-width) solid var(--border-color);
+  background: var(--card-bg);
+  box-shadow: var(--shadow-brutal);
+  transition: all 0.15s ease, opacity 0.5s ease var(--delay, 0s), translate 0.5s ease var(--delay, 0s);
+
+  &.hidden {
+    opacity: 0;
+    translate: 0 30px;
+  }
+
+  &:nth-child(odd) {
+    rotate: -0.5deg;
+  }
+
+  &:nth-child(even) {
+    rotate: 0.5deg;
+  }
+
+  &:hover {
+    transform: translate(-4px, -4px);
+    box-shadow: 10px 10px 0 var(--border-color);
+    rotate: 0deg;
+  }
+
+  .project-link {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+    padding: calc(var(--gap) * 1.5);
+    height: 100%;
+  }
+
+  .project-header {
+    display: flex;
+    align-items: center;
+    gap: var(--gap);
+
+    h2 {
+      font-family: var(--font-family-display);
+      font-weight: 400;
+      font-size: var(--font-lg);
+      text-transform: uppercase;
+      background: var(--accent, var(--accent-primary));
+      padding: 0.3rem 0.8rem;
+      border: 2px solid var(--on-accent);
+      display: inline-block;
+      color: var(--on-accent);
+    }
+  }
+
+  .status {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border: 2px solid var(--border-color);
+    text-transform: uppercase;
+
+    &.active { background: var(--accent-lime); }
+    &.alpha { background: var(--accent-primary); }
+    &.archived { background: var(--c-bg-em); }
+  }
+
+  .project-description {
+    font-size: var(--fs-md);
+    line-height: 1.5;
+    color: var(--color-text-light);
+    flex: 1;
+  }
+
+  .project-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--gap) / 3);
+
+    .tech {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 8px;
+      border: 2px solid var(--border-color);
+      background: var(--c-bg-em);
+      text-transform: uppercase;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .projects {
+    grid-template-columns: 1fr;
+  }
+
+  .page-header h1 {
+    font-size: var(--font-xl);
+  }
+}
+</style>

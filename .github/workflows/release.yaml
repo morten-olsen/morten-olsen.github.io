@@ -12,7 +12,7 @@ permissions:
 
 concurrency:
   group: "pages"
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 env:
   BUILD_PATH: "./"
@@ -62,3 +62,39 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  update-profile-readme:
+    name: Update GitHub Profile README
+    runs-on: ubuntu-latest
+    concurrency:
+      group: "profile-readme"
+      cancel-in-progress: true
+    steps:
+      - name: Checkout portfolio
+        uses: actions/checkout@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: "10.18"
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "23"
+          cache: "pnpm"
+      - name: Install dependencies
+        run: pnpm install
+      - name: Checkout profile repo
+        uses: actions/checkout@v4
+        with:
+          repository: morten-olsen/morten-olsen
+          token: ${{ secrets.GH_README_TOKEN }}
+          path: profile-repo
+      - name: Generate README with optimized images
+        run: npx tsx scripts/generate-readme.ts --out-dir profile-repo > profile-repo/README.md
+      - name: Update README
+        run: |
+          cd profile-repo
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md images/
+          git diff --cached --quiet || (git commit -m "Update profile README from portfolio site" && git push)

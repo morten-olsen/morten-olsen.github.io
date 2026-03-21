@@ -17,8 +17,8 @@ profiles:
     url: https://www.linkedin.com/in/mortenolsendk
 ---
 
-As a software engineer with a diverse skill set in frontend, backend, and DevOps, I find my greatest satisfaction in unraveling complex challenges and transforming them into achievable solutions. My career has predominantly been in frontend development, but my keen interest and adaptability have frequently drawn me into backend and DevOps roles. I am driven not by titles or hierarchy but by opportunities where I can make a real difference through my work.
+I'm a software engineer based in Copenhagen. I've been writing code professionally for over 15 years, starting in .NET, drifting through React Native and frontend leadership, and somehow ending up on an AI team. The through-line is that I keep finding problems more interesting than my job title suggests I should.
 
-In every role, I strive to blend my technical skills with a collaborative spirit, focusing on contributing to team goals and delivering practical, effective solutions. My passion for development extends beyond professional settings; I continually engage in personal projects to explore new technologies and methodologies, keeping my skills sharp and current.
+Most of my career has been in frontend, but I have a habit of wandering into backend and infrastructure work when nobody is looking. I built a Kubernetes homelab that is more complex than it needs to be, I self-host everything I can get away with, and I have opinions about state management that I will share whether you ask or not.
 
-I am eager to find a role that aligns with my dedication to development and problem-solving, a place where I can apply my varied expertise to meaningful projects and grow within a team that values innovation and technical skill.
+Outside of work I mass-produce side projects — some of which I even finish. I write about the things I build and the mistakes I make along the way, mostly so that future me has someone to blame when the code stops making sense.

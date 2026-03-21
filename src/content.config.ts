@@ -48,6 +48,21 @@ const skills = defineCollection({
   })
 });
 
-const collections = { posts, experiences, skills };
+const projects = defineCollection({
+  loader: glob({ pattern: "**/index.mdx", base: "./src/content/projects" }),
+  schema: ({ image }) => z.object({
+    slug: z.string(),
+    name: z.string(),
+    description: z.string(),
+    repo: z.string().url(),
+    url: z.string().url().optional(),
+    heroImage: image().optional(),
+    stack: z.array(z.string()),
+    license: z.string().optional(),
+    status: z.enum(['active', 'alpha', 'archived']).optional(),
+  })
+});
+
+const collections = { posts, experiences, skills, projects };
 
 export { collections };
