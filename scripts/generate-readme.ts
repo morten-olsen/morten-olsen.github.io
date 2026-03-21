@@ -176,6 +176,93 @@ async function optimizeHeroImage(post: Post, outDir: string): Promise<void> {
 }
 
 // ============================================================
+//  NAME BADGE SVG — project/post title with accent bg + rotation
+// ============================================================
+
+function generateNameBadge(name: string, accentColor: string, mode: string, rot: number, opts?: { status?: string; date?: string }): string {
+  const t = themes[mode];
+  const upper = name.toUpperCase();
+  const maxLineChars = 28;
+  const lines = wrap(upper, maxLineChars);
+  const lineH = 22;
+  const padX = 14;
+  const padY = 10;
+  const pad = 6;
+
+  const nameW = Math.max(...lines.map(l => textW(l, 15, true))) + padX * 2;
+  const nameH = padY * 2 + lines.length * lineH - (lines.length > 1 ? 4 : 0);
+
+  // Status tag (for projects)
+  const statusColors: Record<string, string> = { active: A.cyan, alpha: A.yellow, archived: '#888888' };
+  const hasStatus = opts?.status && statusColors[opts.status];
+  const statusUpper = opts?.status?.toUpperCase() || '';
+  const statusW = hasStatus ? textW(statusUpper, 10) + 16 : 0;
+
+  // Date tag (for posts)
+  const hasDate = !!opts?.date;
+  const dateUpper = opts?.date?.toUpperCase() || '';
+  const dateW = hasDate ? textW(dateUpper, 10) + 16 : 0;
+
+  const tagW = statusW || dateW;
+  const tagGap = tagW ? 6 : 0;
+
+  const svgW = nameW + tagGap + tagW + SHADOW + pad * 2;
+  const svgH = nameH + SHADOW + pad * 2 + 4;
+
+  let tagSvg = '';
+  if (hasStatus) {
+    tagSvg = `
+    <rect x="${pad + nameW + tagGap}" y="${pad + (nameH - 24) / 2}" width="${statusW}" height="24" fill="${statusColors[opts!.status!]}" stroke="${onAccent}" stroke-width="2"/>
+    <text x="${pad + nameW + tagGap + statusW / 2}" y="${pad + nameH / 2 + 4}" text-anchor="middle" ${F_BODY_BOLD} font-size="10" fill="${onAccent}">${statusUpper}</text>`;
+  } else if (hasDate) {
+    tagSvg = `
+    <rect x="${pad + nameW + tagGap}" y="${pad + (nameH - 24) / 2}" width="${dateW}" height="24" fill="${t.card}" stroke="${t.border}" stroke-width="2"/>
+    <text x="${pad + nameW + tagGap + dateW / 2}" y="${pad + nameH / 2 + 4}" text-anchor="middle" ${F_BODY_BOLD} font-size="10" fill="${t.text}">${dateUpper}</text>`;
+  }
+
+  const textSvg = lines.map((line, i) =>
+    `<text x="${pad + padX}" y="${pad + padY + 15 + i * lineH}" ${F_DISPLAY} font-size="15" fill="${onAccent}">${esc(line)}</text>`
+  ).join('\n    ');
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}">
+  <g transform="rotate(${rot} ${svgW / 2} ${svgH / 2})">
+    <rect x="${pad + SHADOW / 2}" y="${pad + SHADOW / 2}" width="${nameW}" height="${nameH}" fill="${t.shadow}"/>
+    <rect x="${pad}" y="${pad}" width="${nameW}" height="${nameH}" fill="${accentColor}" stroke="${onAccent}" stroke-width="2"/>
+    ${textSvg}${tagSvg}
+  </g>
+</svg>`;
+}
+
+// ============================================================
+//  TECH TAG SVG — inline code-like tag with accent color
+// ============================================================
+
+function generateTagStrip(tags: string[], mode: string): string {
+  const t = themes[mode];
+  const tagH = 22;
+  const tagGap = 6;
+  const tagPadX = 10;
+  const tagWidths = tags.map(tag => textW(tag, 10) + tagPadX * 2);
+  const totalW = tagWidths.reduce((a, b) => a + b, 0) + tagGap * (tags.length - 1);
+  const pad = 4;
+  const svgW = totalW + pad * 2;
+  const svgH = tagH + pad * 2;
+
+  let curX = pad;
+  const tagSvgs = tags.map((tag, i) => {
+    const w = tagWidths[i];
+    const x = curX;
+    curX += w + tagGap;
+    return `<rect x="${x}" y="${pad}" width="${w}" height="${tagH}" fill="${t.card}" stroke="${t.border}" stroke-width="2"/>
+  <text x="${x + w / 2}" y="${pad + tagH / 2 + 4}" text-anchor="middle" ${F_BODY_BOLD} font-size="10" fill="${t.text}">${esc(tag)}</text>`;
+  }).join('\n  ');
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}">
+  ${tagSvgs}
+</svg>`;
+}
+
+// ============================================================
 //  SECTION HEADER SVG — matches the website's .section-title
 // ============================================================
 
@@ -335,33 +422,45 @@ async function main() {
       // Fun badges
       writeFileSync(join(imagesDir, `badges-${mode}.svg`), generateBadgeStrip(mode));
 
+      // Name badges for projects (with status)
+      const projRotations = [-1.5, 1.2, -0.8];
+      for (let i = 0; i < projects.length; i++) {
+        writeFileSync(join(imagesDir, `name-${projects[i].slug}-${mode}.svg`), generateNameBadge(projects[i].name, accents[i % accents.length], mode, projRotations[i % projRotations.length], { status: projects[i].status }));
+      }
+
+      // Name badges for posts (with date)
+      const postRotations = [-1.2, 0.9, -0.7, 1.4];
+      for (let i = 0; i < recentPosts.length; i++) {
+        const date = recentPosts[i].pubDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+        writeFileSync(join(imagesDir, `name-${recentPosts[i].dirName}-${mode}.svg`), generateNameBadge(recentPosts[i].title, accents[i % accents.length], mode, postRotations[i % postRotations.length], { date }));
+      }
+
+      // Tech tag strips for projects
+      for (const p of projects) {
+        writeFileSync(join(imagesDir, `tags-${p.slug}-${mode}.svg`), generateTagStrip(p.stack.slice(0, 7), mode));
+      }
     }
 
     // Hero images (format-independent, only need one copy)
     await Promise.all(recentPosts.map(p => optimizeHeroImage(p, imagesDir)));
   }
 
-  const statusColors: Record<string, string> = { active: A.cyan, alpha: A.yellow, archived: '#888888' };
-
   const postEntries = recentPosts.map(p => {
-    const date = p.pubDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-    return `<a href="https://mortenolsen.pro/posts/${p.slug}/"><img src="./images/post-${p.dirName}.webp" alt="${esc(p.title)}" width="100%"></a>
+    return `<a href="https://mortenolsen.pro/posts/${p.slug}/"><img src="./images/post-${p.dirName}.webp" alt="${esc(p.title)}" width="320" align="left"></a>
 
-**[${p.title}](https://mortenolsen.pro/posts/${p.slug}/)** · ${date}
-
-${p.description}`;
-  });
-
-  const projectEntries = projects.map((p, idx) => {
-    const statusBadge = p.status
-      ? ` ![${p.status}](https://img.shields.io/badge/${p.status}-${statusColors[p.status]?.replace('#', '') || '888888'}?style=flat-square)`
-      : '';
-    const stack = p.stack.map(t => `\`${t}\``).join(' ');
-    return `**[${p.name}](${p.repo})**${statusBadge}
+<a href="https://mortenolsen.pro/posts/${p.slug}/">${pic(`name-${p.dirName}`, p.title)}</a>
 
 ${p.description}
 
-${stack}`;
+<br clear="both">`;
+  });
+
+  const projectEntries = projects.map(p => {
+    return `<a href="${p.repo}">${pic(`name-${p.slug}`, p.name)}</a>
+
+${p.description}
+
+${pic(`tags-${p.slug}`, p.stack.join(', '))}`;
   });
 
   const readme = `<div align="center">
@@ -386,6 +485,8 @@ I write about AI agents, infrastructure, developer tools, and the mistakes I mak
 ${pic('heading-building', 'What I\'m Building')}
 
 ${projectEntries.join('\n\n<br>\n\n')}
+
+<br>
 
 ${pic('heading-writing', 'Recent Writing')}
 
