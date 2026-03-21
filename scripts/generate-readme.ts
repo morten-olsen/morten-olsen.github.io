@@ -164,104 +164,15 @@ function generateBanner(mode: string): string {
 }
 
 // ============================================================
-//  POST CARD SVG — full-width horizontal (image left, text right)
-//  Like the website's "wide" post card layout
+//  POST HERO IMAGE — optimized webp for the README
 // ============================================================
 
-async function generatePostCard(post: Post, idx: number, mode: string): Promise<string> {
-  const t = themes[mode];
-  const cardW = 880;
-  const cardH = 180;
-  const imgW = 300;
-  const pad = 12;
-  const textPad = 28;
-  const textX = imgW + BORDER + textPad;
-  const accentColor = accents[idx % accents.length];
-  const rot = [-0.3, 0.4, -0.2, 0.35][idx % 4];
-
+async function optimizeHeroImage(post: Post, outDir: string): Promise<void> {
   const heroPath = join(CONTENT_DIR, 'posts', post.dirName, post.heroImage.replace(/^\.\//, ''));
-  const imgBuf = await sharp(heroPath)
-    .resize(imgW * 2, cardH * 2, { fit: 'cover' })
-    .jpeg({ quality: 75 })
-    .toBuffer();
-  const imgB64 = `data:image/jpeg;base64,${imgBuf.toString('base64')}`;
-
-  const titleLines = wrap(post.title, 38);
-  const descLines = wrap(post.description, 55).slice(0, 2);
-  const date = post.pubDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }).toUpperCase();
-
-  const svgW = cardW + SHADOW + pad * 2;
-  const svgH = cardH + SHADOW + pad * 2;
-
-  return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}">
-  <g transform="rotate(${rot} ${svgW / 2} ${svgH / 2})">
-  ${brutalCard(pad, pad, cardW, cardH, t)}
-  <!-- Hero image (left side) -->
-  <defs><clipPath id="img"><rect x="${pad + BORDER / 2}" y="${pad + BORDER / 2}" width="${imgW - BORDER / 2}" height="${cardH - BORDER}"/></clipPath></defs>
-  <image href="${imgB64}" x="${pad + BORDER / 2}" y="${pad + BORDER / 2}" width="${imgW}" height="${cardH - BORDER}" preserveAspectRatio="xMidYMid slice" clip-path="url(#img)"/>
-  <!-- Vertical divider + accent stripe -->
-  <line x1="${pad + imgW}" y1="${pad}" x2="${pad + imgW}" y2="${pad + cardH}" stroke="${t.border}" stroke-width="${BORDER}"/>
-  <rect x="${pad + imgW}" y="${pad + BORDER / 2}" width="4" height="${cardH - BORDER}" fill="${accentColor}"/>
-  <!-- Title -->
-  ${titleLines.map((line, li) => `<text x="${pad + textX}" y="${pad + textPad + 18 + li * 24}" ${F_DISPLAY} font-size="16" fill="${t.text}">${esc(line)}</text>`).join('\n  ')}
-  <!-- Description -->
-  ${descLines.map((line, i) => `<text x="${pad + textX}" y="${pad + textPad + 18 + titleLines.length * 24 + 16 + i * 17}" ${F_BODY} font-size="12" fill="${t.textMuted}">${esc(line)}</text>`).join('\n  ')}
-  <!-- Date -->
-  <text x="${pad + textX}" y="${pad + cardH - textPad + 4}" ${F_BODY_BOLD} font-size="10" fill="${t.textMuted}">${date}</text>
-  </g>
-</svg>`;
-}
-
-// ============================================================
-//  PROJECT CARD SVG — full-width horizontal
-//  Accent bar on left, name badge + description + stack
-// ============================================================
-
-function generateProjectCard(project: Project, idx: number, mode: string): string {
-  const t = themes[mode];
-  const cardW = 880;
-  const innerPad = 28;
-  const accentBarW = 8;
-  const contentX = innerPad + accentBarW;
-  const descLines = wrap(project.description, 85).slice(0, 2);
-  const stackStr = project.stack.slice(0, 7).join('  \u00b7  ');
-  const nameUpper = project.name.toUpperCase();
-  const nameW = textW(nameUpper, 16, true) + 28;
-  const statusColors: Record<string, string> = { active: A.cyan, alpha: A.yellow, archived: '#888888' };
-  const accentColor = accents[idx % accents.length];
-
-  const cardH = innerPad + 32 + 12 + descLines.length * 18 + 12 + 14 + innerPad;
-  const rot = [-0.25, 0.35, -0.2][idx % 3];
-  const pad = 12;
-  const svgW = cardW + SHADOW + pad * 2;
-  const svgH = cardH + SHADOW + pad * 2;
-
-  let statusSvg = '';
-  if (project.status) {
-    const sColor = statusColors[project.status] || '#888888';
-    const sText = project.status.toUpperCase();
-    const sW = textW(sText, 10) + 16;
-    const sX = pad + contentX + nameW + SHADOW + 10;
-    statusSvg = `<rect x="${sX}" y="${pad + innerPad + 2}" width="${sW}" height="26" fill="${sColor}" stroke="${onAccent}" stroke-width="2"/>
-    <text x="${sX + sW / 2}" y="${pad + innerPad + 20}" text-anchor="middle" ${F_BODY_BOLD} font-size="10" fill="${onAccent}">${sText}</text>`;
-  }
-
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}">
-  <g transform="rotate(${rot} ${svgW / 2} ${svgH / 2})">
-  ${brutalCard(pad, pad, cardW, cardH, t)}
-  <!-- Accent bar -->
-  <rect x="${pad + BORDER / 2}" y="${pad + BORDER / 2}" width="${accentBarW}" height="${cardH - BORDER}" fill="${accentColor}"/>
-  <!-- Name badge with shadow -->
-  <rect x="${pad + contentX + SHADOW / 2}" y="${pad + innerPad + SHADOW / 2}" width="${nameW}" height="30" fill="${t.shadow}"/>
-  <rect x="${pad + contentX}" y="${pad + innerPad}" width="${nameW}" height="30" fill="${accentColor}" stroke="${onAccent}" stroke-width="2"/>
-  <text x="${pad + contentX + nameW / 2}" y="${pad + innerPad + 21}" text-anchor="middle" ${F_DISPLAY} font-size="16" fill="${onAccent}">${esc(nameUpper)}</text>
-  ${statusSvg}
-  <!-- Description -->
-  ${descLines.map((line, i) => `<text x="${pad + contentX}" y="${pad + innerPad + 52 + i * 18}" ${F_BODY} font-size="13" fill="${t.textMuted}">${esc(line)}</text>`).join('\n  ')}
-  <!-- Stack -->
-  <text x="${pad + contentX}" y="${pad + cardH - innerPad + 4}" ${F_BODY_BOLD} font-size="11" fill="${t.textMuted}" letter-spacing="0.3">${esc(stackStr)}</text>
-  </g>
-</svg>`;
+  await sharp(heroPath)
+    .resize(800, 420, { fit: 'cover' })
+    .webp({ quality: 80 })
+    .toFile(join(outDir, `post-${post.dirName}.webp`));
 }
 
 // ============================================================
@@ -406,13 +317,6 @@ async function main() {
     mkdirSync(imagesDir, { recursive: true });
     for (const mode of ['light', 'dark']) {
       writeFileSync(join(imagesDir, `banner-${mode}.svg`), generateBanner(mode));
-      for (let i = 0; i < recentPosts.length; i++) {
-        writeFileSync(join(imagesDir, `post-${recentPosts[i].dirName}-${mode}.svg`), await generatePostCard(recentPosts[i], i, mode));
-      }
-      for (let i = 0; i < projects.length; i++) {
-        writeFileSync(join(imagesDir, `project-${projects[i].slug}-${mode}.svg`), generateProjectCard(projects[i], i, mode));
-      }
-
       // Section headers
       writeFileSync(join(imagesDir, `heading-building-${mode}.svg`), generateSectionHeader('What I\u2019m Building', A.red, mode));
       writeFileSync(join(imagesDir, `heading-writing-${mode}.svg`), generateSectionHeader('Recent Writing', A.yellow, mode));
@@ -432,15 +336,33 @@ async function main() {
       writeFileSync(join(imagesDir, `badges-${mode}.svg`), generateBadgeStrip(mode));
 
     }
+
+    // Hero images (format-independent, only need one copy)
+    await Promise.all(recentPosts.map(p => optimizeHeroImage(p, imagesDir)));
   }
 
-  const postLinks = recentPosts.map(p =>
-    `<a href="https://mortenolsen.pro/posts/${p.slug}/">${pic(`post-${p.dirName}`, p.title)}</a>`
-  );
+  const statusColors: Record<string, string> = { active: A.cyan, alpha: A.yellow, archived: '#888888' };
 
-  const projectLinks = projects.map(p =>
-    `<a href="${p.repo}">${pic(`project-${p.slug}`, p.name)}</a>`
-  );
+  const postEntries = recentPosts.map(p => {
+    const date = p.pubDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+    return `<a href="https://mortenolsen.pro/posts/${p.slug}/"><img src="./images/post-${p.dirName}.webp" alt="${esc(p.title)}" width="100%"></a>
+
+**[${p.title}](https://mortenolsen.pro/posts/${p.slug}/)** · ${date}
+
+${p.description}`;
+  });
+
+  const projectEntries = projects.map((p, idx) => {
+    const statusBadge = p.status
+      ? ` ![${p.status}](https://img.shields.io/badge/${p.status}-${statusColors[p.status]?.replace('#', '') || '888888'}?style=flat-square)`
+      : '';
+    const stack = p.stack.map(t => `\`${t}\``).join(' ');
+    return `**[${p.name}](${p.repo})**${statusBadge}
+
+${p.description}
+
+${stack}`;
+  });
 
   const readme = `<div align="center">
 
@@ -463,11 +385,11 @@ I write about AI agents, infrastructure, developer tools, and the mistakes I mak
 
 ${pic('heading-building', 'What I\'m Building')}
 
-${projectLinks.join('\n\n')}
+${projectEntries.join('\n\n<br>\n\n')}
 
 ${pic('heading-writing', 'Recent Writing')}
 
-${postLinks.join('\n\n')}
+${postEntries.join('\n\n<br>\n\n')}
 
 <a href="https://mortenolsen.pro">${pic('btn-more-writing', 'More writing')}</a>
 
