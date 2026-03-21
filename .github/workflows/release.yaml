@@ -89,9 +89,9 @@ jobs:
           repository: morten-olsen/morten-olsen
           token: ${{ secrets.GH_README_TOKEN }}
           path: profile-repo
-      - name: Generate README with optimized images
+      - name: Generate README and SVG cards
         run: npx tsx scripts/generate-readme.ts --out-dir profile-repo > profile-repo/README.md
-      - name: Update README
+      - name: Push to profile repo
         run: |
           cd profile-repo
           git config user.name "github-actions[bot]"
