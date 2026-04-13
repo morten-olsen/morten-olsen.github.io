@@ -40,7 +40,7 @@ const COLORS = ['#00ffff', '#c8ff00', '#ffee00', '#ff6b6b', '#c084fc'];
 const BORDER_COLOR = '#000000';
 
 const getStaticPaths = (async () => {
-  const posts = await data.posts.getPublished();
+  const posts = await data.posts.getAll();
   return posts.map((post) => ({
     params: { id: post.id },
     props: {

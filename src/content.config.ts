@@ -15,6 +15,7 @@ const posts = defineCollection({
     tags: z.array(z.string()).optional(),
     heroImage: image(),
     audio: z.string().optional(),
+    published: z.boolean().optional(),
   })
 });
 

@@ -17,7 +17,10 @@
       "Bash(npx tsx:*)",
       "mcp__plugin_context7_context7__resolve-library-id",
       "mcp__plugin_context7_context7__query-docs",
-      "Bash(ffprobe:*)"
+      "Bash(ffprobe:*)",
+      "Bash(date -v-30d +%s)",
+      "Bash(python3 -c \"import json,sys; data=json.load\\(sys.stdin\\); [print\\(f'{h[\\\\\"points\\\\\"]}pts | {h[\\\\\"title\\\\\"]} | {h[\\\\\"url\\\\\"] or \\\\\"HN discussion\\\\\"}'\\) for h in sorted\\(data.get\\('hits',[]\\), key=lambda x: x.get\\('points',0\\), reverse=True\\)[:20]]\")",
+      "Bash(python3 -c \"import json,sys; data=json.load\\(sys.stdin\\); [print\\(f'{h[\\\\\"points\\\\\"]}pts | {h[\\\\\"title\\\\\"]} | {h[\\\\\"url\\\\\"] or \\\\\"HN discussion\\\\\"}'\\) for h in sorted\\(data.get\\('hits',[]\\), key=lambda x: x.get\\('points',0\\), reverse=True\\)[:15]]\")"
     ]
   }
 }

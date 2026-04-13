@@ -48,6 +48,21 @@ Defined in `src/content.config.ts`:
 - **Images**: Use `<Picture />` from `astro:assets`
 - **Styling**: Scoped `<style>` blocks with CSS nesting, use CSS variables (`var(--content-width)`, `var(--t-fg)`)
 
+## Article Writing Workflow
+
+This repo has specialized agents for an end-to-end article writing experience:
+
+| Tool | Type | What it does | When to use |
+|---|---|---|---|
+| `/new-post` | Skill | Scaffolds a new post directory with frontmatter and assets folder | Starting a new article |
+| `/co-writer` | Skill | Enters co-writing mode — brainstorm, outline, draft, revise interactively | Writing or improving article content |
+| `researcher` | Agent | Gathers sources, checks facts, finds counterarguments | Before drafting a topic that needs external context |
+| `editor` | Agent | Reviews structure, voice, technical accuracy, publication readiness | Before publishing — the quality gate |
+
+**Skills** (`/new-post`, `/co-writer`) run in the current conversation so you can go back and forth interactively. **Agents** (`researcher`, `editor`) are dispatched for one-shot tasks and return a report.
+
+**Typical flow:** `/new-post` → `researcher` → `/co-writer` → `editor` → revise → publish.
+
 ## Detailed Guidelines
 
 See **AGENTS.md** for comprehensive conventions, code style details, and component structure examples.

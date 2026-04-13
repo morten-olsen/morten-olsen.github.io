@@ -69,13 +69,18 @@ class Posts {
     });
   }
 
-  public getPublished = async () => {
+  public getAll = async () => {
     const collection = await getCollection('posts');
     return collection
       .map(this.#map)
       .sort(
         (a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime(),
       )
+  }
+
+  public getPublished = async () => {
+    const all = await this.getAll();
+    return all.filter((post) => post.data.published !== false);
   }
 
   public get = async (id: string) => {

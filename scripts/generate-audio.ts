@@ -13,16 +13,18 @@ import { createInterface } from "node:readline";
 
 // --- Config ---
 
-const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
-const ELEVENLABS_VOICE_ID = process.env.ELEVENLABS_VOICE_ID;
-const ELEVENLABS_TITLE_VOICE_ID = process.env.ELEVENLABS_TITLE_VOICE_ID;
-const ELEVENLABS_MODEL = process.env.ELEVENLABS_MODEL ?? "eleven_v3";
 const OPENROUTER_MODEL =
   process.env.OPENROUTER_MODEL ?? "openai/gpt-4.1-mini";
 
+// Kokoro TTS config
+const KOKORO_VOICE = process.env.KOKORO_VOICE ?? "af_heart";
+const KOKORO_TITLE_VOICE = process.env.KOKORO_TITLE_VOICE ?? "am_adam";
+const KOKORO_LANG = process.env.KOKORO_LANG ?? "a";
+
 const MAX_CHARS_PER_CHUNK = 4500;
 const CONTENT_DIR = join(import.meta.dirname, "../src/content/posts");
+const TTS_SCRIPT = join(import.meta.dirname, "tts-kokoro.py");
 
 // --- Types ---
 
@@ -178,34 +180,34 @@ function chunkText(text: string, maxChars: number): string[] {
   return chunks;
 }
 
-async function generateSpeech(
+function generateSpeech(
   text: string,
-  voiceId: string,
-): Promise<Buffer> {
-  if (!ELEVENLABS_API_KEY) throw new Error("ELEVENLABS_API_KEY is required");
+  voice: string,
+  outputPath: string,
+): void {
+  // Write text to a temp file to avoid shell escaping issues with long content
+  const textPath = join(tmpdir(), `tts-input-${Date.now()}.txt`);
+  writeFileSync(textPath, text);
 
-  const res = await fetch(
-    `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}?output_format=mp3_44100_128`,
-    {
-      method: "POST",
-      headers: {
-        "xi-api-key": ELEVENLABS_API_KEY,
-        "Content-Type": "application/json",
-        Accept: "audio/mpeg",
-      },
-      body: JSON.stringify({
-        text,
-        model_id: ELEVENLABS_MODEL,
-      }),
-    },
+  const wavPath = outputPath.replace(/\.mp3$/, ".wav");
+
+  execSync(
+    `uv run --script "${TTS_SCRIPT}" --text-file "${textPath}" --output "${wavPath}" --voice "${voice}" --lang "${KOKORO_LANG}"`,
+    { stdio: "pipe", maxBuffer: 50 * 1024 * 1024 },
   );
 
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`ElevenLabs error ${res.status}: ${body}`);
-  }
+  // Convert WAV to MP3 for consistency with existing pipeline
+  execSync(
+    `ffmpeg -y -i "${wavPath}" -c:a libmp3lame -b:a 128k "${outputPath}"`,
+    { stdio: "pipe" },
+  );
 
-  return Buffer.from(await res.arrayBuffer());
+  // Clean up temp files
+  try {
+    execSync(`rm "${wavPath}" "${textPath}"`, { stdio: "pipe" });
+  } catch {
+    // Non-critical cleanup
+  }
 }
 
 function generateSilence(durationMs: number, outputPath: string) {
@@ -316,16 +318,11 @@ async function cmdPrepare(slug: string) {
 }
 
 async function cmdGenerate(slug: string, only?: number[], missingOnly?: boolean) {
-  if (!ELEVENLABS_API_KEY) {
-    console.error("Error: ELEVENLABS_API_KEY env var is required");
-    process.exit(1);
-  }
-  if (!ELEVENLABS_VOICE_ID) {
-    console.error("Error: ELEVENLABS_VOICE_ID env var is required");
-    process.exit(1);
-  }
-  if (!ELEVENLABS_TITLE_VOICE_ID) {
-    console.error("Error: ELEVENLABS_TITLE_VOICE_ID env var is required");
+  // Verify uv is available
+  try {
+    execSync("uv --version", { stdio: "pipe" });
+  } catch {
+    console.error("Error: uv is required. Install it: https://docs.astral.sh/uv/");
     process.exit(1);
   }
 
@@ -356,13 +353,11 @@ async function cmdGenerate(slug: string, only?: number[], missingOnly?: boolean)
     process.exit(1);
   }
 
-  console.log(`Generating ${toGenerate.length} clip(s)...\n`);
+  console.log(`Generating ${toGenerate.length} clip(s) with Kokoro TTS...\n`);
 
   for (const segment of toGenerate) {
-    const voiceId =
-      segment.type === "title"
-        ? ELEVENLABS_TITLE_VOICE_ID!
-        : ELEVENLABS_VOICE_ID!;
+    const voice =
+      segment.type === "title" ? KOKORO_TITLE_VOICE : KOKORO_VOICE;
 
     if (segment.type === "body" && segment.text.length > MAX_CHARS_PER_CHUNK) {
       // Body too long — chunk it, generate each, then concat
@@ -373,9 +368,8 @@ async function cmdGenerate(slug: string, only?: number[], missingOnly?: boolean)
         console.log(
           `  ${segment.file} chunk ${j + 1}/${chunks.length} (${chunks[j].length} chars)`,
         );
-        const audioData = await generateSpeech(chunks[j], voiceId);
         const chunkPath = join(clipsDir, `${segment.file}.chunk-${j}.mp3`);
-        writeFileSync(chunkPath, audioData);
+        generateSpeech(chunks[j], voice, chunkPath);
         chunkPaths.push(chunkPath);
       }
 
@@ -391,8 +385,7 @@ async function cmdGenerate(slug: string, only?: number[], missingOnly?: boolean)
       console.log(
         `  ${segment.file} (${segment.text.length} chars) "${preview}"`,
       );
-      const audioData = await generateSpeech(segment.text, voiceId);
-      writeFileSync(join(clipsDir, segment.file), audioData);
+      generateSpeech(segment.text, voice, join(clipsDir, segment.file));
     }
   }
 
@@ -456,7 +449,7 @@ async function main() {
 
 Commands:
   prepare  <slug>              Clean MDX into a narration script for review
-  generate <slug> [--only=N,N] [--missing] Generate audio clips
+  generate <slug> [--only=N,N] [--missing] Generate audio clips (local Kokoro TTS)
   merge    <slug> [--only=N,N] Combine clips into final audio.mp3 (or preview subset)
 
 Workflow:
@@ -464,13 +457,16 @@ Workflow:
   2. generate — creates individual mp3 clips per segment
   3. merge    — combines clips with 1s silence between sections
 
+Prerequisites:
+  brew install espeak-ng ffmpeg
+  # Python deps managed automatically via uv
+
 Environment variables:
   OPENROUTER_API_KEY       Required for "prepare"
-  ELEVENLABS_API_KEY       Required for "generate"
-  ELEVENLABS_VOICE_ID      Body narration voice
-  ELEVENLABS_TITLE_VOICE_ID Section title voice
-  ELEVENLABS_MODEL         Model ID (default: eleven_v3)
   OPENROUTER_MODEL         LLM model (default: openai/gpt-4.1-mini)
+  KOKORO_VOICE             Body narration voice (default: af_heart)
+  KOKORO_TITLE_VOICE       Section title voice (default: am_adam)
+  KOKORO_LANG              Language: a=American, b=British (default: a)
 `);
     console.log("Available posts:");
     const posts = readdirSync(CONTENT_DIR, { withFileTypes: true })

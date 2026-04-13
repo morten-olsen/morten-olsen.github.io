@@ -7,7 +7,7 @@ import { Picture } from 'astro:assets';
 import AbsoluteTime from '~/components/base/time/AbsoluteTime.astro';
 
 export const getStaticPaths = (async () => {
-  const posts = await data.posts.getPublished();
+  const posts = await data.posts.getAll();
   return posts.map((post, index) => ({
     params: { id: post.id },
     props: {
