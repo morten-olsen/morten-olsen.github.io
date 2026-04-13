@@ -12,7 +12,7 @@ const projects = await data.projects.getAll();
 >
   <main class="main">
     <header class="page-header">
-      <h1>Projects</h1>
+      <h1 data-accent-bg>Projects</h1>
       <p>Open source tools and infrastructure I build and maintain.</p>
     </header>
 
@@ -25,7 +25,7 @@ const projects = await data.projects.getAll();
         >
           <a href={`/projects/${project.id}`} class="project-link">
             <div class="project-header">
-              <h2>{project.data.name}</h2>
+              <h2 data-accent-bg>{project.data.name}</h2>
               {project.data.status && (
                 <span class:list={['status', project.data.status]}>{project.data.status}</span>
               )}
@@ -86,7 +86,7 @@ const projects = await data.projects.getAll();
   border: var(--border-width) solid var(--border-color);
   background: var(--card-bg);
   box-shadow: var(--shadow-brutal);
-  transition: all 0.15s ease, opacity 0.5s ease var(--delay, 0s), translate 0.5s ease var(--delay, 0s);
+  transition: all var(--duration-fast) var(--ease-out), opacity var(--duration-slow) var(--ease-out) var(--delay, 0s), translate var(--duration-slow) var(--ease-out) var(--delay, 0s);
 
   &.hidden {
     opacity: 0;
@@ -137,12 +137,13 @@ const projects = await data.projects.getAll();
     font-size: 11px;
     font-weight: 500;
     padding: 3px 8px;
-    border: 2px solid var(--border-color);
+    border: 2px solid var(--on-accent);
     text-transform: uppercase;
+    color: var(--on-accent);
 
     &.active { background: var(--accent-lime); }
     &.alpha { background: var(--accent-primary); }
-    &.archived { background: var(--c-bg-em); }
+    &.archived { background: var(--c-bg-em); color: var(--t-fg); border-color: var(--border-color); }
   }
 
   .project-description {

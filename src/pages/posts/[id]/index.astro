@@ -124,7 +124,7 @@ const hasToC = tocHeadings.length >= 3;
 
   article {
     font-family: var(--font-family);
-    color: var(--color);
+    color: var(--t-fg);
     background-color: var(--card-bg);
     font-size: 1.05rem;
     line-height: 1.7;
@@ -387,10 +387,11 @@ const hasToC = tocHeadings.length >= 3;
       text-decoration-thickness: 3px;
       text-decoration-color: var(--accent-secondary);
       text-underline-offset: 3px;
-      transition: all 0.1s ease;
+      transition: all var(--duration-fast) var(--ease-out);
 
       &:hover {
         background: var(--accent-secondary);
+        color: var(--on-accent);
       }
     }
   }
@@ -633,7 +634,7 @@ const hasToC = tocHeadings.length >= 3;
       font-size: 0.8rem;
       color: var(--color-text-light);
       text-decoration: none;
-      transition: all 0.1s ease;
+      transition: all var(--duration-fast) var(--ease-out);
       display: block;
       padding: 0.4rem 0.75rem;
       margin-left: -3px;
@@ -669,7 +670,7 @@ const hasToC = tocHeadings.length >= 3;
     gap: 0.25rem;
     text-decoration: none;
     max-width: 45%;
-    transition: all 0.15s ease;
+    transition: all var(--duration-fast) var(--ease-out);
 
     &:hover .nav-title {
       text-decoration-color: var(--accent-primary);
@@ -701,12 +702,12 @@ const hasToC = tocHeadings.length >= 3;
     text-decoration-color: var(--border-color);
     text-underline-offset: 3px;
     text-decoration-thickness: 2px;
-    transition: text-decoration-color 0.15s ease;
+    transition: text-decoration-color var(--duration-fast) var(--ease-out);
   }
 
   /* Hero parallax */
   [data-parallax-bg] img {
-    transition: transform 0.1s ease-out;
+    transition: transform var(--duration-fast) var(--ease-out);
   }
 
   @media (max-width: 768px) {

@@ -135,311 +135,397 @@ withFadeIn.forEach((node) => {
 
 <style is:global>
 
-@view-transition {
-    navigation: auto; /* enabled! */
+/* ============================================================
+   CASCADE ARCHITECTURE
+   Layer stack declares explicit cascade priority once.
+   Unlayered styles (Astro scoped components) beat all layers.
+   ============================================================ */
+@layer reset, tokens, layout, utilities, overrides;
+
+/* ============================================================
+   TYPED DESIGN TOKENS — @property registrations
+   Type safety, animatable theme transitions, guaranteed defaults.
+   ============================================================ */
+
+/* Accent palette */
+@property --accent-primary {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #ffee00;
+}
+@property --accent-secondary {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #ff5757;
+}
+@property --accent-tertiary {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #00d4ff;
+}
+@property --accent-lime {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #c8ff00;
+}
+@property --accent-lavender {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #e4c1f9;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  text-indent: 0;
-  list-style-type: none;
+/* Surface colors */
+@property --page-bg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #f0f0e8;
 }
-html,
-body {
-  width: 100%;
-  height: 100%;
+@property --card-bg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #ffffff;
 }
-
-:root {
-  /* Theme colors - bold neo-brutalist palette */
-  --accent-primary: #ffee00;
-  --accent-secondary: #ff5757;
-  --accent-tertiary: #00d4ff;
-  --accent-lime: #c8ff00;
-  --accent-lavender: #e4c1f9;
-
-  /* Neo-brutalism core */
-  --border-width: 4px;
-  --border-color: #000;
-  --shadow-offset: 6px;
-  --shadow-brutal: var(--shadow-offset) var(--shadow-offset) 0 var(--border-color);
-  --shadow-brutal-lg: 8px 8px 0 var(--border-color);
-
-  /* Remove all border-radius */
-  --radius: 0;
-  --radius-sm: 0;
-
-  /* Page background - off-white with subtle pattern feel */
-  --page-bg: #f0f0e8;
-  --card-bg: #fff;
-
-  /* Legacy variables */
-  --c-bg-em: #e8e8e0;
-  --c-line: #000;
-  --content-width: 1100px;
-  --gap: 16px;
-  --system-ui: 'Space Grotesk', system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  --t-fg: #000;
-  --bg: #fff;
-  --fw-df: 400;
-  --fw-md: 700;
-  --fs-sm: 14px;
-  --fs-md: 16px;
-
-  /* Typography */
-  --font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
-  --font-family-display: 'Archivo Black', 'Impact', sans-serif;
-  --font-family-heading: var(--font-family-display);
-  --font-size: 16px;
-  --letter-spacing: 0.5px;
-  --color: #000;
-  --background-color: var(--page-bg);
-
-  --space-xs: 0.25rem;
-  --space-sm: 0.5rem;
-  --space-md: 1rem;
-  --space-lg: 2rem;
-  --space-xl: 3rem;
-  --space-xxl: 4rem;
-
-  --font-xxl: 2.5rem;
-  --font-xl: 1.75rem;
-  --font-lg: 1.25rem;
-  --font-sm: 0.875rem;
-  --font-xs: 0.75rem;
-
-  --color-text-light: #333;
-  --color-border: #000;
-  --color-link: #000;
-
-  /* Text/border color for elements with accent backgrounds */
-  --on-accent: #000;
+@property --c-bg-em {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #e8e8e0;
 }
 
-/* Dark mode overrides */
-[data-theme="dark"] {
-  --page-bg: #111118;
-  --card-bg: #1c1c26;
-  --t-fg: #f0f0e8;
-  --color: #f0f0e8;
-  --border-color: #f0f0e8;
-  /* Opaque shadows for hard brutalist edge in dark mode */
-  --shadow-brutal: var(--shadow-offset) var(--shadow-offset) 0 #0a0a10;
-  --shadow-brutal-lg: 8px 8px 0 #0a0a10;
-  --c-bg-em: #26263a;
-  --c-line: #f0f0e8;
-  --bg: #1c1c26;
-  --background-color: var(--page-bg);
-  --color-text-light: #a0a0a8;
-  --color-border: #f0f0e8;
-  --color-link: #f0f0e8;
-
-  /* Slightly boosted accents for dark mode - more neon/vivid */
-  --accent-primary: #ffe600;
-  --accent-secondary: #ff4d4d;
-  --accent-tertiary: #00e5ff;
-  --accent-lime: #d4ff00;
-  --accent-lavender: #d8b4fe;
-
-  /* Text/border on accent backgrounds stays dark */
-  --on-accent: #000;
+/* Text colors */
+@property --t-fg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #000000;
+}
+@property --color-text-light {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #333333;
+}
+@property --on-accent {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #000000;
 }
 
-/* Dark mode: elements with accent backgrounds need dark text */
-[data-theme="dark"] .photo-label,
-[data-theme="dark"] .hero-headline span,
-[data-theme="dark"] .hero-desc,
-[data-theme="dark"] .floating-badge,
-[data-theme="dark"] .section-title,
-[data-theme="dark"] .section-title h2,
-[data-theme="dark"] .profiles h2,
-[data-theme="dark"] .companyName h3,
-[data-theme="dark"] .skill-name h3 {
-  color: var(--on-accent);
+/* Border system */
+@property --border-color {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #000000;
+}
+@property --border-width {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 4px;
+}
+@property --shadow-offset {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 6px;
 }
 
-/* Dark mode: link hover states with accent backgrounds */
-[data-theme="dark"] p a:hover,
-[data-theme="dark"] .content a:hover {
-  color: var(--on-accent);
-}
-
-/* Dark mode: button/CTA hover states */
-[data-theme="dark"] .hero-cta:hover,
-[data-theme="dark"] .scroll-btn:hover,
-[data-theme="dark"] .profile a:hover {
-  color: var(--on-accent);
-}
-
-html {
-  background-color: var(--page-bg);
-  scroll-behavior: smooth;
-  overflow-x: hidden;
-}
-
-body {
-  font-family: var(--system-ui);
-  font-size: var(--fs-md);
-  font-weight: var(--fw-df);
-  color: var(--t-fg);
-  background-color: var(--page-bg);
-  overflow-x: clip;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-family-heading);
-  font-weight: inherit;
-  font-size: inherit;
-}
-
-a {
-  color: var(--t-fg);
-  text-decoration: none;
-}
-
-p a {
-  color: var(--t-fg);
-  text-decoration: underline;
-  text-decoration-color: var(--accent-secondary);
-  text-decoration-thickness: 3px;
-  text-underline-offset: 3px;
-  transition: all 0.1s ease;
-  font-weight: 500;
-
-  &:hover {
-    background-color: var(--accent-secondary);
-    text-decoration-color: var(--border-color);
+/* ============================================================
+   RESET LAYER — normalize browser defaults
+   ============================================================ */
+@layer reset {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-indent: 0;
+    list-style-type: none;
   }
-}
 
-p {
-  line-height: 1.6;
-}
-
-p {
-  margin-bottom: var(--gap);
-}
-
-[data-fadein] {
-  transition: all 1s;
-}
-
-.hidden {
-  opacity: 0;
-}
-
-/* Neo-brutalism utility classes */
-.brutal-border {
-  border: var(--border-width) solid var(--border-color);
-}
-
-.brutal-shadow {
-  box-shadow: var(--shadow-brutal);
-  transition: box-shadow 0.1s ease, transform 0.1s ease;
-
-  &:hover {
-    box-shadow: calc(var(--shadow-offset) + 2px) calc(var(--shadow-offset) + 2px) 0 var(--border-color);
-    transform: translate(-2px, -2px);
+  html,
+  body {
+    width: 100%;
+    height: 100%;
   }
-}
 
-/* Print styles */
-@media print {
-  @page {
-    size: A4;
-    margin: 2cm 1.5cm;
+  html {
+    background-color: var(--page-bg);
+    scroll-behavior: smooth;
+    overflow-x: hidden;
   }
 
   body {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: 11pt;
-    line-height: 1.4;
-    color: #000;
+    font-family: var(--font-family);
+    font-size: var(--fs-md);
+    font-weight: var(--fw-df);
+    color: var(--t-fg);
+    background-color: var(--page-bg);
+    overflow-x: clip;
   }
 
-  header.header {
-    display: none !important;
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-family-heading);
+    font-weight: inherit;
+    font-size: inherit;
   }
 
   a {
+    color: var(--t-fg);
     text-decoration: none;
-    color: #000;
   }
 
-  .brutal-shadow {
-    box-shadow: none;
+  p {
+    line-height: 1.6;
+    margin-bottom: var(--gap);
   }
 
-  .brutal-border {
-    border-width: 1px;
+  p a {
+    color: var(--t-fg);
+    text-decoration: underline;
+    text-decoration-color: var(--accent-secondary);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 3px;
+    transition: all var(--duration-fast) var(--ease-out);
+    font-weight: 500;
+
+    &:hover {
+      background-color: var(--accent-secondary);
+      text-decoration-color: var(--border-color);
+      color: var(--on-accent);
+    }
+  }
+}
+
+/* ============================================================
+   TOKENS LAYER — all visual properties from a single system
+   ============================================================ */
+@layer tokens {
+  :root {
+    /* Neo-brutalism core */
+    --shadow-brutal: var(--shadow-offset) var(--shadow-offset) 0 var(--border-color);
+    --shadow-brutal-lg: 8px 8px 0 var(--border-color);
+    --radius: 0;
+    --radius-sm: 0;
+
+    /* Layout */
+    --content-width: 1100px;
+    --gap: 16px;
+
+    /* Typography */
+    --font-family: 'Space Grotesk', system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    --font-family-display: 'Archivo Black', 'Impact', sans-serif;
+    --font-family-heading: var(--font-family-display);
+    --letter-spacing: 0.5px;
+    --fw-df: 400;
+    --fw-md: 700;
+    --fs-sm: 14px;
+    --fs-md: 16px;
+
+    /* Type scale */
+    --font-xxl: 2.5rem;
+    --font-xl: 1.75rem;
+    --font-lg: 1.25rem;
+    --font-sm: 0.875rem;
+    --font-xs: 0.75rem;
+
+    /* Spacing scale */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 2rem;
+    --space-xl: 3rem;
+    --space-xxl: 4rem;
+
+    /* Motion tokens — centralized, respects user preference */
+    --duration-fast: 0.1s;
+    --duration-normal: 0.3s;
+    --duration-slow: 0.5s;
+    --duration-glacial: 1s;
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    /* Link colors */
+    --color-link: #000;
   }
 
+  /* Reduced motion: zero all durations globally */
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --duration-fast: 0s;
+      --duration-normal: 0s;
+      --duration-slow: 0s;
+      --duration-glacial: 0s;
+    }
+  }
+
+  /* Dark mode — cascades via DOM attribute, no JS runtime needed */
+  [data-theme="dark"] {
+    --page-bg: #111118;
+    --card-bg: #1c1c26;
+    --t-fg: #f0f0e8;
+    --border-color: #f0f0e8;
+    --shadow-brutal: var(--shadow-offset) var(--shadow-offset) 0 #0a0a10;
+    --shadow-brutal-lg: 8px 8px 0 #0a0a10;
+    --c-bg-em: #26263a;
+    --color-text-light: #a0a0a8;
+    --color-link: #f0f0e8;
+
+    /* Boosted accents for dark mode — more neon/vivid */
+    --accent-primary: #ffe600;
+    --accent-secondary: #ff4d4d;
+    --accent-tertiary: #00e5ff;
+    --accent-lime: #d4ff00;
+    --accent-lavender: #d8b4fe;
+
+    /* Text on accent backgrounds stays dark in both themes */
+    --on-accent: #000;
+  }
+
+  /* Smooth theme transition on registered color properties */
+  html {
+    transition:
+      --page-bg var(--duration-normal) var(--ease-out),
+      --card-bg var(--duration-normal) var(--ease-out),
+      --t-fg var(--duration-normal) var(--ease-out),
+      --border-color var(--duration-normal) var(--ease-out),
+      --c-bg-em var(--duration-normal) var(--ease-out),
+      --color-text-light var(--duration-normal) var(--ease-out);
+  }
+
+  /* Accent backgrounds: any element with [data-accent-bg] gets
+     dark text/borders automatically — no per-class overrides needed */
+  [data-accent-bg] {
+    color: var(--on-accent);
+  }
+}
+
+/* ============================================================
+   LAYOUT LAYER — page-level structure
+   ============================================================ */
+@layer layout {
   [data-fadein] {
-    opacity: 1 !important;
+    transition: all var(--duration-glacial);
+  }
+
+  .hidden {
+    opacity: 0;
+  }
+
+  .grain-overlay {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0.35;
+    mix-blend-mode: multiply;
+  }
+
+  [data-theme="dark"] .grain-overlay {
+    opacity: 0.15;
+    mix-blend-mode: screen;
   }
 
   .theme-toggle-fixed {
-    display: none !important;
+    position: fixed;
+    bottom: var(--gap);
+    right: var(--gap);
+    z-index: 1000;
   }
 }
 
-/* Grain texture overlay */
-.grain-overlay {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 9999;
-  pointer-events: none;
-  opacity: 0.35;
-  mix-blend-mode: multiply;
-}
-
-[data-theme="dark"] .grain-overlay {
-  opacity: 0.15;
-  mix-blend-mode: screen;
-}
-
-/* View transition: brutal wipe */
-::view-transition-old(root) {
-  animation: brutal-wipe-out 0.3s ease-in both;
-}
-
-::view-transition-new(root) {
-  animation: brutal-wipe-in 0.3s ease-out 0.15s both;
-}
-
-@keyframes brutal-wipe-out {
-  from {
-    clip-path: inset(0);
-    opacity: 1;
+/* ============================================================
+   UTILITIES LAYER — thin composition helpers for gaps only
+   ============================================================ */
+@layer utilities {
+  .brutal-border {
+    border: var(--border-width) solid var(--border-color);
   }
-  to {
-    clip-path: inset(0 0 0 100%);
-    opacity: 0.5;
+
+  .brutal-shadow {
+    box-shadow: var(--shadow-brutal);
+    transition: box-shadow var(--duration-fast) var(--ease-out),
+                transform var(--duration-fast) var(--ease-out);
+
+    &:hover {
+      box-shadow: calc(var(--shadow-offset) + 2px) calc(var(--shadow-offset) + 2px) 0 var(--border-color);
+      transform: translate(-2px, -2px);
+    }
   }
 }
 
-@keyframes brutal-wipe-in {
-  from {
-    clip-path: inset(0 100% 0 0);
-    opacity: 0.5;
+/* ============================================================
+   OVERRIDES LAYER — view transitions, print, escape hatches
+   ============================================================ */
+@layer overrides {
+  @view-transition {
+    navigation: auto;
   }
-  to {
-    clip-path: inset(0);
-    opacity: 1;
-  }
-}
 
-/* Fixed theme toggle */
-.theme-toggle-fixed {
-  position: fixed;
-  bottom: var(--gap);
-  right: var(--gap);
-  z-index: 1000;
+  ::view-transition-old(root) {
+    animation: brutal-wipe-out var(--duration-normal) ease-in both;
+  }
+
+  ::view-transition-new(root) {
+    animation: brutal-wipe-in var(--duration-normal) ease-out 0.15s both;
+  }
+
+  @keyframes brutal-wipe-out {
+    from {
+      clip-path: inset(0);
+      opacity: 1;
+    }
+    to {
+      clip-path: inset(0 0 0 100%);
+      opacity: 0.5;
+    }
+  }
+
+  @keyframes brutal-wipe-in {
+    from {
+      clip-path: inset(0 100% 0 0);
+      opacity: 0.5;
+    }
+    to {
+      clip-path: inset(0);
+      opacity: 1;
+    }
+  }
+
+  @media print {
+    @page {
+      size: A4;
+      margin: 2cm 1.5cm;
+    }
+
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 11pt;
+      line-height: 1.4;
+      color: #000;
+    }
+
+    header.header {
+      display: none !important;
+    }
+
+    a {
+      text-decoration: none;
+      color: #000;
+    }
+
+    .brutal-shadow {
+      box-shadow: none;
+    }
+
+    .brutal-border {
+      border-width: 1px;
+    }
+
+    [data-fadein] {
+      opacity: 1 !important;
+    }
+
+    .theme-toggle-fixed {
+      display: none !important;
+    }
+  }
 }
 
 </style>

@@ -21,7 +21,7 @@ const jsonLd = await profile.getJsonLd();
         <Content />
       </div>
       <aside class="profiles">
-        <h2>Links</h2>
+        <h2 data-accent-bg>Links</h2>
         <ul>
           {Object.entries(profile.profiles).map(([id, profile]) => (
             <li class="profile">
@@ -35,7 +35,7 @@ const jsonLd = await profile.getJsonLd();
     <div class="cv-body">
       <section class="experiences">
         <div class="section-title">
-          <h2>Experience</h2>
+          <h2 data-accent-bg>Experience</h2>
         </div>
         <div class="timeline">
           {experiences.map((experience, index) => (
@@ -58,7 +58,7 @@ const jsonLd = await profile.getJsonLd();
                 )}
                 <div class="details">
                   <a class="companyName" href={`/experiences/${experience.id}`}>
-                    <h3>{experience.data.company.name}</h3>
+                    <h3 data-accent-bg>{experience.data.company.name}</h3>
                   </a>
                   <a class="position" href={`/experiences/${experience.id}`}>
                     {positionWithTeam(experience.data.position.name, experience.data.position.team)}
@@ -79,12 +79,12 @@ const jsonLd = await profile.getJsonLd();
 
       <aside class="skills-sidebar">
         <div class="section-title">
-          <h2>Skills</h2>
+          <h2 data-accent-bg>Skills</h2>
         </div>
         {skills.map((skill, index) => (
           <div class="skill" data-fadein style={`--accent: ${['var(--accent-secondary)', 'var(--accent-tertiary)', 'var(--accent-lime)', 'var(--accent-lavender)'][index % 4]}`}>
             <a class="skill-name" href={`/skills/${skill.id}`}>
-              <h3>{skill.data.name}</h3>
+              <h3 data-accent-bg>{skill.data.name}</h3>
             </a>
             <div class="technologies">
               {skill.data.technologies.map((technology) => (
@@ -156,10 +156,11 @@ const jsonLd = await profile.getJsonLd();
       font-weight: var(--fw-md);
       text-transform: uppercase;
       font-size: var(--fs-sm);
-      transition: all 0.1s ease;
+      transition: all var(--duration-fast) var(--ease-out);
 
       &:hover {
         background: var(--accent-primary);
+        color: var(--on-accent);
         transform: translate(-3px, -3px);
         box-shadow: 9px 9px 0 var(--border-color);
       }
@@ -249,7 +250,7 @@ const jsonLd = await profile.getJsonLd();
       border: var(--border-width) solid var(--border-color);
       background: var(--card-bg);
       box-shadow: var(--shadow-brutal);
-      transition: all 0.1s ease;
+      transition: all var(--duration-fast) var(--ease-out);
 
       &:hover {
         transform: translate(-3px, -3px);

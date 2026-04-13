@@ -28,7 +28,7 @@ const formatDuration = (seconds: number): string => {
     </header>
 
     <section class="subscribe">
-      <h2 class="section-title">Subscribe</h2>
+      <h2 class="section-title" data-accent-bg>Subscribe</h2>
       <div class="subscribe-grid">
         <a class="subscribe-btn" href={feedPath}>
           RSS Feed
@@ -49,7 +49,7 @@ const formatDuration = (seconds: number): string => {
     </section>
 
     <section class="episodes">
-      <h2 class="section-title">Episodes</h2>
+      <h2 class="section-title" data-accent-bg>Episodes</h2>
       <ul class="posts">
         {episodes.map((post, index) => (
           <li class="post" style={`--accent: ${colors[index % colors.length]}`}>
@@ -144,7 +144,7 @@ const formatDuration = (seconds: number): string => {
     text-transform: uppercase;
     text-align: center;
     cursor: pointer;
-    transition: all 0.1s ease;
+    transition: all var(--duration-fast) var(--ease-out);
     box-shadow: var(--shadow-brutal);
     color: var(--t-fg);
 
@@ -171,7 +171,7 @@ const formatDuration = (seconds: number): string => {
         border: var(--border-width) solid var(--border-color);
         border-bottom: none;
         background: var(--card-bg);
-        transition: all 0.1s ease;
+        transition: all var(--duration-fast) var(--ease-out);
         position: relative;
 
         &:last-child {
@@ -213,7 +213,7 @@ const formatDuration = (seconds: number): string => {
           padding-right: calc(var(--gap) * 1.5);
           opacity: 0;
           transform: translateX(-10px);
-          transition: all 0.15s ease;
+          transition: all var(--duration-fast) var(--ease-out);
         }
 
         &:hover {
