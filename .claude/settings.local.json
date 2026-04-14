@@ -20,7 +20,17 @@
       "Bash(ffprobe:*)",
       "Bash(date -v-30d +%s)",
       "Bash(python3 -c \"import json,sys; data=json.load\\(sys.stdin\\); [print\\(f'{h[\\\\\"points\\\\\"]}pts | {h[\\\\\"title\\\\\"]} | {h[\\\\\"url\\\\\"] or \\\\\"HN discussion\\\\\"}'\\) for h in sorted\\(data.get\\('hits',[]\\), key=lambda x: x.get\\('points',0\\), reverse=True\\)[:20]]\")",
-      "Bash(python3 -c \"import json,sys; data=json.load\\(sys.stdin\\); [print\\(f'{h[\\\\\"points\\\\\"]}pts | {h[\\\\\"title\\\\\"]} | {h[\\\\\"url\\\\\"] or \\\\\"HN discussion\\\\\"}'\\) for h in sorted\\(data.get\\('hits',[]\\), key=lambda x: x.get\\('points',0\\), reverse=True\\)[:15]]\")"
+      "Bash(python3 -c \"import json,sys; data=json.load\\(sys.stdin\\); [print\\(f'{h[\\\\\"points\\\\\"]}pts | {h[\\\\\"title\\\\\"]} | {h[\\\\\"url\\\\\"] or \\\\\"HN discussion\\\\\"}'\\) for h in sorted\\(data.get\\('hits',[]\\), key=lambda x: x.get\\('points',0\\), reverse=True\\)[:15]]\")",
+      "WebFetch(domain:www.gitclear.com)",
+      "WebFetch(domain:www.qodo.ai)",
+      "WebFetch(domain:survey.stackoverflow.co)",
+      "WebFetch(domain:www.bleepingcomputer.com)",
+      "WebFetch(domain:stackoverflow.co)",
+      "WebFetch(domain:leaddev.com)",
+      "WebFetch(domain:www.getquotient.com)",
+      "WebFetch(domain:thenewstack.io)",
+      "WebFetch(domain:hackmag.com)",
+      "WebFetch(domain:socket.dev)"
     ]
   }
 }
