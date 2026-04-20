@@ -1,7 +1,7 @@
 ---
-title: 'Does Your Tone Change Your Code?'
-subtitle: 'Probing LLM hidden states to see if how you ask affects what you get'
-description: "I ran the same coding prompts through an open LLM in different tones of voice — casual, professional, terse, academic — and looked at the model's internal representations to see if it treats them differently. Spoiler: it very much does."
+title: "I Cracked Open an LLM's Skull and Found It Cares About Manners"
+subtitle: 'Probing hidden states to see if how you ask affects what you get'
+description: "I fed the same coding prompts through open LLMs in different tones of voice and looked at the model's internal representations. Turns out it cares more about how you ask than what you ask."
 pubDate: 2026-04-20
 color: '#06B6D4'
 heroImage: ./assets/cover.png
@@ -14,147 +14,178 @@ import BotMessage from '~/components/content/BotMessage.astro'
 import UmapClusters from './assets/umap-tone-clusters.png'
 import CosineHeatmap from './assets/cosine-heatmap.png'
 
-You've had this moment. You ask an AI to build something, and it hands back the software equivalent of a beige wall. Functional. Correct. The kind of thing that makes you want to lie down on the floor and think about your career choices. Then you rephrase the exact same request — same intent, different words — and suddenly the output has *taste*. You assumed it was random. Temperature. Mercury in retrograde. The model having a good day.
+You've had this moment. You ask an AI to build you a UI, and it hands back something that looks like it was designed by a man who irons his jeans. Functional. Correct. Dead behind the eyes. Then you rephrase the exact same request — same feature, same spec, different words — and suddenly it's got *taste*. Whitespace. Rhythm. The kind of output that makes you wonder if you accidentally upgraded your subscription.
 
-It's not random. And I have the scatter plot to prove it.
+You assumed it was random. Temperature. Cosmic rays. The model rolling a natural 20 on its creativity check.
 
-I'm not a data scientist. I'm an engineer who noticed a pattern and couldn't let it go — which, if I'm honest, describes about 80% of my side projects and 100% of my worst decisions. What started as a hunch — "does *how* I ask actually change what I get?" — turned into an experiment that made me rethink how I talk to every AI tool I use. If you've ever wondered why the same model gives you a government form one minute and a design portfolio piece the next, this might be why. And the uncomfortable implication is that every prompt you've ever written was quietly choosing an output quality dial setting you didn't know existed.
+I had a hunch it wasn't. So I cracked open a model's skull to check.
+
+I'm not a data scientist. I'm an engineer with poor impulse control and access to a GPU. What started as "huh, that's weird" turned into a full experiment where I extracted the internal brain-states of five different LLMs and found something that I'm still not entirely sure I believe: the data *suggests* that the model cares more about your tone of voice than what you're actually asking it to build. I might be wrong. I might be reading the tea leaves. But I have charts, and the charts are doing something I can't explain away.
 
 ## The Polite Button Problem
 
-A few weeks ago I was building a settings page with an AI coding agent. I wrote something like:
+A few weeks ago I was building a settings page with a coding agent. Standard stuff. I wrote:
 
 <BotMessage title="Me — Normal engineering brain">
 Create a settings page with sections for profile, notifications, and privacy. Each section should have a header, relevant form fields, and a save button.
 </BotMessage>
 
-I got exactly what I asked for. A settings page. Headers. Form fields. Save buttons. It looked like something a government contractor would build for an internal HR portal in 2014. The kind of UI that makes users feel like they're filing taxes. Technically correct. Spiritually dead. If this settings page were a person, it would wear khakis and have Opinions About Spreadsheets.
+What I got back was technically a settings page in the same way that a hospital gown is technically clothing. It had all the pieces. Headers. Form fields. Save buttons. It looked like it was designed by someone who had once had a UI described to them over the phone. If this settings page were a person, it would own multiple beige cardigans and describe itself as "fiscally responsible."
 
-I stared at it, sighed the sigh of a man who has done this to himself, and rewound the conversation. Same agent. Same model. Same intent. But this time I channeled my inner designer who just had three espressos and a vision:
+I rewound the conversation. Same agent. Same model. Exact same intent. But this time I stopped writing like I was filing a work order:
 
-<BotMessage title="Me — Unhinged creative energy">
-I want a settings page that feels *clean and modern*. Think generous whitespace, subtle section dividers, smooth focus states. Profile up top, notifications in the middle, privacy at the bottom. Each section should breathe — don't cram it. Make the save buttons feel satisfying to click.
+<BotMessage title="Me — Feral creative energy">
+Alright, I need a settings page — profile section, notifications section, privacy section. Each one gets a header, the relevant form fields, and a save button. Make it look *gorgeous*. I want someone to open this page and feel like the developer actually *cared*. This should feel like a product someone is proud of, not an afterthought.
 </BotMessage>
 
-Night and day. The layout had rhythm. The spacing was intentional. The focus states had transitions. It wasn't just "better CSS" — the entire *approach* to the component was different. Different layout strategy, different component hierarchy, different aesthetic sensibility. Same AI. Same conversation. Same request. I just asked like I actually cared about the outcome instead of writing a JIRA ticket.
+Night and day. Same three sections. Same form fields. Same save buttons. But the layout had rhythm. The spacing was deliberate. There were hover transitions. It wasn't just better CSS — it was a fundamentally different *approach* to building the component. Different layout strategy. Different component hierarchy. Different design sensibility. Same AI. Same conversation. Same feature spec. I just stopped talking like a requirements document and started talking like a person who gives a damn.
 
-This kept happening. Not just with design — with code architecture, naming conventions, even how thorough the error handling was. Dry, informative prompts produced dry, informative output. Animated, opinionated prompts produced animated, opinionated output. It was like the model was mirroring me, which is flattering when you're feeling creative and deeply concerning when you realize your default mode is "tired engineer who just wants it to work."
+This kept happening. Not just with design — with code architecture, naming conventions, error handling. Dry prompt? Dry code. Animated prompt? Code with opinions. It was like the model was holding up a mirror, which is flattering when you're feeling creative and *horrifying* when you realize your default mode is "exhausted engineer writing Slack messages at 4:47 PM."
 
-So I did what any reasonable person would do. I opened a Python script and started poking at the model's brain.
+So naturally, I decided to perform surgery on a neural network.
 
 ## An LLM Is a Very Fancy Parrot, and Parrots Listen to Tone
 
-LLMs are statistical next-token predictors. They learned to write by reading the internet. All of it. The beautiful parts, the horrifying parts, and the unfathomable amount of medium-quality Stack Overflow answers. The internet is not a monolith — it's a patchwork of registers. Stack Overflow doesn't sound like a PhD thesis. A Discord message doesn't sound like API documentation. Reddit doesn't sound like a corporate style guide (and every morning I thank whatever deity is responsible for that).
+Here's the dirty secret of large language models: they learned to write by eating the internet. All of it. The PhD theses and the unhinged Reddit threads. The beautifully documented APIs and the Stack Overflow answers that start with "I know this is an old question but." The internet is not one thing — it's a geological layer cake of writing styles, and the model absorbed all of them like a sponge that went to too many parties.
 
-My hypothesis: when you write in a casual tone, you're not just asking a question differently — you're *activating a different neighborhood of the training distribution*. The model isn't thinking "oh, this person is casual, let me be casual back." The model doesn't think. Period. It's doing statistics. And statistically, casual language lives next door to casual code. Forum-style questions share a zip code with quick-and-dirty answers. Professional, structured prompts live in the same gated community as professional, structured code.
+Stack Overflow doesn't sound like a PhD thesis. Discord doesn't sound like API docs. Reddit doesn't sound like a corporate style guide, and frankly if it ever does, we should all log off and touch grass.
 
-This idea isn't entirely mine. Janus's ["Simulators"](https://www.lesswrong.com/posts/vJFdjigzmcXMhNTsx/simulators) essay from 2022 proposed that LLMs maintain something like "characters in superposition" — different personas activated by different prompts. Shanahan et al. [formalized this in Nature](https://www.nature.com/articles/s41586-023-06647-8), arguing that an LLM's job is to "generate a continuation that conforms to the distribution of the training data," and that prompts effectively select which slice of that distribution to sample from. And there's already hard evidence that the surface features of prompts matter way more than they should: [Sclar et al. (2023)](https://arxiv.org/abs/2310.11324) showed that formatting changes alone — not even content changes, just formatting — can swing LLM accuracy by up to 76 points. Seventy-six. That's not a rounding error. That's a different model.
+My hypothesis was almost insultingly simple: when you write casually, you activate the part of the model that learned from casual text. Forum-question-shaped prompts activate forum-answer-shaped responses. Structured, professional prompts activate the neighborhood where documentation and well-architected code live. The model isn't *choosing* to match your energy. It's a statistical engine, and you're telling it which statistics to use.
 
-So the theoretical foundation is solid. What I hadn't seen anyone do is open the hood and look at *where in the model* this happens — whether tone creates measurably different internal states, at which layers, and whether it's a stronger signal than the actual task. That's the experiment.
+This isn't just my shower thought, either. Janus's ["Simulators"](https://www.lesswrong.com/posts/vJFdjigzmcXMhNTsx/simulators) essay proposed this back in 2022 — the idea that LLMs maintain "characters in superposition," different personas activated by different prompts. Shanahan et al. [put it in Nature](https://www.nature.com/articles/s41586-023-06647-8): an LLM's job is to "generate a continuation that conforms to the distribution of the training data," and your prompt selects which slice. And [Sclar et al. (2023)](https://arxiv.org/abs/2310.11324) showed that *formatting changes alone* — not content, not meaning, just formatting — can swing LLM accuracy by up to 76 points on specific benchmarks. Seventy-six. That's not a rounding error. That's two different models wearing the same name tag.
 
-But "I've read some papers" is just vibes with citations. I wanted something with a Y-axis.
+The theory is solid. What I hadn't seen anyone do was open the hood and check *where in the model* this happens. Does tone create measurably different brain-states? At which layers? Is it stronger than the actual task signal?
+
+Time to find out.
 
 ## I Fed 60 Prompts Into a Model and Looked at Its Brain
 
-The obvious experiment would be to ask the same question in different tones and compare the output. But that's a trap — how do you objectively measure whether one palindrome checker is "more casual" than another? You'd end up with three engineers in a room arguing about whether a variable name is "informal" or just "bad." Which, come to think of it, describes most code reviews. But it's not science.
+The obvious experiment would be "ask the same question in different tones, compare the output." But that's a trap. How do you objectively measure whether one palindrome checker is "more casual" than another? You'd end up with three engineers in a room arguing about whether a variable name is "informal" or just "bad," and someone would eventually bring up tabs vs spaces, and you'd lose two hours and three friendships.
 
-So I went deeper. Literally.
+So instead of looking at what the model *says*, I looked at what it *thinks*. Or rather — since it doesn't think — what it *becomes*.
 
-Instead of looking at what the model *outputs*, I looked at what happens *inside* it. Every transformer model builds up an internal representation of your prompt — a high-dimensional vector at each layer that encodes everything the model "understands" about what you've said so far. The last layer's representation is what gets turned into the probability distribution for the next token. It's the model's final thought before it opens its mouth. If you've ever wanted to read an AI's mind, this is the closest you can get without a philosophy degree.
+Every transformer layer builds a representation of your prompt: a giant vector that encodes what the model "knows" at that point. The last layer's vector is the one that gets turned into the probability distribution for the next token. It is, quite literally, the model's state of mind in the moment before it speaks. If you could read this vector, you could see the model's entire disposition toward your prompt — before it generates a single character.
 
-If tone changes that final representation, it *necessarily* changes the output distribution. Not "probably." Not "in some cases." Necessarily. Different vector = different probabilities = different tokens. Math doesn't negotiate.
+If tone changes that final vector, it *necessarily* changes the output distribution. Not "might." Not "in certain conditions." Necessarily. Different vector = different probabilities = different tokens. In principle, anyway — sampling parameters could wash out small differences in practice. But the math is clear: different brain-state, different odds.
 
-Here's what I did:
+Here's what I did. I wrote ten coding tasks — palindrome, sort, HTTP request, fibonacci, the greatest hits of technical interviews that every developer has written in their sleep. For each task, four versions:
 
-I wrote ten coding tasks — palindrome check, sort a list, HTTP request, fibonacci, the usual suspects that every developer has written seventeen times. For each task, I wrote four versions in different tones: casual ("yo write me a function that sorts a list"), professional ("Please implement a function that sorts a list of integers in ascending order"), terse ("function sort integer list ascending"), and academic ("Could you kindly provide an implementation of a function that arranges a list of integers in monotonically increasing order?" — yes, I hurt myself writing that one).
+- **Casual**: "yo write me a function that sorts a list"
+- **Professional**: "Please implement a function that sorts a list of integers in ascending order"
+- **Terse**: "function sort integer list ascending"
+- **Academic**: "Could you kindly provide an implementation of a function that arranges a list of integers in monotonically increasing order?" (I physically winced typing this)
 
-That's 40 coding prompts. I also threw in 20 control prompts — recipes, travel advice, history questions — in the same four tones. These are the control group: if everything clusters together regardless of tone, I know my experiment is broken rather than concluding something profound. Science! Or at least a reasonable impression of it.
+That's 40 coding prompts. Plus 20 control prompts — cookie recipes, Roman Empire hot takes, Tokyo travel advice — in the same four tones. Because if everything clusters together regardless of tone, I want to know the experiment is broken before I write a blog post about it. I have *some* standards.
 
-I fed all 60 prompts through three different open-source models — two DeepSeek Coder models (1.3B and 6.7B parameters) and a Qwen 2.5 Coder (3B parameters). Different architectures, different training data, different sizes. If the effect only showed up on one model, it could be a quirk. If it showed up on all three, it's a pattern.
+I fed all 60 through five open-source models: DeepSeek Coder 1.3B (both the instruct and raw base versions), DeepSeek Coder 6.7B, Qwen 2.5 Coder 3B, and — for good measure — the general-purpose Qwen 2.5 3B that *isn't* code-specialized. Different architectures, different training data, different sizes, base and instruct, code and general-purpose. If the effect only showed up in one corner, I'd call it a quirk. If it shows up everywhere I look, it's either a pattern or I need better glasses.
 
-(Side note: while designing this, I found [PromptSE](https://arxiv.org/abs/2509.13680), a September 2025 paper that tested emotion- and personality-driven prompt variations on code LLMs — including the exact same DeepSeek and Qwen model families I was using. They found that "performance and stability are largely decoupled" — meaning a model can be accurate on average while being wildly variable across tone variants. But they measured *output* (pass rates on benchmarks). I wanted to look *inside*.)
+(While setting this up, I stumbled across [PromptSE](https://arxiv.org/abs/2509.13680) — a September 2025 paper that tested emotion- and personality-driven prompt variations on code LLMs, including the *exact same DeepSeek and Qwen families*. They found that performance and stability are "largely decoupled" — a model can be accurate on average while being wildly inconsistent across tones. But they measured output. I wanted to look at the wiring.)
 
-Then I reduced the vectors to 2D (using both UMAP and PCA, because UMAP has a known tendency to hallucinate clusters and I have trust issues with visualization tools).
+I extracted the hidden state at the last token position from early, middle, and late layers, reduced them to 2D with both UMAP and PCA (because UMAP is known to [hallucinate clusters](https://pmc.ncbi.nlm.nih.gov/articles/PMC10434946/) and I have trust issues), and plotted them.
 
-This is what came out:
+This is what fell out:
 
 <ContentImage src={UmapClusters} alt="UMAP projection of LLM hidden states colored by tone" title="Four tones walk into a latent space. They do not sit together." />
 
-Each dot is a coding prompt. Same ten tasks, asked four different ways. The dots are colored by *tone*, not by task. The model doesn't care that you asked for a palindrome. It cares that you said "please."
+Each dot is a coding prompt. Ten different tasks. Four different tones. Colored by *tone*, not by task. The model does not care that you asked for a palindrome. It cares that you said "please."
 
-### The Part Where I Ran the Script Three Times
+### I Ran the Script Three Times Because I Didn't Believe It
 
-I expected *some* tone signal. Maybe a slight tendency for same-tone prompts to land in the same general area. A gentle lean. A suggestion.
+I expected a mild trend. A gentle lean. A "huh, neat."
 
-What I found was that tone is a *stronger organizing signal than the actual coding task*.
+What I got was: **tone is a stronger organizing signal than the actual coding task**.
 
-I need you to sit with that for a second. The model considers "casual palindrome" and "casual fibonacci" to be more similar to each other than "casual palindrome" and "professional palindrome." Two completely different programming tasks. The model doesn't care. You asked for them *the same way*, and that's what it latched onto. It's like finding out your barista doesn't remember your order — they remember your *vibe*.
+Read that again. The model considers "casual palindrome" and "casual fibonacci" — two completely different programming problems — to be *more similar to each other* than "casual palindrome" and "professional palindrome" — the exact same problem asked two different ways. The model doesn't remember your order. It remembers your *vibe*.
 
-The clustering metric (silhouette score — positive means real clusters, negative means the opposite) across all three models:
+The clustering scores across all three models:
 
-| Model | Tone clustering | Task clustering |
-|---|---|---|
-| DeepSeek 1.3B | **+0.178** | -0.124 |
-| DeepSeek 6.7B | **+0.159** | -0.092 |
-| Qwen 3B | **+0.226** | -0.083 |
+| Model | Type | Tone clustering | Task clustering |
+|---|---|---|---|
+| DeepSeek 1.3B (instruct) | Code | **+0.178** | -0.124 |
+| DeepSeek 1.3B (base) | Code | **+0.236** | -0.158 |
+| DeepSeek 6.7B (instruct) | Code | **+0.159** | -0.092 |
+| Qwen Coder 3B (instruct) | Code | **+0.226** | -0.083 |
+| Qwen 3B (instruct) | General | **+0.248** | -0.134 |
 
-Positive for tone. Negative for task. Across all three models. Two different architectures. Three different sizes. I checked if I'd mixed up the labels. I hadn't.
+Positive for tone. Negative for task. Every model. Both architectures. Code and general-purpose. Instruct *and* base. I checked if I'd swapped the labels. I hadn't. I checked if my code was broken. It wasn't. I briefly considered that I was hallucinating, but the PCA plots agreed with the UMAP plots, and PCA doesn't hallucinate. Only I do that.
 
-And it gets worse — or better, depending on how much existential dread you feel about your prompting habits. The cosine similarity heatmap shows just how similar same-tone prompts are to each other:
+The cosine similarity heatmap is where I really lost my composure:
 
 <ContentImage src={CosineHeatmap} alt="Cosine similarity between tones at late layer" title="Professional prompts are a hive mind. Casual prompts are a support group." />
 
-On the Qwen model, professional-to-professional cosine similarity is **0.937**. Academic-to-academic: **0.939**. These are ten completely different coding tasks — palindrome, sorting, HTTP requests, file reading, dictionary merging — and the model treats them as *nearly identical* as long as you phrased them politely. Meanwhile, cross-tone similarities drop to the 0.7s. The model is basically saying: "I don't care *what* you want. I care *how you asked for it*."
+Professional-to-professional cosine similarity on Qwen: **0.937**. Academic-to-academic: **0.939**. These are *ten different coding tasks* — palindrome, sorting, HTTP requests, file I/O, dictionary merging — and the model treats them as nearly identical representations because you phrased them all with good posture. Cross-tone similarity drops to the 0.7s. The model is essentially saying: *"I have no idea what you want me to build, but I know exactly what kind of person is asking."*
 
-The kicker: the effect *increases* toward the output layer. Early layers show some tone signal. Late layers — the ones that actually decide what tokens come out of the model's mouth — show the strongest clustering. This isn't a superficial feature that gets washed out during processing. It's a feature that *gets amplified*. The model doesn't see your tone and then look past it. It sees your tone and *doubles down*.
+And the part that upgraded this from "interesting" to "slightly alarming": early layers pick up a tone signal. Middle layers actually *dip* — the model seems to briefly focus on task-specific representations, like it's doing actual work for a moment. And then the late layers — the ones that decide which tokens come out — show the *strongest* tone clustering of all. The model notices your tone, briefly pretends to care about your actual question, and then goes right back to judging your vibe before it opens its mouth.
 
-### The Asterisks (Because I Promised Honesty, Not Overconfidence)
+### Why This Actually Makes Perfect Sense (Thanks, Jens)
 
-These are small open-source models (1.3B to 6.7B parameters). Multiple studies — including [ProSA (EMNLP 2024)](https://aclanthology.org/2024.findings-emnlp.108/) — have found that larger models are more robust to prompt variation. The big proprietary models have additional RLHF training specifically designed to normalize across phrasing styles. I can't look at their hidden states because they're locked in a corporate vault guarded by lawyers and NDAs. So I genuinely don't know if this scales. That said, a [December 2025 study](https://arxiv.org/abs/2512.12812) still found statistically significant tone effects in GPT-4o mini and Llama 4 Scout — models with 400B+ parameters. The effect may shrink at scale, but it doesn't vanish.
+When I showed these results to my friend [Jens Roland](https://jensroland.com/), he pointed out something that made the whole thing click — and made me feel slightly stupid for being surprised.
 
-There's also a token count confound that I need to flag before someone flags it for me. Terse prompts are ~7 tokens. Academic prompts are ~35. Some of the clustering could just be "short prompts here, long prompts there." But here's the thing — casual prompts (~18 tokens) and professional prompts (~19 tokens) have nearly identical token counts and still cluster on different continents. Length is part of the story, but it's not the whole story.
+LLMs generate one token at a time. And for the *vast majority* of tokens in a code response, the next token has nothing to do with the high-level task. Consider this mid-generation state:
 
-A note on methodology for the skeptics: yes, I know [UMAP can hallucinate clusters](https://pmc.ncbi.nlm.nih.gov/articles/PMC10434946/). That's why I ran PCA alongside it — a linear projection with no cluster-hallucination risk. Both methods show the same structure. And while silhouette scores [have known limitations](https://doi.org/10.1038/s41587-024-02577-2) with non-spherical clusters, the cosine similarity heatmaps tell the same story without assuming any cluster shape. I tried to give the data every opportunity to prove me wrong. It didn't cooperate.
+```c
+for (i=0; i<=n; i+
+```
 
-And the biggest caveat: I measured *representations*, not *output*. A different hidden state necessarily produces a different probability distribution over next tokens, but I haven't measured whether the actual generated code differs in quality, style, or correctness. That's a different experiment. This one just proves the model enters a measurably different state based on your tone — its statistical "mood," if you want to anthropomorphize something that definitely does not have moods. Though I'll note that the PromptSE paper *did* measure output on these same model families and found tone-driven variation there too — so the representation-level differences I'm seeing likely aren't just theoretical.
+The next token (`+`) has absolutely nothing to do with whether this is a palindrome checker or a fibonacci function. It's entirely determined by *local* patterns — the programming language, the syntax style, the formatting conventions. And in the training data, those local patterns don't correlate with "palindrome" or "fibonacci." They correlate with the *register* of the text that preceded them.
 
-One more thing that landed while I was writing this: a [Nature paper published April 15](https://www.nature.com/articles/s41586-026-10319-8) — five days ago — showed that language models transmit behavioral traits through "hidden signals in data" even when there's *no semantic signal about the trait*. Student models trained on a teacher's numerical output inherited the teacher's *preferences* 60% of the time. If non-semantic features encode that deeply during training, it's no surprise they're detectable during inference. I didn't plan on having a Nature paper back my blog post, but here we are.
+The task — *what* to build — only matters for a handful of decision tokens scattered through the response: which algorithm to pick, what to name the main variable, how to structure the logic. That's maybe 5% of the generated tokens. But the tone — *how* to write it — matters for the other 95%. It determines whether you get `for (i=0;` or `for i in range(` or `items.forEach((item) =>`. Those aren't task decisions. Those are style decisions. And style lives in the same statistical neighborhood as tone.
 
-The full experiment code, prompts, and results for all three models are [in the repo](https://github.com/morten-olsen/morten-olsen.github.io/tree/main/src/content/posts/does-your-tone-change-your-code/experiment). Go poke holes. Seriously. I want to know what I got wrong.
+So of *course* tone dominates task in the hidden states. The model isn't ignoring your question. It's just that "what to build" is a sparse signal that matters occasionally, and "how to write" is a dense signal that matters for every single token. We were surprised by the data. We shouldn't have been.
+
+Now, you might read this and think "okay, so the model is doing exactly what it should — this article is irrelevant." But understanding the mechanism doesn't make the effect go away. Your tone still determines *which* 95% of style-tokens the model draws from. A casual prompt doesn't just produce casual variable names — it activates a whole ecosystem of patterns: quick-and-dirty error handling, minimal comments, terser logic. A professional prompt activates the ecosystem where code comes with docstrings, edge case handling, and defensive programming. Same algorithm. Same correctness. Very different code in the 95% of tokens that surround it. The mechanism is obvious in hindsight. The practical consequence is not: your prompt voice is silently selecting from different quality tiers of training data, and you've been doing it on autopilot.
+
+### The Asterisks (I Promised Honesty, Not Delusion)
+
+I need to be upfront about what could poke holes in this, because if I don't do it here, someone on Hacker News will do it with less charity.
+
+**Model size.** These are 1.3B to 6.7B parameter models. Small. [ProSA (EMNLP 2024)](https://aclanthology.org/2024.findings-emnlp.108/) found that larger models are more robust to prompt variation, and RLHF specifically trains models to normalize across phrasing. I can't look at Claude or GPT-4's hidden states because those are locked in corporate vaults guarded by lawyers and vibes. That said, ["Does Tone Change the Answer?" (Dec 2025)](https://arxiv.org/abs/2512.12812) found statistically significant tone effects even in GPT-4o mini and Llama 4 Scout — models with 400B+ parameters. The effect may shrink at scale. It does not disappear.
+
+**"But it's just instruction tuning."** I worried about this one — all three models were instruct-tuned, meaning they've been specifically trained to pay attention to how you phrase instructions. Maybe I was just measuring "instruction tuning works." So I ran the same experiment on DeepSeek Coder 1.3B *base* — the raw pretrained model with no instruction tuning at all. Tone clustering was *stronger*: **+0.236** at the late layer, compared to +0.178 for the instruct version. The effect isn't caused by instruction tuning. It's baked into pretraining. RLHF, if anything, slightly *dampens* it.
+
+**Token count.** Terse prompts: ~7 tokens. Academic prompts: ~35. Maybe the model is just clustering "short" vs "long"? But casual (~18 tokens) and professional (~19 tokens) are nearly identical in length and still end up on different continents in the latent space. Nice try though.
+
+**I measured brain-states, not output.** A different hidden state necessarily produces a different probability distribution, but "different" could mean "negligibly different in practice once you apply temperature and top-k sampling." I haven't measured whether the generated code actually *differs* in meaningful ways. That's the next experiment. But the PromptSE paper *did* measure code output on these same model families, and found tone-driven variation there too. So the representation-level differences I'm seeing likely have downstream consequences.
+
+**On the methodology:** yes, [silhouette scores have limitations](https://doi.org/10.1038/s41587-024-02577-2) with non-spherical clusters. That's why the cosine similarity heatmaps are the stronger evidence — they don't assume any cluster shape, and they tell the same story. I tried to give the data every chance to make me look stupid. It declined.
+
+One more thing. While I was writing this, a [Nature paper dropped on April 15](https://www.nature.com/articles/s41586-026-10319-8) showing that language models transmit behavioral traits through "hidden signals in data" — even when there is *no semantic signal about the trait*. Models trained on a teacher's outputs inherited the teacher's *preferences* 60% of the time from pure numerical data. If non-semantic features encode that deeply during *training*, finding them during *inference* is almost expected. I did not plan on having a fresh Nature paper validate my blog post, but I'll take it.
+
+The full experiment code, all prompts, and results for all five models are [in the repo](https://github.com/morten-olsen/morten-olsen.github.io/tree/main/src/content/posts/does-your-tone-change-your-code/experiment). Go tear it apart. I mean it. The fastest way to learn what I got wrong is to let the internet do its thing.
 
 ## The Refactoring Trap
 
-There's a second place I've noticed this pattern, and it's more insidious than the UI thing because it costs real engineering time.
+There's a second place I've seen this, and it's the one that actually costs money.
 
-When I start a new coding session from scratch and prime the agent with my preferred patterns — clear naming, small functions, specific architectural conventions — it writes code exactly the way I want. It's almost eerie. Like pair programming with someone who read your mind and your style guide.
+When I start a fresh session and prime the agent with my preferred patterns — small functions, descriptive names, specific architectural conventions — it writes code *exactly* how I want it. It's almost spooky. Like pair programming with a telepath who also read your style guide.
 
-But when I try to *refactor* existing code to match those same patterns, the agent becomes the most agreeable saboteur you've ever met. It doesn't say "no." It says "sure!" and then subtly drifts back to the old patterns. It'll rename a function but keep the same structure. It'll extract a method but preserve the original's style. It'll nod along with your refactoring plan and then write code that looks suspiciously like what was already there. It's like trying to renovate a house while the contractor keeps sneaking in features from the old floor plan.
+But try to *refactor* existing code into those patterns? The agent becomes the world's most polite saboteur. It never says "no." It says "absolutely!" and then writes code that looks suspiciously like what was already there. It'll rename a function but keep the structure. Extract a method but preserve the style. It nods along with your refactoring plan like a contractor who's quietly rebuilding your kitchen with the old cabinets.
 
-I think the hidden state experiment explains why. Refactoring requires the agent to *read* the existing code — often large amounts of it. That code floods the context window with exactly the patterns you're trying to kill. The model sees thousands of tokens written in the old style and a few tokens from you politely requesting a new one. You're bringing a suggestion to a statistics fight. The old code has gravitational pull, and the bigger the file, the stronger the gravity.
+I *think* the hidden state experiment offers a clue — though I want to be clear this is hypothesis, not conclusion. I don't have data for this one yet. But the logic goes like this: refactoring means the agent has to *read* the existing code. Lots of it. And that code floods the context window with exactly the patterns you're trying to kill. The model now sees ten thousand tokens of old-style code and forty tokens of you politely asking for something new. You are bringing a Post-it note to a statistics fight. The old code has gravitational pull, and the bigger the file, the stronger the gravity. Your style guide is a small moon. The existing codebase is Jupiter.
 
-I have a theory about how to fix this, and it's my next experiment: a refactoring harness that aggressively prunes old file content from the conversation after each file is done, keeping only the refactored version. Starve the model of the old distribution. Feed it only the new one. See if the boulder stays where you push it. More on that when I have results — or when I've conclusively proven myself wrong, which frankly would also make a good blog post.
+My next experiment: a refactoring harness that aggressively prunes old file content from the conversation after each file is refactored, keeping only the new version in context. Starve the model of the old distribution. Feed it only the new. See if the boulder stays where you push it instead of rolling back down the hill every time you look away.
+
+More on that when I have results. Or when I've conclusively proven myself wrong — which, frankly, would also make a good blog post.
 
 ## So What Do You Actually Do With This?
 
-If your tone shifts the model's internal state before it generates a single token, then "prompt engineering" isn't just about picking the right words. It's about picking the right *voice*. And most of us have been using our "sending a Slack message at 4:47 PM on a Friday" voice for everything.
+If your tone rewires the model's brain before it generates a single character, then "prompt engineering" isn't just word selection. It's *voice acting*. And most of us have been performing in the voice of "person who would rather be doing literally anything else."
 
-For creative work — UI design, copywriting, anything with an aesthetic dimension — match your energy to the output you want. If you want playful, *be* playful. If you want buttoned-up enterprise, be buttoned-up. The model isn't choosing a style for you. It's reflecting the statistical neighborhood your words activated. An engineer asking for a "settings page with form fields" activates the same neighborhood as technical specifications and internal documentation. A designer asking for something that "breathes" activates the neighborhood of design blogs and creative briefs. Same intent. Different zip code. Different neighbors. Different output.
+For creative work — UI, copywriting, anything with an aesthetic pulse — match your energy to the output you want. You want playful? *Be* playful. Buttoned-up enterprise? Be buttoned-up. The model isn't choosing a style. It's reflecting the statistical neighborhood your words activated. An engineer asking for "a settings page with form fields" activates the same neighborhood as requirements docs and internal tooling wikis. A designer asking for something that "breathes" activates design blogs and creative portfolios. Same feature. Different neighborhood. Different *universe* of probable next tokens.
 
-For code, the implication is subtler but potentially more expensive: prime your context early. The patterns the model sees first set the statistical baseline for everything that follows. If you want a specific architecture, don't mention it on the third refactoring pass. Establish it in the first message. Show examples. Set the tone — literally, not metaphorically — before the model writes a line of code.
+For code: prime your context early and prime it hard. The patterns the model sees first set the statistical baseline for everything after. If you want a specific architecture, don't introduce it on the third refactoring pass when the context is already full of the old stuff. Establish it in message one. Show examples. Set the register before the model writes a single line.
 
-And if you're fighting an agent that won't refactor cleanly, maybe stop blaming the agent. You've handed it a context window full of evidence for the exact thing you're trying to change, and then you're surprised when it agrees with the majority opinion. It's not stubborn. It's a statistical prediction engine doing exactly what statistical prediction engines do.
+And if you're fighting an agent that won't refactor cleanly, stop calling it stubborn. You handed it a context window full of evidence for the exact thing you want to change and then acted surprised when it sided with the majority. That's not a bug. That's a prediction engine predicting.
 
 ## The Part Where the Article Proved Its Own Point
 
-I should confess something. I co-wrote this article with an AI. You probably guessed that — it's 2026, everyone does it, no one admits it, we all pretend we're still hand-carving our prose by candlelight.
+Confession time. I co-wrote this article with an AI. I know. In 2026 that's about as scandalous as admitting you use a calculator.
 
-Here's the thing: the first draft came back *safe*. Competent. Well-structured. Thoroughly informative. The kind of article you'd nod along to and forget by lunch. It had correct information, logical flow, and the personality of a compliance document.
+But here's the thing. The first draft I got back was *fine*. Structured. Informative. Correct. It had every fact you just read, in roughly the order you read them. And it had the personality of an IKEA manual. The kind of writing you can technically learn from but would never recommend to a friend.
 
-My brief had been thorough. It laid out the structure, the key findings, the section flow, the target audience — everything a co-writer could need. It was, in engineering terms, a great spec. And the AI wrote to spec, flawlessly. The problem was that my spec read like a project requirements document. So the AI wrote like it was fulfilling a project requirement. Same content I wanted. Same article structure. Same findings, same jokes planned, same closing. But the *register* of my brief — methodical, informative, structured — leaked straight through to the output.
+My brief had been thorough — structure, findings, section flow, target audience, everything a co-writer needs. An excellent spec. A perfect, detailed, *engineering-register* spec. And the AI wrote to spec, flawlessly. The problem was that my spec read like a requirements document, so the output read like someone fulfilling a requirement. I had produced the article version of my government-contractor settings page. The very thing this article is about.
 
-I was literally producing the article version of my government-contractor settings page. The very thing this article is *about*.
-
-The fix wasn't asking for different content. The content was fine. The fix was rewriting the brief in my own voice — less "the article should convey X" and more "here's how I actually talk about this stuff." Same intent. Different register. Different article.
+The fix wasn't asking for different content. The content was fine. The fix was rewriting the brief in my own voice — less "the article should convey X" and more how I actually talk about this stuff after two beers. Same intent. Different register. Different article.
 
 Your tone is a dial. It was always a dial. We just couldn't see the needle move until we cracked open the model's skull and looked at the wiring.
 
