@@ -1,0 +1,16 @@
+[project]
+name = "elephant-experiment"
+version = "0.1.0"
+description = "Experiment: How negation decays in LLM context windows"
+requires-python = ">=3.11"
+dependencies = [
+    "torch",
+    "transformers",
+    "scikit-learn",
+    "matplotlib",
+    "numpy",
+    "tqdm",
+]
+
+[tool.uv]
+dev-dependencies = []
