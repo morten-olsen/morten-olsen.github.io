@@ -1,0 +1,17 @@
+[project]
+name = "tone-experiment"
+version = "0.1.0"
+description = "Experiment: Does tone/register affect LLM hidden state representations?"
+requires-python = ">=3.11"
+dependencies = [
+    "torch",
+    "transformers",
+    "umap-learn",
+    "scikit-learn",
+    "matplotlib",
+    "numpy",
+    "tqdm",
+]
+
+[tool.uv]
+dev-dependencies = []
