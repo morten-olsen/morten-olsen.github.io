@@ -6,37 +6,61 @@ const currentPath = Astro.url.pathname;
 const { Content, ...profile } = data.profile;
 const currentExperience = await data.experiences.getCurrent()
 const links = {
-  '/': 'Posts',
-  '/projects/': 'Projects',
-  '/about/': 'About',
+  '/': 'index.html',
+  '/projects/': 'projects.html',
+  '/about/': 'about.html',
 }
 ---
 
 <header class="header">
-  <div class="header-inner">
-    <a class="image" href="/">
-      <Picture
-        class="picture"
-        alt='Profile Picture'
-        src={profile.image}
-        fetchpriority="high"
-        formats={['avif', 'webp', 'jpeg']}
-        width={120}
-      />
-    </a>
-    <a class="info" href="/">
-      <div class="name">{profile.name}</div>
-      {currentExperience && (
-        <div class="work">
-          {currentExperience.data.position.name} @ {currentExperience.data.company.name}
-        </div>
-      )}
-    </a>
-    <nav class="links">
-      {Object.entries(links).map(([target, name]) => (
-        <a class={currentPath === target ? 'link active' : 'link'} href={target}>{name}</a>
-      ))}
-    </nav>
+  <!-- Browser-window title bar -->
+  <div class="titlebar">
+    <div class="titlebar-inner">
+      <div class="dots" aria-hidden="true">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-amber"></span>
+        <span class="dot dot-green"></span>
+      </div>
+      <div class="title-text">
+        <span class="title-prefix">file://</span>~/morten-olsen/{currentPath.replace(/^\/|\/$/g, '') || 'index.html'}
+      </div>
+      <div class="connection" aria-hidden="true">
+        <span class="led"></span>
+        <span class="connection-text">ONLINE</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Identity strip -->
+  <div class="strip">
+    <div class="strip-inner">
+      <a class="image" href="/">
+        <Picture
+          class="picture"
+          alt='Profile Picture'
+          src={profile.image}
+          fetchpriority="high"
+          formats={['avif', 'webp', 'jpeg']}
+          width={120}
+        />
+      </a>
+      <a class="info" href="/">
+        <div class="name">~{profile.name.toLowerCase().replace(/\s+/g, '_')}</div>
+        {currentExperience && (
+          <div class="work">
+            <span class="prompt">$</span> {currentExperience.data.position.name} @ {currentExperience.data.company.name}
+          </div>
+        )}
+      </a>
+      <nav class="links" aria-label="Primary">
+        {Object.entries(links).map(([target, name]) => (
+          <a class={currentPath === target ? 'link active' : 'link'} href={target}>
+            <span class="link-bullet" aria-hidden="true">{currentPath === target ? '▸' : '·'}</span>
+            <span class="link-label">{name}</span>
+          </a>
+        ))}
+      </nav>
+    </div>
   </div>
 </header>
 
@@ -45,30 +69,109 @@ const links = {
     position: sticky;
     top: 0;
     z-index: 100;
-    background: var(--accent-primary);
-    border-bottom: var(--border-width) solid var(--on-accent);
-    padding: 0 20px;
-    /* Keep dark text/borders on accent header in both themes */
-    --t-fg: var(--on-accent);
-    --border-color: var(--on-accent);
-    --card-bg: #fff;
-    --shadow-brutal: 3px 3px 0 var(--on-accent);
+    background: var(--card-bg);
+    border-bottom: var(--border-width) solid var(--border-color);
+    box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.06);
   }
 
-  .header-inner {
+  /* ---- Title bar (browser chrome) -------------------------- */
+  .titlebar {
+    background: var(--accent-tertiary);
+    border-bottom: 2px solid var(--border-color);
+    --t-fg: var(--on-accent);
+    color: var(--on-accent);
+  }
+
+  .titlebar-inner {
     max-width: var(--content-width);
     margin: 0 auto;
-    padding: 12px 0;
+    padding: 6px 14px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-family: var(--font-family-mono);
+    font-size: 16px;
+  }
+
+  .dots {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .dot {
+    width: 11px;
+    height: 11px;
+    border: 1.5px solid var(--on-accent);
+    display: inline-block;
+  }
+
+  .dot-red { background: #ff5f56; }
+  .dot-amber { background: #ffbd2e; }
+  .dot-green { background: #27c93f; }
+
+  .title-text {
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: var(--on-accent);
+    line-height: 1;
+    letter-spacing: 0.5px;
+  }
+
+  .title-prefix {
+    opacity: 0.6;
+  }
+
+  .connection {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+
+  .led {
+    width: 9px;
+    height: 9px;
+    background: var(--accent-blink);
+    border: 1.5px solid var(--on-accent);
+    border-radius: 50%;
+    animation: led-pulse 2s steps(2, jump-none) infinite;
+  }
+
+  @keyframes led-pulse {
+    50% { background: transparent; }
+  }
+
+  /* ---- Identity strip -------------------------------------- */
+  .strip-inner {
+    max-width: var(--content-width);
+    margin: 0 auto;
+    padding: 12px 14px;
     display: flex;
     gap: var(--gap);
     align-items: center;
+  }
+
+  .image {
+    flex-shrink: 0;
+    line-height: 0;
   }
 
   img {
     width: 44px;
     height: 44px;
     border: 2px solid var(--border-color);
-    box-shadow: var(--shadow-brutal);
+    box-shadow: 3px 3px 0 var(--border-color);
+    transform: rotate(-3deg);
+    transition: transform var(--duration-fast) var(--ease-out);
+  }
+
+  .image:hover img {
+    transform: rotate(2deg);
   }
 
   .info {
@@ -79,56 +182,93 @@ const links = {
 
     .name {
       font-family: var(--font-family-display);
-      font-weight: 400;
+      font-weight: 700;
       font-size: var(--font-lg);
       color: var(--t-fg);
-      text-decoration: none;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0;
+      line-height: 1.1;
     }
 
     .work {
-      font-size: var(--fs-sm);
-      color: var(--t-fg);
-      text-decoration: none;
-      font-weight: 500;
-      opacity: 0.85;
+      font-family: var(--font-family-mono);
+      font-size: 17px;
+      color: var(--color-text-light);
+      line-height: 1.2;
+
+      .prompt {
+        color: var(--accent-secondary);
+        font-weight: 700;
+      }
     }
   }
 
   .links {
     display: flex;
-    gap: 8px;
+    gap: 6px;
 
     .link {
-      padding: 8px 16px;
+      padding: 6px 12px;
       border: 2px solid var(--border-color);
-      font-weight: var(--fw-md);
-      font-size: var(--fs-sm);
-      text-transform: uppercase;
-      background: var(--card-bg);
-      box-shadow: var(--shadow-brutal);
+      background: var(--c-bg-em);
+      box-shadow: 2px 2px 0 var(--border-color);
+      font-family: var(--font-family-mono);
+      font-size: 17px;
+      letter-spacing: 0.5px;
       transition: all var(--duration-fast) var(--ease-out);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      line-height: 1;
+
+      .link-bullet {
+        opacity: 0.7;
+      }
 
       &:hover {
         transform: translate(-2px, -2px);
-        box-shadow: 5px 5px 0 var(--border-color);
+        box-shadow: 4px 4px 0 var(--border-color);
+        background: var(--accent-primary);
+        color: var(--on-accent);
       }
 
       &.active {
-        background: var(--accent-tertiary);
+        background: var(--accent-secondary);
+        color: var(--on-accent);
+
+        .link-bullet { opacity: 1; }
       }
     }
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 700px) {
+    .titlebar-inner {
+      padding: 5px 10px;
+      font-size: 13px;
+      gap: 10px;
+    }
+
+    .connection-text { display: none; }
+    .title-text { font-size: 12px; }
+
     .info .work {
       display: none;
     }
 
     .links .link {
-      padding: 6px 12px;
+      padding: 5px 9px;
+      font-size: 15px;
+
+      .link-bullet { display: none; }
     }
+  }
+
+  @media (max-width: 480px) {
+    .strip-inner {
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .info .name { font-size: 1rem; }
   }
 
   @media print {

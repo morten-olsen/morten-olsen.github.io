@@ -6,7 +6,9 @@ import ThemeToggle from '~/components/base/ThemeToggle.astro';
 import '@fontsource/space-grotesk/400.css';
 import '@fontsource/space-grotesk/500.css';
 import '@fontsource/space-grotesk/700.css';
-import '@fontsource/archivo-black/400.css';
+import '@fontsource/pixelify-sans/400.css';
+import '@fontsource/pixelify-sans/700.css';
+import '@fontsource/vt323/400.css';
 
 type Props = {
   title: string;
@@ -97,6 +99,8 @@ const imageUrl = image && Astro.site ? new URL(image, Astro.site).href : image;
     <title>{title}</title>
 	</head>
 	<body>
+    <!-- CRT scanline overlay -->
+    <div class="scanlines" aria-hidden="true"></div>
     <!-- Grain noise overlay -->
     <svg class="grain-overlay" aria-hidden="true">
       <filter id="grain-filter">
@@ -131,102 +135,119 @@ withFadeIn.forEach((node) => {
 
   observer.observe(node);
 })
+
+// ---- Console easter egg ----------------------------------------------------
+// Tongue-in-cheek tech reference: yes, this is hand-typed in a text editor.
+console.log(
+`%c
+ ╔══════════════════════════════════════════════════════╗
+ ║   M O R T E N . O L S E N                            ║
+ ║   ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓   ║
+ ║   you found the source. nice.                        ║
+ ║   built with HTML, CSS, and stubbornness.            ║
+ ║   if you're hiring, the email's on /about/.          ║
+ ╚══════════════════════════════════════════════════════╝
+`,
+  'font-family: monospace; color: #ff5cab; line-height: 1.2; font-size: 12px;'
+);
 </script>
 
 <style is:global>
 
 /* ============================================================
    CASCADE ARCHITECTURE
-   Layer stack declares explicit cascade priority once.
-   Unlayered styles (Astro scoped components) beat all layers.
    ============================================================ */
 @layer reset, tokens, layout, utilities, overrides;
 
 /* ============================================================
    TYPED DESIGN TOKENS — @property registrations
-   Type safety, animatable theme transitions, guaranteed defaults.
    ============================================================ */
 
-/* Accent palette */
+/* Accent palette — faded-CRT indie-web hues */
 @property --accent-primary {
   syntax: "<color>";
   inherits: true;
-  initial-value: #ffee00;
+  initial-value: #ffe04b;
 }
 @property --accent-secondary {
   syntax: "<color>";
   inherits: true;
-  initial-value: #ff5757;
+  initial-value: #ff5cab;
 }
 @property --accent-tertiary {
   syntax: "<color>";
   inherits: true;
-  initial-value: #00d4ff;
+  initial-value: #4ad8e6;
 }
 @property --accent-lime {
   syntax: "<color>";
   inherits: true;
-  initial-value: #c8ff00;
+  initial-value: #b8ff52;
 }
 @property --accent-lavender {
   syntax: "<color>";
   inherits: true;
-  initial-value: #e4c1f9;
+  initial-value: #c8a8f0;
+}
+@property --accent-blink {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #00ff66;
 }
 
-/* Surface colors */
+/* Surface colors — paper-y indie web feel */
 @property --page-bg {
   syntax: "<color>";
   inherits: true;
-  initial-value: #f0f0e8;
+  initial-value: #f4ecd8;
 }
 @property --card-bg {
   syntax: "<color>";
   inherits: true;
-  initial-value: #ffffff;
+  initial-value: #fffbf0;
 }
 @property --c-bg-em {
   syntax: "<color>";
   inherits: true;
-  initial-value: #e8e8e0;
+  initial-value: #ebe2c8;
 }
 
 /* Text colors */
 @property --t-fg {
   syntax: "<color>";
   inherits: true;
-  initial-value: #000000;
+  initial-value: #1a1814;
 }
 @property --color-text-light {
   syntax: "<color>";
   inherits: true;
-  initial-value: #333333;
+  initial-value: #4a4636;
 }
 @property --on-accent {
   syntax: "<color>";
   inherits: true;
-  initial-value: #000000;
+  initial-value: #1a1814;
 }
 
 /* Border system */
 @property --border-color {
   syntax: "<color>";
   inherits: true;
-  initial-value: #000000;
+  initial-value: #1a1814;
 }
 @property --border-width {
   syntax: "<length>";
   inherits: true;
-  initial-value: 4px;
+  initial-value: 3px;
 }
 @property --shadow-offset {
   syntax: "<length>";
   inherits: true;
-  initial-value: 6px;
+  initial-value: 5px;
 }
 
 /* ============================================================
-   RESET LAYER — normalize browser defaults
+   RESET LAYER
    ============================================================ */
 @layer reset {
   * {
@@ -255,6 +276,9 @@ withFadeIn.forEach((node) => {
     font-weight: var(--fw-df);
     color: var(--t-fg);
     background-color: var(--page-bg);
+    background-image: var(--bg-pattern);
+    background-size: 28px 28px;
+    background-attachment: fixed;
     overflow-x: clip;
   }
 
@@ -270,7 +294,7 @@ withFadeIn.forEach((node) => {
   }
 
   p {
-    line-height: 1.6;
+    line-height: 1.65;
     margin-bottom: var(--gap);
   }
 
@@ -278,7 +302,7 @@ withFadeIn.forEach((node) => {
     color: var(--t-fg);
     text-decoration: underline;
     text-decoration-color: var(--accent-secondary);
-    text-decoration-thickness: 3px;
+    text-decoration-thickness: 2px;
     text-underline-offset: 3px;
     transition: all var(--duration-fast) var(--ease-out);
     font-weight: 500;
@@ -289,16 +313,20 @@ withFadeIn.forEach((node) => {
       color: var(--on-accent);
     }
   }
+
+  code, kbd, samp, pre {
+    font-family: var(--font-family-mono);
+  }
 }
 
 /* ============================================================
-   TOKENS LAYER — all visual properties from a single system
+   TOKENS LAYER
    ============================================================ */
 @layer tokens {
   :root {
-    /* Neo-brutalism core */
+    /* Indie-web shadow */
     --shadow-brutal: var(--shadow-offset) var(--shadow-offset) 0 var(--border-color);
-    --shadow-brutal-lg: 8px 8px 0 var(--border-color);
+    --shadow-brutal-lg: 7px 7px 0 var(--border-color);
     --radius: 0;
     --radius-sm: 0;
 
@@ -306,10 +334,11 @@ withFadeIn.forEach((node) => {
     --content-width: 1100px;
     --gap: 16px;
 
-    /* Typography */
+    /* Typography — a 3-voice system */
     --font-family: 'Space Grotesk', system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    --font-family-display: 'Archivo Black', 'Impact', sans-serif;
+    --font-family-display: 'Pixelify Sans', 'Courier New', monospace;
     --font-family-heading: var(--font-family-display);
+    --font-family-mono: 'VT323', 'Courier New', ui-monospace, monospace;
     --letter-spacing: 0.5px;
     --fw-df: 400;
     --fw-md: 700;
@@ -331,7 +360,7 @@ withFadeIn.forEach((node) => {
     --space-xl: 3rem;
     --space-xxl: 4rem;
 
-    /* Motion tokens — centralized, respects user preference */
+    /* Motion tokens */
     --duration-fast: 0.1s;
     --duration-normal: 0.3s;
     --duration-slow: 0.5s;
@@ -341,9 +370,14 @@ withFadeIn.forEach((node) => {
 
     /* Link colors */
     --color-link: #000;
+
+    /* Background tile — tiny plus-signs on paper */
+    --bg-pattern:
+      radial-gradient(circle at 1px 1px, rgba(26, 24, 20, 0.10) 1px, transparent 0),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'><g fill='none' stroke='%231a181420' stroke-width='1'><path d='M14 10 L14 18 M10 14 L18 14'/></g></svg>");
   }
 
-  /* Reduced motion: zero all durations globally */
+  /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
     :root {
       --duration-fast: 0s;
@@ -353,30 +387,34 @@ withFadeIn.forEach((node) => {
     }
   }
 
-  /* Dark mode — cascades via DOM attribute, no JS runtime needed */
+  /* Dark mode — terminal/CRT vibes, neon-shifted */
   [data-theme="dark"] {
-    --page-bg: #111118;
-    --card-bg: #1c1c26;
-    --t-fg: #f0f0e8;
-    --border-color: #f0f0e8;
-    --shadow-brutal: var(--shadow-offset) var(--shadow-offset) 0 #0a0a10;
-    --shadow-brutal-lg: 8px 8px 0 #0a0a10;
-    --c-bg-em: #26263a;
-    --color-text-light: #a0a0a8;
-    --color-link: #f0f0e8;
+    --page-bg: #0d0e14;
+    --card-bg: #181a24;
+    --t-fg: #f4ecd8;
+    --border-color: #f4ecd8;
+    --shadow-brutal: var(--shadow-offset) var(--shadow-offset) 0 #02030a;
+    --shadow-brutal-lg: 7px 7px 0 #02030a;
+    --c-bg-em: #232636;
+    --color-text-light: #a8a89c;
+    --color-link: #f4ecd8;
 
-    /* Boosted accents for dark mode — more neon/vivid */
+    /* Boosted accents — neon CRT */
     --accent-primary: #ffe600;
-    --accent-secondary: #ff4d4d;
+    --accent-secondary: #ff4eaa;
     --accent-tertiary: #00e5ff;
-    --accent-lime: #d4ff00;
+    --accent-lime: #c8ff00;
     --accent-lavender: #d8b4fe;
+    --accent-blink: #39ff14;
 
-    /* Text on accent backgrounds stays dark in both themes */
-    --on-accent: #000;
+    --on-accent: #0d0e14;
+
+    --bg-pattern:
+      radial-gradient(circle at 1px 1px, rgba(244, 236, 216, 0.06) 1px, transparent 0),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'><g fill='none' stroke='%23f4ecd815' stroke-width='1'><path d='M14 10 L14 18 M10 14 L18 14'/></g></svg>");
   }
 
-  /* Smooth theme transition on registered color properties */
+  /* Smooth theme transition */
   html {
     transition:
       --page-bg var(--duration-normal) var(--ease-out),
@@ -387,15 +425,13 @@ withFadeIn.forEach((node) => {
       --color-text-light var(--duration-normal) var(--ease-out);
   }
 
-  /* Accent backgrounds: any element with [data-accent-bg] gets
-     dark text/borders automatically — no per-class overrides needed */
   [data-accent-bg] {
     color: var(--on-accent);
   }
 }
 
 /* ============================================================
-   LAYOUT LAYER — page-level structure
+   LAYOUT LAYER
    ============================================================ */
 @layer layout {
   [data-fadein] {
@@ -406,6 +442,35 @@ withFadeIn.forEach((node) => {
     opacity: 0;
   }
 
+  /* CRT scanlines — fixed overlay, very faint */
+  .scanlines {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    pointer-events: none;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.04) 0,
+      rgba(0, 0, 0, 0.04) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    mix-blend-mode: multiply;
+    opacity: 0.7;
+  }
+
+  [data-theme="dark"] .scanlines {
+    background-image: repeating-linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.025) 0,
+      rgba(255, 255, 255, 0.025) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    mix-blend-mode: screen;
+    opacity: 0.6;
+  }
+
   .grain-overlay {
     position: fixed;
     inset: 0;
@@ -413,12 +478,12 @@ withFadeIn.forEach((node) => {
     height: 100%;
     z-index: 9999;
     pointer-events: none;
-    opacity: 0.35;
+    opacity: 0.28;
     mix-blend-mode: multiply;
   }
 
   [data-theme="dark"] .grain-overlay {
-    opacity: 0.15;
+    opacity: 0.12;
     mix-blend-mode: screen;
   }
 
@@ -431,7 +496,7 @@ withFadeIn.forEach((node) => {
 }
 
 /* ============================================================
-   UTILITIES LAYER — thin composition helpers for gaps only
+   UTILITIES LAYER
    ============================================================ */
 @layer utilities {
   .brutal-border {
@@ -448,10 +513,34 @@ withFadeIn.forEach((node) => {
       transform: translate(-2px, -2px);
     }
   }
+
+  /* Blink — sparingly, with reduced-motion respect */
+  .blink {
+    animation: blink-anim 1.05s steps(2, jump-none) infinite;
+  }
+
+  @keyframes blink-anim {
+    50% { opacity: 0.15; }
+  }
+
+  /* Rainbow HR — the classic */
+  .rainbow-hr {
+    height: 6px;
+    border: 0;
+    background: linear-gradient(
+      90deg,
+      #ff5cab 0%,
+      #ffe04b 25%,
+      #b8ff52 50%,
+      #4ad8e6 75%,
+      #c8a8f0 100%
+    );
+    margin: calc(var(--gap) * 1.5) 0;
+  }
 }
 
 /* ============================================================
-   OVERRIDES LAYER — view transitions, print, escape hatches
+   OVERRIDES LAYER
    ============================================================ */
 @layer overrides {
   @view-transition {
@@ -499,6 +588,7 @@ withFadeIn.forEach((node) => {
       font-size: 11pt;
       line-height: 1.4;
       color: #000;
+      background-image: none;
     }
 
     header.header {
@@ -522,7 +612,9 @@ withFadeIn.forEach((node) => {
       opacity: 1 !important;
     }
 
-    .theme-toggle-fixed {
+    .theme-toggle-fixed,
+    .scanlines,
+    .grain-overlay {
       display: none !important;
     }
   }

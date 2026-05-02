@@ -20,6 +20,9 @@ importers:
       '@fontsource/archivo-black':
         specifier: ^5.2.8
         version: 5.2.8
+      '@fontsource/pixelify-sans':
+        specifier: ^5.2.7
+        version: 5.2.7
       '@fontsource/space-grotesk':
         specifier: ^5.2.10
         version: 5.2.10
@@ -767,6 +770,9 @@ packages:
 
   '@fontsource/archivo-black@5.2.8':
     resolution: {integrity: sha512-3zNj/o9LzWyDl/UEpY5IOHpAQyUtFr3hQaFS7NSKwCLLkXOfH/CMCt1L2b2Z+OF25OURtOYenCadgAebALz7/A==}
+
+  '@fontsource/pixelify-sans@5.2.7':
+    resolution: {integrity: sha512-F/UuV2M9poAj/BJ5/6u95mOy6ptp8/+dpfnxh4TFzKeAB+vdanAjQ8fLJcS0q+WHYgesRRxPwNFr2Pqm18CVGg==}
 
   '@fontsource/space-grotesk@5.2.10':
     resolution: {integrity: sha512-XNXEbT74OIITPqw2H6HXwPDp85fy43uxfBwFR5PU+9sLnjuLj12KlhVM9nZVN6q6dlKjkuN8JisW/OBxwxgUew==}
@@ -4707,6 +4713,8 @@ snapshots:
     optional: true
 
   '@fontsource/archivo-black@5.2.8': {}
+
+  '@fontsource/pixelify-sans@5.2.7': {}
 
   '@fontsource/space-grotesk@5.2.10': {}
 

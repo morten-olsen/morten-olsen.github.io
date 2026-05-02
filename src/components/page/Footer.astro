@@ -3,115 +3,395 @@ import { data } from "~/data/data";
 
 const { ...profile } = data.profile;
 const year = new Date().getFullYear();
+const buildHash = Math.random().toString(16).slice(2, 9);
+
+// Tongue-in-cheek 88x31 button collection — the classic indie web badge size
+const buttons = [
+  { label: 'BEST VIEWED', sub: 'IN VIM', tone: 'pink' },
+  { label: 'POWERED BY', sub: 'COFFEE.exe', tone: 'amber' },
+  { label: 'TYPESCRIPT', sub: '4 LIFE', tone: 'cyan' },
+  { label: 'NO COOKIES', sub: 'JUST CRUMBS', tone: 'lime' },
+  { label: 'IT WORKS', sub: 'ON MY MACHINE', tone: 'lavender' },
+  { label: 'HTML +', sub: 'FEELINGS', tone: 'pink' },
+  { label: 'SHIP IT', sub: '— some guy, 2014', tone: 'amber' },
+  { label: 'rm -rf', sub: 'BAD VIBES /', tone: 'cyan' },
+];
 ---
 
 <footer class="footer">
+  <hr class="rainbow-bar" aria-hidden="true" />
+
   <div class="footer-inner">
-    <div class="footer-left">
-      <span class="footer-name">{profile.name}</span>
-      <span class="footer-location">{profile.location.city}</span>
-    </div>
-    <nav class="footer-links">
+    <!-- Status console -->
+    <section class="status-console" aria-label="Site status">
+      <div class="status-head">
+        <span class="status-led" aria-hidden="true"></span>
+        <span class="status-title">// site_status.log</span>
+      </div>
+      <ul class="status-lines">
+        <li><span class="k">user</span> <span class="op">=</span> <span class="v">{profile.name}</span></li>
+        <li><span class="k">city</span> <span class="op">=</span> <span class="v">{profile.location.city}</span></li>
+        <li><span class="k">build</span> <span class="op">=</span> <span class="v">0x{buildHash}</span></li>
+        <li><span class="k">uptime</span> <span class="op">=</span> <span class="v">since 1989</span></li>
+        <li><span class="k">made_with</span> <span class="op">=</span> <span class="v">html + feelings</span></li>
+      </ul>
+    </section>
+
+    <!-- 88x31 button collection -->
+    <section class="badges-section" aria-label="Web badges">
+      <div class="badges-head">
+        <span aria-hidden="true">▾</span> badges.dir
+      </div>
+      <div class="badges-grid">
+        {buttons.map((b) => (
+          <div class={`badge badge-${b.tone}`} role="img" aria-label={`${b.label} ${b.sub}`}>
+            <div class="badge-inner">
+              <span class="badge-top">{b.label}</span>
+              <span class="badge-bot">{b.sub}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- LCD visitor counter -->
+    <section class="counter-section">
+      <div class="counter" aria-label="Visitor counter">
+        <div class="counter-label">visitors</div>
+        <div class="counter-display">
+          <span class="counter-digit">0</span>
+          <span class="counter-digit">x</span>
+          <span class="counter-digit">0</span>
+          <span class="counter-digit">0</span>
+          <span class="counter-digit">0</span>
+          <span class="counter-digit">D</span>
+          <span class="counter-digit">E</span>
+          <span class="counter-digit">A</span>
+          <span class="counter-digit">D</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Links + sign-off -->
+    <nav class="footer-links" aria-label="Footer">
       {Object.entries(profile.profiles).map(([id, p]) => (
-        <a href={p.url} target="_blank" rel="noopener noreferrer">{p.network?.name || id}</a>
+        <a href={p.url} target="_blank" rel="noopener noreferrer">
+          <span aria-hidden="true">→</span> {p.network?.name || id}
+        </a>
       ))}
-      <a href="/posts/rss.xml">RSS</a>
-      <a href="/posts/podcast/">Podcast</a>
+      <a href="/posts/rss.xml"><span aria-hidden="true">→</span> RSS</a>
+      <a href="/posts/podcast/"><span aria-hidden="true">→</span> Podcast</a>
     </nav>
-    <div class="footer-right">
-      <span class="footer-copy">&copy; {year}</span>
+
+    <div class="signoff">
+      <span class="signoff-line">&copy; {year} &nbsp;·&nbsp; hand-typed in a text editor &nbsp;·&nbsp; <span class="cursor-blink">_</span></span>
     </div>
   </div>
 </footer>
 
 <style>
   .footer {
+    background: var(--c-bg-em);
     border-top: var(--border-width) solid var(--border-color);
-    background: var(--accent-primary);
-    padding: 0 20px;
-    --t-fg: var(--on-accent);
-    --border-color: var(--on-accent);
-    --card-bg: #fff;
+    padding: 0;
+    color: var(--t-fg);
+  }
+
+  .rainbow-bar {
+    height: 5px;
+    border: 0;
+    margin: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--accent-secondary) 0,
+      var(--accent-secondary) 16px,
+      var(--accent-primary) 16px,
+      var(--accent-primary) 32px,
+      var(--accent-lime) 32px,
+      var(--accent-lime) 48px,
+      var(--accent-tertiary) 48px,
+      var(--accent-tertiary) 64px,
+      var(--accent-lavender) 64px,
+      var(--accent-lavender) 80px
+    );
   }
 
   .footer-inner {
     max-width: var(--content-width);
     margin: 0 auto;
-    padding: calc(var(--gap) * 1.5) 0;
-    display: flex;
-    align-items: center;
-    gap: calc(var(--gap) * 2);
+    padding: calc(var(--gap) * 2) 20px calc(var(--gap) * 1.5);
+    display: grid;
+    grid-template-columns: minmax(280px, 1.1fr) 2fr;
+    grid-template-areas:
+      "status   badges"
+      "counter  counter"
+      "links    links"
+      "signoff  signoff";
+    gap: calc(var(--gap) * 1.5);
   }
 
-  .footer-left {
-    display: flex;
-    align-items: center;
-    gap: var(--gap);
-  }
-
-  .footer-name {
-    font-family: var(--font-family-display);
-    font-weight: 400;
-    font-size: var(--font-lg);
-    text-transform: uppercase;
-    color: var(--on-accent);
-  }
-
-  .footer-location {
-    font-size: var(--fs-sm);
-    padding: 0.3rem 0.6rem;
-    border: 2px solid var(--on-accent);
+  /* ---- Status console -------------------------------------- */
+  .status-console {
+    grid-area: status;
     background: var(--card-bg);
-    font-weight: 500;
-    text-transform: uppercase;
-    color: var(--on-accent);
+    border: 2px solid var(--border-color);
+    box-shadow: 4px 4px 0 var(--border-color);
+    font-family: var(--font-family-mono);
+    overflow: hidden;
   }
 
-  .footer-links {
-    flex: 1;
+  .status-head {
+    background: var(--border-color);
+    color: var(--page-bg);
+    padding: 4px 10px;
+    font-size: 16px;
     display: flex;
-    gap: calc(var(--gap) / 2);
+    align-items: center;
+    gap: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  .status-led {
+    width: 8px;
+    height: 8px;
+    background: var(--accent-blink);
+    box-shadow: 0 0 6px var(--accent-blink);
+    animation: led-pulse 1.5s steps(2, jump-none) infinite;
+  }
+
+  @keyframes led-pulse {
+    50% { background: transparent; box-shadow: none; }
+  }
+
+  .status-lines {
+    padding: 10px 12px;
+    font-size: 17px;
+    line-height: 1.45;
+
+    li {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      .k { color: var(--accent-secondary); }
+      .op { color: var(--color-text-light); margin: 0 4px; }
+      .v { color: var(--t-fg); }
+    }
+  }
+
+  /* ---- Badges (88x31) -------------------------------------- */
+  .badges-section {
+    grid-area: badges;
+  }
+
+  .badges-head {
+    font-family: var(--font-family-mono);
+    font-size: 18px;
+    margin-bottom: calc(var(--gap) / 2);
+    color: var(--color-text-light);
+  }
+
+  .badges-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 88px);
+    gap: 6px;
+  }
+
+  .badge {
+    width: 88px;
+    height: 31px;
+    border: 1px solid var(--border-color);
+    box-shadow: 2px 2px 0 var(--border-color);
+    overflow: hidden;
+    transition: transform var(--duration-fast) var(--ease-out);
+    cursor: default;
+
+    &:nth-child(odd) { transform: rotate(-1deg); }
+    &:nth-child(even) { transform: rotate(0.5deg); }
+
+    &:hover {
+      transform: rotate(0deg) scale(1.08);
+      z-index: 5;
+      position: relative;
+    }
+  }
+
+  .badge-inner {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
+    line-height: 1;
+    padding: 1px 3px;
+    text-align: center;
+    font-family: var(--font-family-mono);
+    image-rendering: pixelated;
+  }
+
+  .badge-top {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .badge-bot {
+    font-size: 10px;
+    letter-spacing: 0.3px;
+    margin-top: 2px;
+    text-transform: uppercase;
+    opacity: 0.85;
+  }
+
+  .badge-pink {
+    background: linear-gradient(180deg, var(--accent-secondary) 50%, var(--card-bg) 50%);
+    color: var(--on-accent);
+
+    .badge-bot { color: var(--accent-secondary); background: var(--card-bg); width: 100%; }
+  }
+  .badge-amber {
+    background: linear-gradient(180deg, var(--accent-primary) 50%, #1a1814 50%);
+    color: var(--on-accent);
+
+    .badge-bot { color: var(--accent-primary); background: #1a1814; width: 100%; padding-top: 2px; }
+  }
+  .badge-cyan {
+    background: var(--accent-tertiary);
+    color: var(--on-accent);
+
+    .badge-top { background: var(--card-bg); padding: 2px 4px; width: 100%; border-bottom: 1px solid var(--border-color); }
+  }
+  .badge-lime {
+    background: var(--card-bg);
+    color: var(--t-fg);
+
+    .badge-top { color: var(--on-accent); background: var(--accent-lime); padding: 2px 4px; width: 100%; }
+  }
+  .badge-lavender {
+    background: var(--accent-lavender);
+    color: var(--on-accent);
+
+    .badge-bot { font-style: italic; }
+  }
+
+  /* ---- LCD visitor counter --------------------------------- */
+  .counter-section {
+    grid-area: counter;
+    border-top: 2px dashed var(--border-color);
+    border-bottom: 2px dashed var(--border-color);
+    padding: var(--gap) 0;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .counter {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-end;
+  }
+
+  .counter-label {
+    font-family: var(--font-family-mono);
+    font-size: 16px;
+    color: var(--color-text-light);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .counter-display {
+    background: #0a1a0a;
+    border: 2px solid var(--border-color);
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5), 2px 2px 0 var(--border-color);
+    padding: 6px 10px;
+    display: flex;
+    gap: 1px;
+    font-family: var(--font-family-mono);
+  }
+
+  [data-theme="dark"] .counter-display {
+    background: #001a00;
+  }
+
+  .counter-digit {
+    color: #39ff14;
+    text-shadow: 0 0 4px #39ff14;
+    font-size: 22px;
+    line-height: 1;
+    font-weight: 400;
+    width: 14px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---- Footer links ---------------------------------------- */
+  .footer-links {
+    grid-area: links;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding-top: 4px;
+    font-family: var(--font-family-mono);
+    font-size: 17px;
 
     a {
-      padding: 0.4rem 0.8rem;
-      border: 2px solid var(--on-accent);
-      font-size: var(--fs-sm);
-      font-weight: var(--fw-md);
-      text-transform: uppercase;
-      background: var(--card-bg);
-      color: var(--on-accent);
-      transition: all var(--duration-fast) var(--ease-out);
+      color: var(--t-fg);
+      text-decoration: underline;
+      text-decoration-color: var(--accent-secondary);
+      text-underline-offset: 3px;
+      transition: color var(--duration-fast) var(--ease-out);
 
       &:hover {
-        background: var(--on-accent);
-        color: var(--accent-primary);
-        transform: translate(-2px, -2px);
-        box-shadow: 4px 4px 0 var(--on-accent);
+        color: var(--accent-secondary);
       }
     }
   }
 
-  .footer-copy {
-    font-size: var(--fs-sm);
-    font-weight: 500;
-    color: var(--on-accent);
+  /* ---- Signoff --------------------------------------------- */
+  .signoff {
+    grid-area: signoff;
+    text-align: center;
+    font-family: var(--font-family-mono);
+    font-size: 16px;
+    color: var(--color-text-light);
+    border-top: 1px dashed var(--border-color);
+    padding-top: var(--gap);
   }
 
-  @media (max-width: 768px) {
+  .cursor-blink {
+    animation: blink-cursor 1s steps(2, jump-none) infinite;
+    color: var(--accent-secondary);
+    font-weight: 700;
+  }
+
+  @keyframes blink-cursor {
+    50% { opacity: 0; }
+  }
+
+  /* ---- Responsive ------------------------------------------ */
+  @media (max-width: 800px) {
     .footer-inner {
-      flex-direction: column;
-      gap: var(--gap);
-      text-align: center;
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "status"
+        "badges"
+        "counter"
+        "links"
+        "signoff";
     }
 
-    .footer-left {
-      flex-direction: column;
-      gap: calc(var(--gap) / 2);
+    .counter-section {
+      justify-content: flex-start;
     }
 
-    .footer-links {
-      flex-wrap: wrap;
+    .counter {
+      align-items: flex-start;
+    }
+
+    .badges-grid {
+      grid-template-columns: repeat(auto-fill, 88px);
       justify-content: center;
     }
   }
