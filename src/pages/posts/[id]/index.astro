@@ -1,7 +1,7 @@
 ---
 import Html from '~/components/page/Html.astro';
 import type { GetStaticPaths } from "astro";
-import { render } from "astro:content";
+import { renderPost } from '~/utils/render-post';
 import { data } from '~/data/data'
 import { Picture } from 'astro:assets';
 import AbsoluteTime from '~/components/base/time/AbsoluteTime.astro';
@@ -19,7 +19,8 @@ export const getStaticPaths = (async () => {
 
 const { prevPost, nextPost } = Astro.props;
 const post = await data.posts.get(Astro.params.id);
-const { Content, headings } = await render(post);
+const siteUrl = Astro.site?.toString() ?? 'http://localhost:4321/';
+const { html, headings } = await renderPost(post, { siteUrl });
 const tocHeadings = headings.filter(h => h.depth === 2);
 const hasToC = tocHeadings.length >= 3;
 ---
@@ -90,9 +91,7 @@ const hasToC = tocHeadings.length >= 3;
             </ul>
           </aside>
         )}
-        <div class='content anim-fade-up'>
-          <Content />
-        </div>
+        <div class='content anim-fade-up' set:html={html} />
       </div>
 
       <!-- Previous/Next navigation -->
@@ -250,12 +249,110 @@ const hasToC = tocHeadings.length >= 3;
   .content {
     padding-bottom: calc(var(--space-xl) * 3);
 
+    .content-image,
     img {
       max-width: 100%;
       height: auto;
       margin-bottom: var(--space-lg);
       border: var(--border-width) solid var(--border-color);
       box-shadow: var(--shadow-brutal);
+    }
+
+    .content-figure {
+      margin: var(--space-lg) 0;
+
+      picture, img {
+        margin-bottom: 0;
+      }
+
+      figcaption {
+        font-size: var(--fs-sm);
+        color: var(--color-text-light);
+        text-align: center;
+        margin-top: calc(var(--gap) / 2);
+        font-style: italic;
+      }
+    }
+
+    .bot-message {
+      margin: var(--space-lg) 0;
+      border: var(--border-width) solid var(--border-color);
+      box-shadow: var(--shadow-brutal);
+      background: var(--card-bg);
+      font-style: normal;
+
+      .bot-header {
+        background: var(--accent-tertiary);
+        padding: 0.5rem 1rem;
+        font-weight: var(--fw-md);
+        text-transform: uppercase;
+        font-size: var(--fs-sm);
+        border-bottom: var(--border-width) solid var(--on-accent);
+        color: var(--on-accent);
+      }
+
+      .bot-content {
+        padding: var(--space-md) var(--space-lg);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.9rem;
+        line-height: 1.6;
+
+        p {
+          margin-bottom: 0.75rem;
+        }
+
+        p:last-child {
+          margin-bottom: 0;
+        }
+
+        ul {
+          margin: 0.5rem 0;
+          padding-left: 1.5rem;
+          list-style: none;
+        }
+
+        li {
+          margin-bottom: 0.25rem;
+          margin-left: 0;
+          list-style: none;
+
+          &::before {
+            content: "→ ";
+            color: var(--color-text-light);
+          }
+
+          &::marker {
+            content: none;
+          }
+        }
+
+        strong {
+          background: none;
+          border: none;
+          padding: 0;
+          font-weight: 700;
+          color: inherit;
+        }
+
+        img {
+          border: none;
+          box-shadow: none;
+          margin: 0;
+          display: inline;
+          vertical-align: middle;
+        }
+
+        p:first-of-type::first-letter {
+          font-size: inherit;
+          border: none;
+          background: none;
+          float: none;
+          padding: 0;
+          margin: 0;
+          box-shadow: none;
+          line-height: inherit;
+        }
+      }
     }
 
     p {

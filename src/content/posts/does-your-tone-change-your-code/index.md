@@ -9,11 +9,6 @@ slug: does-your-tone-change-your-code
 tags: ["ai", "experiments", "python"]
 ---
 
-import ContentImage from '~/components/content/ContentImage.astro'
-import BotMessage from '~/components/content/BotMessage.astro'
-import UmapClusters from './assets/umap-tone-clusters.png'
-import CosineHeatmap from './assets/cosine-heatmap.png'
-
 You've had this moment. You ask an AI to build you a UI, and it hands back something that looks like it was designed by a man who irons his jeans. Functional. Correct. Dead behind the eyes. Then you rephrase the exact same request — same feature, same spec, different words — and suddenly it's got *taste*. Whitespace. Rhythm. The kind of output that makes you wonder if you accidentally upgraded your subscription.
 
 You assumed it was random. Temperature. Cosmic rays. The model rolling a natural 20 on its creativity check.
@@ -26,17 +21,17 @@ I'm not a data scientist. I'm an engineer with poor impulse control and access t
 
 A few weeks ago I was building a settings page with a coding agent. Standard stuff. I wrote:
 
-<BotMessage title="Me — Normal engineering brain">
+:::bot{title="Me — Normal engineering brain"}
 Create a settings page with sections for profile, notifications, and privacy. Each section should have a header, relevant form fields, and a save button.
-</BotMessage>
+:::
 
 What I got back was technically a settings page in the same way that a hospital gown is technically clothing. It had all the pieces. Headers. Form fields. Save buttons. It looked like it was designed by someone who had once had a UI described to them over the phone. If this settings page were a person, it would own multiple beige cardigans and describe itself as "fiscally responsible."
 
 I rewound the conversation. Same agent. Same model. Exact same intent. But this time I stopped writing like I was filing a work order:
 
-<BotMessage title="Me — Feral creative energy">
+:::bot{title="Me — Feral creative energy"}
 Alright, I need a settings page — profile section, notifications section, privacy section. Each one gets a header, the relevant form fields, and a save button. Make it look *gorgeous*. I want someone to open this page and feel like the developer actually *cared*. This should feel like a product someone is proud of, not an afterthought.
-</BotMessage>
+:::
 
 Night and day. Same three sections. Same form fields. Same save buttons. But the layout had rhythm. The spacing was deliberate. There were hover transitions. It wasn't just better CSS — it was a fundamentally different *approach* to building the component. Different layout strategy. Different component hierarchy. Different design sensibility. Same AI. Same conversation. Same feature spec. I just stopped talking like a requirements document and started talking like a person who gives a damn.
 
@@ -85,7 +80,7 @@ I extracted the hidden state at the last token position from early, middle, and 
 
 This is what fell out:
 
-<ContentImage src={UmapClusters} alt="UMAP projection of LLM hidden states colored by tone" title="Four tones walk into a latent space. They do not sit together." />
+![UMAP projection of LLM hidden states colored by tone](./assets/umap-tone-clusters.png "Four tones walk into a latent space. They do not sit together.")
 
 Each dot is a coding prompt. Ten different tasks. Four different tones. Colored by *tone*, not by task. The model does not care that you asked for a palindrome. It cares that you said "please."
 
@@ -111,7 +106,7 @@ Positive for tone. Negative for task. Every model. Both architectures. Code and 
 
 The cosine similarity heatmap is where I really lost my composure:
 
-<ContentImage src={CosineHeatmap} alt="Cosine similarity between tones at late layer" title="Professional prompts are a hive mind. Casual prompts are a support group." />
+![Cosine similarity between tones at late layer](./assets/cosine-heatmap.png "Professional prompts are a hive mind. Casual prompts are a support group.")
 
 Professional-to-professional cosine similarity on Qwen: **0.937**. Academic-to-academic: **0.939**. These are *ten different coding tasks* — palindrome, sorting, HTTP requests, file I/O, dictionary merging — and the model treats them as nearly identical representations because you phrased them all with good posture. Cross-tone similarity drops to the 0.7s. The model is essentially saying: *"I have no idea what you want me to build, but I know exactly what kind of person is asking."*
 

@@ -8,12 +8,6 @@ slug: grown-ups-guide-personal-ai
 audio: ./assets/audio.mp3
 ---
 
-import ContentImage from '~/components/content/ContentImage.astro'
-import BotMessage from '~/components/content/BotMessage.astro'
-import Genius from './assets/genius.png'
-import VibeCode from './assets/vibecode.png'
-import Firewall from './assets/firewall.png'
-
 The internet is currently having a collective "hold my beer" moment with "OpenClaw" (formerly Moltbot/Clawdbot). If you haven't seen it, people are effectively handing the keys to their digital lives—credit cards, root access, the works—to massive LLMs, just to see if the AI can successfully navigate the chaos of human existence.
 
 It is wildly entertaining to watch. It is also the digital equivalent of juggling chainsaws.
@@ -28,7 +22,7 @@ Allow me to introduce **GLaDOS** (General Learning and Decision Orchestration Sy
 
 ## The Amnesiac Genius
 
-<ContentImage src={Genius} alt='The Amnesiac Genius' title="Every conversation is a first date. Forever." />
+![The Amnesiac Genius](./assets/genius.png "Every conversation is a first date. Forever.")
 
 The problem with most off-the-shelf AI tools today is that they are amnesiacs. You have a brilliant conversation, you solve a problem, you close the tab... and it’s gone. To the AI, you are a stranger every time you say "Hello."
 
@@ -80,7 +74,7 @@ My hypothesis is that **Memory + Time-based Triggers = Proactivity**. You don't 
 
 Another piece of the puzzle is giving the agent eyes on the outside world. Here is the actual morning briefing GLaDOS sent me on Telegram today:
 
-<BotMessage title="GLaDOS — Morning Briefing: Feb 10">
+:::bot{title="GLaDOS — Morning Briefing: Feb 10"}
 
 📅 **Calendar:**
 * 09:30 AM: Daily Standup
@@ -94,7 +88,7 @@ Another piece of the puzzle is giving the agent eyes on the outside world. Here 
 
 🍕 **Dinner:** Homemade Pizza.
 
-</BotMessage>
+:::
 
 I didn't write code for this. I just told it:
 *"Send a daily brief each morning at 7. Include my calendar, the weather (use weather.com), my commute status (use trains.com), and news (use news.com)."*
@@ -107,7 +101,7 @@ Even cooler? Because it saw that the next update for the trains was at 7:30, it 
 **But wait, didn't you say it was safe?**
 Yes. To stay true to my security model, GLaDOS operates on a **Deny-by-Default** outbound firewall. It cannot access the web without asking. For this task, I granted it a permanent whitelist rule for `weather.com`, `trains.com`, and `news.com`. For anything else, it has to ask permission first. It’s the perfect balance of autonomy and control.
 
-<ContentImage src={Firewall} alt='Firewall' title="Trust, but verify. Then verify again. Then ask permission." />
+![Firewall](./assets/firewall.png "Trust, but verify. Then verify again. Then ask permission.")
 
 ### Skills and the Context Budget
 
@@ -124,7 +118,7 @@ But for now, the Skills approach is surprisingly effective. Because GLaDOS is so
 
 ## Vibecoding on Rails
 
-<ContentImage src={VibeCode} alt='Vibecode' title="70,000 lines of code I definitely wrote myself. Definitely." />
+![Vibecode](./assets/vibecode.png "70,000 lines of code I definitely wrote myself. Definitely.")
 
 Now, here is the wild part. This project is currently around **70,000 lines of TypeScript**. It has **1,500 tests**.
 

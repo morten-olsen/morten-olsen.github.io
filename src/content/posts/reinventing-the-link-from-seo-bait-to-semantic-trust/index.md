@@ -8,10 +8,6 @@ slug: reinventing-the-link-from-seo-bait-to-semantic-trust
 audio: ./assets/audio.mp3
 ---
 
-import ContentImage from '~/components/content/ContentImage.astro'
-import OldWeb from './assets/old-web.png'
-import WebOfTrust from './assets/weboftrust.png'
-
 It’s not exactly a controversial take to say the modern internet is a mess. In fact, complaining about the state of the web is the developer equivalent of an old man yelling at a cloud. But in my defense, the cloud started it.
 
 The web has become a machine optimized for the wrong metrics. It is incredibly efficient at serving me ads for things I bought yesterday. It is world-class at making me agree to legal terms I haven't read just to view a salad recipe. But it is getting progressively worse at the one thing it was actually built for: connecting people with information, or—wild concept—other people.
@@ -20,7 +16,7 @@ I miss the *weird* web. I miss the feeling of traversing a chaotic graph of inte
 
 So, I started looking into how we might get a bit of that back.
 
-<ContentImage src={OldWeb} alt='Old web versus the new reality' title="Back when 'cookies' were just a dessert and 'spam' was canned meat." />
+![Old web versus the new reality](./assets/old-web.png "Back when 'cookies' were just a dessert and 'spam' was canned meat.")
 
 It began with [Webmentions](https://indieweb.org/Webmention)—a lovely little W3C standard that allows websites to notify each other when they link. It’s like a decentralized comment section. Since my blog currently doesn't support comments (a limitation I’m actually quite fond of, until I’m not), I was curious if this was a way to enable a more federated discourse. I wasn't trying to solve search; I just wanted to see if websites could still talk to each other like it was 1999.
 
@@ -58,7 +54,7 @@ So, what if we stopped trying to find the "best" sites for everyone, and started
 
 ## The Fix: A Web of Trust
 
-<ContentImage src={WebOfTrust} alt='Web of Trust' title="My friends' friends are my friends, provided they don't have 'SEO' in their job description." />
+![Web of Trust](./assets/weboftrust.png "My friends' friends are my friends, provided they don't have 'SEO' in their job description.")
 
 Here is the revised, slightly-less-naive-but-still-mad-scientist proposal: **The Personal Web of Trust.**
 

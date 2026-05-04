@@ -8,9 +8,6 @@ audio: ./assets/audio.mp3
 slug: my-home-runs-redux
 ---
 
-import ContentImage from '~/components/content/ContentImage.astro'
-import graph from './assets/graph.png'
-
 I have been playing with smart homes for a long time. I have used most of the platforms out there, developed quite a few myself, and one thing I keep coming back to is **Redux**.
 
 Those who know what Redux is may find this a weird choice, but for those who don't know Redux, I'll give a brief introduction to get you up to speed.
@@ -74,7 +71,7 @@ I have separated the events going into Redux into two types:
 
 Now comes the part I have feared, where I need to draw a diagram... sorry.
 
-<ContentImage src={graph} alt='graph' /> 
+![graph](./assets/graph.png)
 
 So this shows our final setup.
 

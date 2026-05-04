@@ -8,12 +8,6 @@ audio: ./assets/audio.mp3
 slug: bob-the-algorithm
 ---
 
-import ContentImage from '~/components/content/ContentImage.astro'
-import TaskBounds from './assets/TaskBounds.png'
-import Frame1 from './assets/Frame1.png'
-import Graph1 from './assets/Graph1.png'
-import Graph2 from './assets/Graph2.png'
-
 Allow me to introduce Bob, an algorithm who has just accepted a role as my assistant.
 
 I'm not very good at planning my day, and the many apps out there that promise to help haven't solved the problem for me. This is usually due to three significant shortcomings:
@@ -28,7 +22,7 @@ I also wanted a planning algorithm that wasn't solely for productivity. I didn't
 
 Bob is still pretty young and learning new things, but he has gotten to the point where I believe he is good enough to use on a day-to-day basis.
 
-<ContentImage src={Frame1} alt='Frame1' />
+![Frame1](./assets/Frame1.png)
 
 ## How Bob Works
 
@@ -42,7 +36,7 @@ Tasks have a bit more data than your standard calendar events to allow for good 
   * If the task is required.
   * A priority.
 
-<ContentImage src={TaskBounds} alt='Task bounds' />
+![Task bounds](./assets/TaskBounds.png)
 
 Bob uses a graph walk to create the optimal plan, where each node contains a few different things:
 
@@ -56,11 +50,11 @@ Bob starts by figuring out which locations I can go to to complete the remaining
 
 He then gets a list of all the remaining tasks for the current node that can be completed at the current location, again figuring out when I would be done with the task, updating the list of impossible tasks, and scoring the node. If any node adds a required task to the impossible list, that node is considered dead, and Bob will not analyze it further.
 
-<ContentImage src={Graph1} alt='Graph1' />
+![Graph1](./assets/Graph1.png)
 
 Now we have a list of active leaves, and from that list, we find the node with the highest score and redo the process from above.
 
-<ContentImage src={Graph2} alt='Graph2' />
+![Graph2](./assets/Graph2.png)
 
 Bob has four different strategies for finding a plan:
 

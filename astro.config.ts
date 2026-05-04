@@ -1,5 +1,4 @@
 import { defineConfig } from 'astro/config'
-import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
 import icon from 'astro-icon'
 import robotsTxt from 'astro-robots-txt'
@@ -24,7 +23,7 @@ export default defineConfig({
   server: {
     allowedHosts: true,
   },
-  integrations: [mdx(), sitemap(), icon(), compress({
+  integrations: [sitemap(), icon(), compress({
     HTML: false,
     Image: false,
   }), robotsTxt()],

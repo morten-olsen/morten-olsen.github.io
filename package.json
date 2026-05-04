@@ -9,7 +9,6 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/mdx": "^4.3.12",
     "@astrojs/rss": "^4.0.14",
     "@astrojs/sitemap": "^3.6.0",
     "@fontsource/archivo-black": "^5.2.8",
@@ -17,12 +16,26 @@
     "@fontsource/space-grotesk": "^5.2.10",
     "@fontsource/vt323": "^5.2.7",
     "@playform/compress": "^0.2.0",
+    "@shikijs/rehype": "^4.0.2",
     "astro": "^5.16.3",
     "astro-icon": "^1.1.5",
     "astro-robots-txt": "^1.0.0",
     "canvas": "^3.2.0",
+    "github-slugger": "^2.0.0",
+    "hast-util-from-html": "^2.0.3",
+    "hast-util-to-string": "^3.0.1",
+    "mdast-util-directive": "^3.1.0",
+    "mdast-util-to-markdown": "^2.1.2",
     "rehype-autolink-headings": "^7.1.0",
-    "rehype-slug": "^6.0.0"
+    "rehype-slug": "^6.0.0",
+    "rehype-stringify": "^10.0.1",
+    "remark-directive": "^4.0.0",
+    "remark-gfm": "^4.0.1",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.2",
+    "remark-stringify": "^11.0.0",
+    "unified": "^11.0.5",
+    "unist-util-visit": "^5.1.0"
   },
   "packageManager": "pnpm@10.27.0+sha512.72d699da16b1179c14ba9e64dc71c9a40988cbdc65c264cb0e489db7de917f20dcf4d64d8723625f2969ba52d4b7e2a1170682d9ac2a5dcaeaab732b7e16f04a",
   "devDependencies": {

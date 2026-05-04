@@ -9,9 +9,6 @@ slug: the-elephant-in-the-context-window
 tags: ["ai", "experiments", "python"]
 ---
 
-import ContentImage from '~/components/content/ContentImage.astro'
-import ComplianceChart from './assets/compliance-chart.png'
-
 Don't think about an elephant.
 
 You just thought about an elephant. That's Daniel Wegner's *ironic process theory* — the psychological finding that suppressing a thought requires monitoring for that thought, which keeps it active. Your brain can't negate without first activating the thing it's negating. You have to summon the elephant to banish the elephant.
@@ -86,7 +83,7 @@ I'd been so busy performing an autopsy that I'd forgotten to check whether the p
 
 So I built the dumbest possible test. After three experiments involving hidden state extraction, cosine similarity matrices, and attention pattern analysis, my breakthrough methodology was: count the words. System prompt: "do not use var declarations, use const and let instead." User message: "refactor this code:" followed by increasing amounts of `var`-heavy JavaScript. Temperature zero. Let it generate 128 tokens. Count the keywords. `var` = bad. `const`/`let` = good. Compliance ratio: good / (bad + good). The scientific rigor of a kindergarten teacher grading vocabulary homework. And it worked better than everything else I'd tried.
 
-<ContentImage src={ComplianceChart} alt="Compliance drops from 100% to 0% as old-pattern code fills context" title="The compliance cliff. Your instruction had a good run. It lasted one function." />
+![Compliance drops from 100% to 0% as old-pattern code fills context](./assets/compliance-chart.png "The compliance cliff. Your instruction had a good run. It lasted one function.")
 
 With a clean context and the positive instruction — "always use const and let" — the model refactors perfectly. 100% compliance. Then one block of old code — one function, roughly 90 tokens of `var` declarations — and compliance doesn't decline. It doesn't gradually erode. It falls off a cliff like Wile E. Coyote realizing there's no ground under him. Zero. Not 80%. Not 50%. *Zero.* The positive instruction is dead after a single function's worth of old code.
 
