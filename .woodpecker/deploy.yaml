@@ -12,6 +12,13 @@ when:
   - event: [push, manual]
     branch: main
 
+# Gate the deploy on quality + compliance — without this, the three
+# workflows run in parallel and a failed lint/typecheck/scan wouldn't
+# block publish.
+depends_on:
+  - quality
+  - compliance
+
 steps:
   build:
     image: code.olsen.cloud/ci/mise:latest
