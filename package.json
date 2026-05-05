@@ -19,7 +19,7 @@
     "@napi-rs/canvas": "^1.0.0",
     "@playform/compress": "^0.2.0",
     "@shikijs/rehype": "^4.0.2",
-    "astro": "^5.16.3",
+    "astro": "^6.0.0",
     "astro-icon": "^1.1.5",
     "astro-robots-txt": "^1.0.0",
     "github-slugger": "^2.0.0",
