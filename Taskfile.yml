@@ -1,0 +1,65 @@
+version: '3'
+
+# Single source of truth for every step the project runs — locally and in CI.
+# Woodpecker workflows under .woodpecker/ call `task <name>`; nothing CI-specific
+# should live in those YAMLs.
+
+tasks:
+  default:
+    desc: List available tasks
+    cmds:
+      - task --list
+    silent: true
+
+  install:
+    desc: Install dependencies (frozen lockfile)
+    sources:
+      - package.json
+      - pnpm-lock.yaml
+    generates:
+      - node_modules/.modules.yaml
+    cmds:
+      - pnpm install --frozen-lockfile
+
+  dev:
+    desc: Start the Astro dev server
+    deps: [install]
+    cmds:
+      - pnpm astro dev
+
+  build:
+    desc: Build the static site (outputs to dist/)
+    deps: [install]
+    cmds:
+      - pnpm astro build
+
+  preview:
+    desc: Preview the production build
+    deps: [build]
+    cmds:
+      - pnpm astro preview
+
+  typecheck:
+    desc: TypeScript --noEmit check
+    deps: [install]
+    cmds:
+      - pnpm tsc --noEmit
+
+  license:check:
+    desc: Verify production deps use an allowed license
+    deps: [install]
+    cmds:
+      - >
+        pnpm dlx license-checker --production
+        --onlyAllow 'MIT;Apache-2.0;ISC;BSD-2-Clause;BSD-3-Clause;0BSD;CC-BY-4.0;CC0-1.0;Unlicense;BlueOak-1.0.0;Python-2.0'
+
+  ci:quality:
+    desc: Typecheck + build — what PRs and main pushes run
+    cmds:
+      - task: typecheck
+      - task: build
+
+  ci:compliance:
+    desc: License check — runs alongside ci:quality
+    cmds:
+      - task: license:check

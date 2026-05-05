@@ -4,6 +4,9 @@ dist/
 # generated types
 .astro/
 
+# task runner cache
+/.task/
+
 # dependencies
 node_modules/
 

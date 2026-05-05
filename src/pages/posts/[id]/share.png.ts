@@ -1,17 +1,18 @@
 import type { APIContext, GetStaticPaths } from 'astro';
 import { data } from '~/data/data';
-import { createCanvas, loadImage, registerFont, type CanvasRenderingContext2D } from 'canvas';
+import { createCanvas, loadImage, GlobalFonts, type SKRSContext2D } from '@napi-rs/canvas';
 import path from 'node:path';
 
-// Register Space Grotesk fonts (with guard for hot reload)
+// Register Space Grotesk fonts (with guard for hot reload).
+// Both files registered under the same family — Skia picks the right
+// weight based on each TTF's internal metadata when ctx.font asks for bold.
 const fontsRegistered = new Set<string>();
 
-const safeRegisterFont = (fontPath: string, options: { family: string; weight: string }) => {
-  const key = `${options.family}-${options.weight}`;
-  if (!fontsRegistered.has(key)) {
+const safeRegisterFont = (fontPath: string, family: string) => {
+  if (!fontsRegistered.has(fontPath)) {
     try {
-      registerFont(fontPath, options);
-      fontsRegistered.add(key);
+      GlobalFonts.registerFromPath(fontPath, family);
+      fontsRegistered.add(fontPath);
     } catch {
       // Font already registered or path issue - ignore in dev
     }
@@ -26,8 +27,8 @@ const fontPathRegular = path.join(
   process.cwd(),
   'src/fonts/SpaceGrotesk-Regular.ttf'
 );
-safeRegisterFont(fontPathBold, { family: 'Space Grotesk', weight: 'bold' });
-safeRegisterFont(fontPathRegular, { family: 'Space Grotesk', weight: 'normal' });
+safeRegisterFont(fontPathBold, 'Space Grotesk');
+safeRegisterFont(fontPathRegular, 'Space Grotesk');
 
 const WIDTH = 1200;
 const HEIGHT = 630;
@@ -51,7 +52,7 @@ const getStaticPaths = (async () => {
 
 // Draw a neo-brutalist box with border and shadow
 const drawBrutalistBox = (
-  ctx: CanvasRenderingContext2D,
+  ctx: SKRSContext2D,
   x: number,
   y: number,
   width: number,
@@ -73,7 +74,7 @@ const drawBrutalistBox = (
 
 // Measure word and return box dimensions
 const measureWord = (
-  ctx: CanvasRenderingContext2D,
+  ctx: SKRSContext2D,
   word: string,
   fontSize: number,
   paddingX: number,
@@ -89,7 +90,7 @@ const measureWord = (
 
 // Layout words into rows that fit within maxWidth
 const layoutWords = (
-  ctx: CanvasRenderingContext2D,
+  ctx: SKRSContext2D,
   words: string[],
   fontSize: number,
   paddingX: number,
@@ -134,7 +135,7 @@ const layoutWords = (
 
 // Find optimal font size that fits all words
 const findOptimalFontSize = (
-  ctx: CanvasRenderingContext2D,
+  ctx: SKRSContext2D,
   words: string[],
   maxWidth: number,
   maxHeight: number,
