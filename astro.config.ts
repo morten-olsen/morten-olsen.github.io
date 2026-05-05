@@ -5,9 +5,10 @@ import robotsTxt from 'astro-robots-txt'
 import compress from '@playform/compress'
 
 const getSiteInfo = () => {
-  // Canonical URL is mortenolsen.pro; env override exists so the GitHub
-  // Pages mirror can point at morten-olsen.github.io without code changes.
-  const siteUrl = process.env.SITE_URL ?? 'https://mortenolsen.pro'
+  const siteUrl = process.env.SITE_URL
+  if (!siteUrl) {
+    return {}
+  }
   const url = new URL(siteUrl)
   return {
     site: `${url.protocol}//${url.host}`,

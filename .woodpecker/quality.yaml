@@ -8,6 +8,10 @@ when:
 steps:
   quality:
     image: code.olsen.cloud/ci/mise:latest
+    environment:
+      # Required for the sitemap integration; same value as deploy so the
+      # CI build behaves identically to a real publish.
+      SITE_URL: https://mortenolsen.pro
     commands:
       - mise install
       - task ci:quality
