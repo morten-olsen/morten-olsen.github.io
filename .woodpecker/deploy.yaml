@@ -1,12 +1,13 @@
-# Build the Astro site and publish to git-pages at https://mortenolsen.pro/.
+# Build the Astro site and publish to the homelab pages server at
+# https://mortenolsen.pro/. Apex domain, so host is set explicitly.
 #
-# Apex domain, so host is set explicitly. The Forgejo repo lives at
-# morten-olsen/mortenolsen.pro, which is what git-pages checks the PAT
-# against when authorizing the upload.
+# Auth is a bearer token for the pages admin API (pages-admin.olsen.cloud)
+# — no longer routed through Forgejo, so source repo path and host are
+# fully decoupled.
 #
 # NOTE: The legacy GitHub Pages workflow at .github/workflows/release.yaml
-# still publishes to morten-olsen.github.io. Both run in parallel until the
-# DNS record for mortenolsen.pro is cut over to the homelab.
+# still publishes to morten-olsen.github.io. Both run in parallel until
+# the DNS record for mortenolsen.pro is cut over to the homelab.
 
 when:
   - event: [push, manual]
@@ -34,5 +35,5 @@ steps:
       host: mortenolsen.pro
       dir: ./dist
       token:
-        from_secret: forgejo_pages_token
+        from_secret: pages_admin_token
     depends_on: [build]
