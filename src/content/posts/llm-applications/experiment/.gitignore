@@ -1,0 +1,14 @@
+.env
+.env.*
+!.env.example
+pdfs/
+results/
+reference/
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.DS_Store
+*.log

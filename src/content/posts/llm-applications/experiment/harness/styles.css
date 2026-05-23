@@ -1,0 +1,68 @@
+@page {
+    size: A4;
+    margin: 18mm 16mm 20mm 16mm;
+}
+
+body {
+    font-family: "Helvetica Neue", "Arial", sans-serif;
+    font-size: 10pt;
+    line-height: 1.45;
+    color: #1a1a1a;
+}
+
+h1 {
+    font-size: 22pt;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.15em 0;
+}
+
+h1 + p {
+    font-size: 9.5pt;
+    color: #555;
+    margin: 0 0 1.4em 0;
+    line-height: 1.4;
+}
+
+h2 {
+    font-size: 10.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    border-bottom: 0.5pt solid #aaa;
+    padding-bottom: 0.18em;
+    margin: 1.4em 0 0.6em 0;
+}
+
+h3 {
+    font-size: 10.5pt;
+    font-weight: 600;
+    margin: 0.85em 0 0.05em 0;
+}
+
+h3 + p {
+    color: #666;
+    font-size: 9.5pt;
+    margin: 0 0 0.4em 0;
+}
+
+h3 + p em {
+    font-style: italic;
+}
+
+ul {
+    margin: 0.25em 0 0.5em 0;
+    padding-left: 1.1em;
+}
+
+li {
+    margin: 0.18em 0;
+}
+
+p {
+    margin: 0.45em 0;
+}
+
+strong {
+    font-weight: 600;
+}
