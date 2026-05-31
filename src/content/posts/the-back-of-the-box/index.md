@@ -5,6 +5,7 @@ description: "Right now, somewhere, a piece of software is reading a document wi
 pubDate: 2026-05-23
 color: '#F59E0B'
 heroImage: ./assets/cover.png
+audio: ./assets/audio.mp3
 slug: the-back-of-the-box
 tags: ["ai", "experiments", "ethics"]
 published: true

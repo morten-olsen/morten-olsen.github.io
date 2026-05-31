@@ -5,6 +5,7 @@ description: "I fed the same coding prompts through open LLMs in different tones
 pubDate: 2026-04-20
 color: '#06B6D4'
 heroImage: ./assets/cover.png
+audio: ./assets/audio.mp3
 slug: does-your-tone-change-your-code
 tags: ["ai", "experiments", "python"]
 ---

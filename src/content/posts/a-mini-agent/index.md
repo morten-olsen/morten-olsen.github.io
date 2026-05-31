@@ -4,6 +4,7 @@ description: "The entire AI agent industry is built on thirty lines of Python. L
 pubDate: 2026-04-14
 color: '#E63946'
 heroImage: ./assets/cover.png
+audio: ./assets/audio.mp3
 slug: the-trillion-dollar-while-loop
 tags: ["ai", "agents", "python"]
 ---

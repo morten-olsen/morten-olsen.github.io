@@ -13,9 +13,9 @@ import { createInterface } from "node:readline";
 
 // --- Config ---
 
-const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
-const OPENROUTER_MODEL =
-  process.env.OPENROUTER_MODEL ?? "openai/gpt-4.1-mini";
+const OLLAMA_HOST = process.env.OLLAMA_HOST ?? "http://localhost:11434";
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL ?? "gemma4:e2b";
+const OLLAMA_NUM_CTX = Number(process.env.OLLAMA_NUM_CTX ?? 16384);
 
 // Kokoro TTS config
 const KOKORO_VOICE = process.env.KOKORO_VOICE ?? "af_heart";
@@ -61,16 +61,13 @@ function parseFrontmatter(mdx: string): { title: string; content: string } {
 }
 
 async function cleanForAudio(rawText: string): Promise<string> {
-  if (!OPENROUTER_API_KEY) throw new Error("OPENROUTER_API_KEY is required");
-
-  const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+  const res = await fetch(`${OLLAMA_HOST}/api/chat`, {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${OPENROUTER_API_KEY}`,
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: OPENROUTER_MODEL,
+      model: OLLAMA_MODEL,
+      stream: false,
+      options: { num_ctx: OLLAMA_NUM_CTX },
       messages: [
         {
           role: "system",
@@ -98,11 +95,15 @@ Rules:
 
   if (!res.ok) {
     const body = await res.text();
-    throw new Error(`OpenRouter error ${res.status}: ${body}`);
+    throw new Error(`Ollama error ${res.status}: ${body}`);
   }
 
   const json = await res.json();
-  return json.choices[0].message.content.trim();
+  const content: string | undefined = json?.message?.content;
+  if (!content) {
+    throw new Error(`Ollama returned no content: ${JSON.stringify(json)}`);
+  }
+  return content.trim();
 }
 
 function splitIntoSegments(script: string): Segment[] {
@@ -255,14 +256,11 @@ function loadSegments(slug: string): Segment[] {
 // --- Commands ---
 
 async function cmdPrepare(slug: string) {
-  if (!OPENROUTER_API_KEY) {
-    console.error("Error: OPENROUTER_API_KEY env var is required");
-    process.exit(1);
-  }
-
-  const mdxPath = join(CONTENT_DIR, slug, "index.mdx");
-  if (!existsSync(mdxPath)) {
-    console.error(`Post not found: ${mdxPath}`);
+  const mdxPath = ["index.mdx", "index.md"]
+    .map((name) => join(CONTENT_DIR, slug, name))
+    .find((p) => existsSync(p));
+  if (!mdxPath) {
+    console.error(`Post not found: ${join(CONTENT_DIR, slug)} (no index.mdx or index.md)`);
     process.exit(1);
   }
 
@@ -460,10 +458,12 @@ Workflow:
 Prerequisites:
   brew install espeak-ng ffmpeg
   # Python deps managed automatically via uv
+  # Ollama running locally with the target model pulled (default: gemma4:e2b)
 
 Environment variables:
-  OPENROUTER_API_KEY       Required for "prepare"
-  OPENROUTER_MODEL         LLM model (default: openai/gpt-4.1-mini)
+  OLLAMA_HOST              Ollama base URL (default: http://localhost:11434)
+  OLLAMA_MODEL             LLM model for the prepare step (default: gemma4:e2b)
+  OLLAMA_NUM_CTX           Context window for the prepare step (default: 16384)
   KOKORO_VOICE             Body narration voice (default: af_heart)
   KOKORO_TITLE_VOICE       Section title voice (default: am_adam)
   KOKORO_LANG              Language: a=American, b=British (default: a)
@@ -477,7 +477,7 @@ Environment variables:
   }
 
   const postDir = join(CONTENT_DIR, slug);
-  if (!existsSync(join(postDir, "index.mdx"))) {
+  if (!existsSync(join(postDir, "index.mdx")) && !existsSync(join(postDir, "index.md"))) {
     console.error(`Post not found: ${slug}`);
     process.exit(1);
   }

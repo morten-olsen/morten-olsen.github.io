@@ -4,6 +4,7 @@ description: 'I build agentic AI platforms for a living and tinker with them for
 pubDate: 2026-04-13
 color: '#8B5CF6'
 heroImage: ./assets/cover.png
+audio: ./assets/audio.mp3
 slug: the-dev-is-dead-long-live-the-dev
 ---
 

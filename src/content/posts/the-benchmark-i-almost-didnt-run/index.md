@@ -5,6 +5,7 @@ description: "I picked the textbook-correct model and accepted the compute cost 
 pubDate: 2026-05-01
 color: '#00D4FF'
 heroImage: ./assets/cover.png
+audio: ./assets/audio.mp3
 slug: the-benchmark-i-almost-didnt-run
 tags: ["ai", "ml", "engineering"]
 ---

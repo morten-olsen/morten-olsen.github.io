@@ -5,6 +5,7 @@ description: "I told an LLM 'don't use var' and then watched it use var. So I bu
 pubDate: 2026-04-21
 color: '#EC4899'
 heroImage: ./assets/cover.png
+audio: ./assets/audio.mp3
 slug: the-elephant-in-the-context-window
 tags: ["ai", "experiments", "python"]
 ---
