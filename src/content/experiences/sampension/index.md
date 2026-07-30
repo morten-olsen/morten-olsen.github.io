@@ -6,7 +6,7 @@ position:
 startDate: 2018-01-01
 endDate: 2021-12-31
 logo: ./assets/logo.jpeg
-summary: At Sampension, a Danish pension fund, I designed and helped build a cross-platform frontend architecture using React Native and React Native for Web, ensuring a unified, maintainable codebase for native iOS, Android, and web applications across devices.
+summary: Designed and helped build a cross-platform React Native architecture for iOS, Android, and web, giving a small team one maintainable codebase and a shared component system across pension products.
 slug: sampension
 stack:
 - TypeScript
@@ -15,8 +15,8 @@ stack:
 - Gatsby
 ---
 
-Sampension is a danish pension fund and my work has been to design and help to build a frontend architecture that would run natively on iOS and Android as well as on the web on both desktop and mobile devices.
+At Sampension, the mission was deceptively simple: build a frontend platform that felt native on iOS and Android, worked well on desktop and mobile web, and could be maintained by a small team without splitting into four separate codebases and a support group.
 
-It was important to ensure that the project felt at home on all platforms and that it was maintainable by a small team of developers.
+I helped design and build the architecture using React Native and React Native for Web, with TypeScript, Redux, and a shared component library at the center. The goal was not just reuse for reuse's sake. The goal was consistency, velocity, and a UX that respected each platform instead of pretending they were all the same rectangle.
 
-To achieve this we used React Native and React Native for Web to create a unified codebase for all platforms, as well as create a component library which would deal with ensuring the best UX on all platforms.
+The result was a cross-platform foundation that allowed the team to ship product experiences across devices while keeping the underlying system coherent and maintainable.

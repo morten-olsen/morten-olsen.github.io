@@ -6,7 +6,7 @@ position:
 startDate: 2016-01-01
 endDate: 2017-12-31
 logo: ./trendsales-1/assets/logo.png
-summary: In 2015, I spearheaded the creation of a new frontend architecture for Trendsales, leading to the development of m.trendsales.dk, using React and Redux, and devising bespoke frameworks for navigation, flexible routing, skeleton page transitions, and integrating workflows across systems like Github, Jira, Octopus Deploy, AppVeyor, and Docker.
+summary: Led the frontend architecture for a new React/Redux platform at Trendsales, from proof of concept to production, including routing, navigation, deployment flows, and the foundations behind m.trendsales.dk.
 slug: trendsales-3
 stack:
 - React
@@ -14,9 +14,10 @@ stack:
 - Redux
 ---
 
-In 2015 Trendsales decided to build an entirely new platform. It became my responsibility to create a modernized frontend architecture. The work began in 2016 with just me on the project and consisted of a proof of concept version containing everything from framework selection, structure, style guides build chain, continuous deployment, and an actual initial working version. The result where the platform which I was given technical ownership over and which I, along with two others, worked on expanding over the next year. The platform is currently powering _m.trendsales.dk_. The project is build using React and state management are done using Redux. In addition to the of the shelve frameworks, we also needed to develop quite a few bespoke frameworks, in order to meet demands. Among others, these were created to solve the following issues:
+In 2015, Trendsales decided to build a new platform, and I was given the frontend problem before it had a shape. The work started as a proof of concept with one developer, a blank page, and a lot of decisions that would become expensive if they were wrong.
 
-- Introducing a new navigational paradigm
-- Create a more flexible routing mechanism
-- Be able to serve skeleton page, for page transitions while still being able to create complete server-side pages
-- Ensure project flows between multiple systems such as Github, Jira, Octopus Deploy, AppVeyor and Docker
+I selected the framework, designed the project structure, established the style guides and build chain, set up continuous deployment, and built the first working version of what became the new mobile web platform. Over the following year, I had technical ownership of the frontend and worked with two colleagues to expand it into the production system powering m.trendsales.dk.
+
+The platform used React and Redux, but the interesting work was in the glue: navigation patterns, flexible routing, skeleton-page transitions, server-side page support, and project flows across GitHub, Jira, Octopus Deploy, AppVeyor, and Docker.
+
+It was the period where I moved from "building features" to thinking seriously about platforms: how teams move through code, how architecture either helps or slows them down, and how much of frontend engineering is really systems design wearing a browser-shaped hat.
