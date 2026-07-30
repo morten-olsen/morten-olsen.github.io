@@ -1,6 +1,6 @@
 import { z } from 'astro:content';
 import { frontmatter, Content } from '../content/profile/profile.md';
-import image from '../content/profile/profile.jpg';
+import image from '../content/profile/profile.png';
 import type { ResumeSchema } from '~/types/resume-json';
 import { positionWithTeam } from '~/utils/utils.format';
 
