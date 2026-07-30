@@ -71,6 +71,8 @@ Interfaces — UI, API, platform contracts, agent tools, prompts, infrastructure
 
 Good restriction is not limitation for its own sake. It is the shape that makes power usable.
 
+BilZonen adds an early version of this lesson: the danger is not simply custom abstraction. A well-designed abstraction/interface can create flexibility because it allows an implementation to be replaced. The more dangerous rigidity is a large implementation tangled directly into the product without the right seam around it.
+
 ## 7. Current chapter: agentic AI at ZeroNorth
 
 Morten is currently applying years of personal AI tinkering to a professional platform-level effort: building the core of ZeroNorth's next iteration as an agentic reimagining of the platform.

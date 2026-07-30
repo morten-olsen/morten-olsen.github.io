@@ -134,10 +134,42 @@ Other possible examples mentioned:
 
 Use these examples as illustrative, not authoritative domain claims.
 
+## BilZonen: start of professional developer career
+
+Morten wants to treat BilZonen as the practical beginning of his developer career.
+
+Before BilZonen, he worked for a period as a programmer in a small agency, but he was very young and does not really count it as professional experience.
+
+BilZonen is the point where he started to move from hobby development into professional development, though with the caveat that it was still junior, part-time work.
+
+What made it different from hobby development was the feeling of actually working on a real-world product.
+
+The strongest difference was continuity. Before BilZonen, Morten had mostly done short stints on projects and then moved on to the next thing. At BilZonen, he experienced gradually improving a product over time when things went well, and living with the consequences when they did not. That continuity made the work feel more real than anything he had done up until that point.
+
+Illustrative story: BilZonen was a used-car marketplace, and the team also had a catalogue of car details — not individual used-car listings, but underlying car data. At one point they needed to switch from one data provider to another. The old implementation was heavily tangled into the system, so the team was looking at something close to a complete rewrite.
+
+The site was built in Umbraco 4, which was XSLT-based and required a lot of boilerplate to build features. As a young developer, Morten thought he could improve on this by building his own templating system. It was composed of a very large amount of string concatenation. The result worked, and was very fast and stable, but maintainability suffered significantly. Morten and others had to maintain it afterward, so the pain was both personal and shared: he had not only created his own maintenance burden, but also forced it onto colleagues. This became an early concrete lesson in the difference between making something work and making something maintainable inside a long-lived product.
+
+Important nuance: this did not make Morten anti-abstraction or anti-custom systems. The lesson was not "never build custom abstractions." If anything, he is now more focused on abstractions and interfaces. A good abstraction creates flexibility; it lets a bad implementation be replaced later. The real rigidity is a large, unabstracted implementation that is tangled into the product. In the BilZonen example, the data model was simple enough that the right interface/abstraction around it could have made the messy templating implementation much easier to replace or clean up.
+
+The car-catalogue/provider work was the most consuming part of the role, partly because the team was handling a large relational database. Morten remembers printing the relationship diagram in a small font and still ending up with roughly 30 pages, which he taped together and put on the wall to understand how to map the database into the almost table-like frontend.
+
+Other BilZonen projects included a jQuery Mobile website.
+
+Another important contribution was improving deployment. When Morten started, deployment meant overwriting files on the production server using FTP. The team had already had a few outages caused by people, Morten included, accidentally overwriting the wrong files. Morten saw a chance both to improve the company's process and to learn something along the way. He got a budget to buy a computer, repurposed it as a TeamCity build server, and the team ended up with an actual CI/CD pipeline.
+
+Work was organized through a shared FogBugz board, where people mostly picked tasks from the board rather than receiving tightly assigned work. This gave Morten room, even as a junior part-time developer, to notice problems and take on useful pieces of work.
+
+BilZonen was the smaller alternative to the large Danish used-car marketplace BilBasen. At its peak during Morten's time, the company had roughly three full-time and three or four part-time engineers, plus the CEO, a product manager, a supporter, a journalist, and three salespeople.
+
+The office was small enough that Morten had a general sense of what everyone was doing, including non-engineering functions. However, at that point in his career he did not have a very active interest in areas outside engineering; his attention was mostly on the technical work.
+
+One of the main instincts Morten left with was a tiredness of cumbersome tooling. In this case, Umbraco 4 felt like it created too much boilerplate and made too little of the result easy to validate through testing. The experience gave him an early awareness of the importance of good tooling and the cost of not having it.
+
 ## Session checkpoint
 
-We ended the session after discussing the human purpose of the ZeroNorth agentic platform work and a cautious illustrative maritime workflow example.
+We ended the earlier ZeroNorth thread after discussing the human purpose of the agentic platform work and a cautious illustrative maritime workflow example. Morten chose to skip the AI-experiment thread for now and start shaping earlier experience descriptions, beginning with BilZonen.
 
 Good next place to resume:
 
-Ask what Morten's personal AI experiments — voice AI latency, long-term memory activation, and interchangeable tool platforms — taught him that became useful in the ZeroNorth work. Focus especially on traps, limitations, and design instincts he had already developed before the professional project began.
+Continue the BilZonen interview: what made the work feel different from hobby programming, what responsibilities he was trusted with, and what he learned there about real production systems.
