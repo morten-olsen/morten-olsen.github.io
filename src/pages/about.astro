@@ -16,6 +16,10 @@ const jsonLd = await profile.getJsonLd();
   jsonLd={jsonLd}
 >
   <main class="main">
+    <div class="resume-download">
+      <a href="/cv.pdf" download>Download print CV</a>
+      <a href="/cv/">View CV page</a>
+    </div>
     <header class="cv-header">
       <div class="intro">
         <Content />
@@ -103,6 +107,28 @@ const jsonLd = await profile.getJsonLd();
   max-width: var(--content-width);
   margin: 0 auto;
   padding: 0 30px calc(var(--gap) * 4);
+}
+
+.resume-download {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: calc(var(--gap) * 2);
+
+  a {
+    border: var(--border-width) solid var(--border-color);
+    background: var(--accent-primary);
+    box-shadow: var(--shadow-brutal);
+    color: var(--on-accent);
+    font-weight: 700;
+    padding: 0.75rem 1rem;
+    text-transform: uppercase;
+  }
+
+  a + a {
+    background: var(--card-bg);
+    color: var(--t-fg);
+  }
 }
 
 /* Header section */
@@ -396,6 +422,10 @@ const jsonLd = await profile.getJsonLd();
   .main {
     padding: 0;
     max-width: none;
+  }
+
+  .resume-download {
+    display: none;
   }
 
   .cv-header {

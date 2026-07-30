@@ -105,6 +105,7 @@ const profile = Object.assign(data, {
         email: data.contact?.email,
         phone: data.contact?.phone,
         url: data.url,
+        summary: data.tagline,
         location: data.location && {
           city: data.location.city,
           countryCode: data.location.countryCode,
@@ -121,6 +122,8 @@ const profile = Object.assign(data, {
         url: experience.data.company.url,
         startDate: experience.data.startDate.toISOString(),
         endDate: experience.data.endDate?.toISOString(),
+        summary: experience.data.summary?.includes('TODO') ? undefined : experience.data.summary,
+        highlights: experience.data.stack,
       })),
       skills: allSkills.map((skill) => ({
         name: skill.data.name,

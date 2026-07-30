@@ -6,7 +6,7 @@ position:
 startDate: 2012-10-01
 endDate: 2015-12-31
 logo: ./trendsales-1/assets/logo.png
-summary: I led the development of a new Xamarin-based iOS app from scratch at Trendsales, including a supporting API and backend work, culminating in a successful app with over 15 million screen views and 1.5 million sessions per month, and later joined a team to expand into Android development.
+summary: I led the development of a new Xamarin-based iOS app from scratch at Trendsales, including a supporting API and backend work. The app reached monthly usage of over 15 million screen views and 1.5 million sessions monthly.
 slug: trendsales-2
 stack:
 - Xamarin
@@ -19,7 +19,7 @@ I became responsible for the iOS platform, which was a task that required a new 
 
 he project started in October with the initial version available to our users in late December.
 
-This project represented my first adventure into mobile development and became an app with more than 15 million screen views and 1.5 million sessions per month.
+This project represented my first adventure into mobile development and became an app with monthly usage of more than 15 million screen views and 1.5 million sessions per month.
 
 After that, I joined two other colleagues, who were working on an Android version of the app, to form a join mobile development team.
 

@@ -1,5 +1,12 @@
 ---
 name: Morten Olsen
+role: Senior Software Engineer
+tagline: >-
+  Software engineer based in Copenhagen with 15+ years of experience designing
+  systems across frontend, mobile, backend, infrastructure, and AI product teams.
+  I specialize in architecture and system design across product and platform
+  boundaries, creating systems with clear seams, useful abstractions, and room
+  to evolve.
 url: https://mortenolsen.pro
 location:
   city: Copenhagen
