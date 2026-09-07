@@ -19,6 +19,7 @@ type Props = {
   themeColor?: string;
   hideHeader?: boolean;
   hideFooter?: boolean;
+  showTexture?: boolean;
   type?: 'website' | 'article';
   publishedTime?: Date;
   modifiedTime?: Date;
@@ -34,6 +35,7 @@ const {
   image,
   hideHeader,
   hideFooter,
+  showTexture = true,
   type = 'website',
   publishedTime,
   modifiedTime,
@@ -79,7 +81,7 @@ const imageUrl = image && Astro.site ? new URL(image, Astro.site).href : image;
     {icons.pngs.map(icon => <link rel="icon" href={icon.src} type="image/png" sizes={icon.size} />)}
     <title>{title}</title>
   </head>
-  <body>
+  <body class:list={{ 'without-texture': !showTexture }}>
     {!hideHeader && <Header />}
     <slot />
     {!hideFooter && <Footer />}
@@ -186,6 +188,7 @@ const imageUrl = image && Astro.site ? new URL(image, Astro.site).href : image;
       background: url('/paper-grain.webp') 0 0 / 192px 192px repeat;
       mix-blend-mode: multiply;
     }
+    body.without-texture::before { display: none; }
 
     h1, h2, h3, h4, h5, h6 { font-family: var(--font-family-heading); font-weight: 400; letter-spacing: -.045em; }
     a { color: inherit; text-decoration: none; }

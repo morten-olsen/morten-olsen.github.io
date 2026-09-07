@@ -1,153 +1,103 @@
 ---
-import type { GetStaticPaths } from "astro";
-import { render } from "astro:content";
-import Html from "~/components/page/Html.astro";
-import { data } from "~/data/data";
+import type { GetStaticPaths } from 'astro';
+import { render } from 'astro:content';
+import Html from '~/components/page/Html.astro';
+import { data } from '~/data/data';
 
 export const getStaticPaths = (async () => {
   const skills = await data.skills.getAll();
-  return skills.map((skill) => ({
-    params: { id: skill.id }
-  }));
+  return skills.map((skill) => ({ params: { id: skill.id } }));
 }) satisfies GetStaticPaths;
 
-const skill = await data.skills.get(Astro.params.id)
+const skill = await data.skills.get(Astro.params.id);
 const { Content } = await render(skill);
 ---
 
-<Html
-  title={skill.data.name}
-  description={skill.data.name}
->
-  <main class="main">
-    <a href="/about/" class="back-link">← Back to CV</a>
+<Html title={skill.data.name} description={`Capability: ${skill.data.name}`}>
+  <main class="capability-detail">
+    <svg class="filters" aria-hidden="true">
+      <filter id="capability-paper-tear" x="-4%" y="-4%" width="108%" height="108%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.01 0.045" numOctaves="3" seed="71" result="noise" />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="10" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+    </svg>
 
-    <header class="header-section">
-      <h1>{skill.data.name}</h1>
-      {skill.data.technologies && skill.data.technologies.length > 0 && (
-        <div class="technologies">
-          {skill.data.technologies.map((tech: string, index: number) => (
-            <span class="tech" style={`--accent: ${['var(--accent-primary)', 'var(--accent-tertiary)', 'var(--accent-lime)', 'var(--accent-lavender)'][index % 4]}`}>{tech}</span>
-          ))}
-        </div>
-      )}
+    <header class="capability-hero">
+      <div class="hero-copy">
+        <a href="/about/">← Capabilities</a>
+        <p>Working knowledge / practiced craft</p>
+        <h1>{skill.data.name}</h1>
+      </div>
+      <div class="hero-signal" aria-hidden="true">
+        <span>CAP</span><i></i><i></i><i></i><b>↗</b>
+      </div>
     </header>
 
-    <div class="content">
-      <Content />
-    </div>
+    <section class="vocabulary" aria-label="Technology vocabulary">
+      <p>Vocabulary, not identity</p>
+      <div>{skill.data.technologies.map((tech: string) => <span>{tech}</span>)}</div>
+    </section>
+
+    <section class="paper-note">
+      <aside><span>Capability note</span><p>Tools change. Judgment compounds.</p></aside>
+      <div class="content"><Content /></div>
+    </section>
+
+    <footer class="detail-footer">
+      <p>Applied with context.</p>
+      <a href="/about/#skills-heading">All capabilities <span>→</span></a>
+    </footer>
   </main>
 </Html>
 
 <style>
-.main {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 0 30px calc(var(--gap) * 4);
-}
-
-.back-link {
-  display: inline-block;
-  margin: calc(var(--gap) * 2) 0;
-  padding: 0.75rem 1.5rem;
-  border: var(--border-width) solid var(--border-color);
-  background: var(--card-bg);
-  box-shadow: var(--shadow-brutal);
-  font-weight: var(--fw-md);
-  text-transform: uppercase;
-  transition: all 0.1s ease;
-
-  &:hover {
-    background: var(--accent-primary);
-    transform: translate(-3px, -3px);
-    box-shadow: 9px 9px 0 var(--border-color);
+  .capability-detail {
+    --ink: #0a0a09; --paper: #efede3; --pink: #f22987;
+    min-height: 100vh; overflow: hidden;
+    background: linear-gradient(rgba(239,237,227,.055) 1px, transparent 1px) 0 0 / 58px 58px, linear-gradient(90deg, rgba(239,237,227,.055) 1px, transparent 1px) 0 0 / 58px 58px, var(--ink);
+    color: var(--paper);
   }
-}
-
-.header-section {
-  margin-bottom: calc(var(--gap) * 2);
-  padding: calc(var(--gap) * 2);
-  border: var(--border-width) solid var(--border-color);
-  box-shadow: var(--shadow-brutal-lg);
-  background: var(--accent-lime);
-
-  h1 {
-    font-family: var(--font-family-display);
-    font-weight: 400;
-    font-size: var(--font-xxl);
-    text-transform: uppercase;
-    margin-bottom: calc(var(--gap) * 1.5);
+  .filters { position: absolute; width: 0; height: 0; }
+  .capability-hero { display: grid; grid-template-columns: 1.18fr .82fr; min-height: 690px; border-bottom: 1px solid rgba(239,237,227,.35); }
+  .hero-copy { display: flex; flex-direction: column; justify-content: flex-end; padding: clamp(36px, 7vw, 108px) clamp(22px, 5vw, 82px); border-right: 1px solid rgba(239,237,227,.35); }
+  .hero-copy > a { margin-bottom: auto; color: var(--paper); font: 13px 'VT323', monospace; letter-spacing: .08em; text-transform: uppercase; }
+  .hero-copy > a:hover { color: var(--pink); }
+  .hero-copy > p { margin: 0 0 24px; color: var(--pink); font: 14px 'VT323', monospace; letter-spacing: .09em; text-transform: uppercase; }
+  h1 { max-width: 12ch; margin: 0; font: 700 clamp(5rem, 9vw, 11rem)/.74 'Archivo Narrow', sans-serif; letter-spacing: -.045em; overflow-wrap: normal; word-break: normal; text-transform: uppercase; }
+  .hero-signal { position: relative; overflow: hidden; background: var(--pink); color: var(--ink); }
+  .hero-signal::before { content: ''; position: absolute; inset: 8%; border: 1px solid rgba(10,10,9,.45); border-radius: 50%; box-shadow: 0 0 0 42px rgba(10,10,9,.08), 0 0 0 84px rgba(10,10,9,.08), 0 0 0 126px rgba(10,10,9,.08); }
+  .hero-signal span { position: absolute; right: -5%; bottom: -8%; font: 400 clamp(9rem, 22vw, 26rem)/.7 'Archivo Black', sans-serif; letter-spacing: -.08em; opacity: .32; }
+  .hero-signal i { position: absolute; left: -10%; top: 30%; width: 120%; height: 2px; background: var(--ink); transform: rotate(-14deg); opacity: .55; }
+  .hero-signal i:nth-of-type(2) { top: 52%; transform: rotate(8deg); } .hero-signal i:nth-of-type(3) { top: 72%; transform: rotate(-4deg); }
+  .hero-signal b { position: absolute; top: 8%; right: 10%; font: 400 5rem 'Archivo Black', sans-serif; }
+  .vocabulary { display: grid; grid-template-columns: 220px 1fr; gap: 30px; padding: 30px clamp(22px, 5vw, 82px); border-bottom: 1px solid rgba(239,237,227,.35); }
+  .vocabulary > p { margin: 4px 0 0; color: var(--pink); font: 13px 'VT323', monospace; letter-spacing: .08em; text-transform: uppercase; }
+  .vocabulary div { display: flex; flex-wrap: wrap; gap: 8px; }
+  .vocabulary span { padding: 5px 9px; background: rgba(239,237,227,.1); color: #cbc8bf; font: 12px 'VT323', monospace; letter-spacing: .06em; text-transform: uppercase; }
+  .paper-note { position: relative; z-index: 0; isolation: isolate; display: grid; grid-template-columns: minmax(180px, .34fr) minmax(0, 1fr); gap: clamp(30px, 7vw, 110px); max-width: 1180px; min-height: 560px; margin: clamp(70px, 9vw, 150px) auto; padding: clamp(52px, 8vw, 110px); color: var(--ink); }
+  .paper-note::before { content: ''; position: absolute; z-index: -1; inset: 0; filter: url('#capability-paper-tear'); background: var(--paper) url('/paper-grain.webp') 0 0 / 192px 192px repeat; }
+  .paper-note aside { display: flex; flex-direction: column; justify-content: space-between; border-top: 2px solid var(--ink); }
+  .paper-note aside span { margin-top: 18px; color: var(--pink); font: 13px 'VT323', monospace; letter-spacing: .08em; text-transform: uppercase; }
+  .paper-note aside p { max-width: 10ch; margin: 90px 0 0; font: 400 clamp(3rem, 5.5vw, 5.8rem)/.78 'Archivo Black', sans-serif; letter-spacing: -.07em; text-transform: uppercase; }
+  .content { min-width: 0; align-self: center; font: 1.08rem/1.75 'Space Grotesk', sans-serif; }
+  .content :global(p), .content :global(ul), .content :global(ol) { margin: 0 0 1.6em; }
+  .content :global(h2) { margin: 2em 0 .65em; color: var(--pink); font: 400 clamp(2.2rem, 4.4vw, 4.6rem)/.86 'Archivo Black', sans-serif; letter-spacing: -.055em; text-transform: uppercase; }
+  .content :global(h2:first-child) { margin-top: 0; }
+  .content :global(h3) { margin: 2em 0 .6em; font: 700 1.5rem 'Archivo Narrow', sans-serif; text-transform: uppercase; }
+  .content :global(ul), .content :global(ol) { padding-left: 1.3em; }
+  .content :global(li) { margin: .5em 0; } .content :global(li::marker) { color: var(--pink); }
+  .content :global(a) { text-decoration: underline; text-decoration-color: var(--pink); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  .detail-footer { display: flex; justify-content: space-between; gap: 30px; padding: 30px clamp(22px, 5vw, 82px); border-top: 1px solid rgba(239,237,227,.35); color: #aaa79d; font: 13px 'VT323', monospace; letter-spacing: .08em; text-transform: uppercase; }
+  .detail-footer a { color: var(--paper); } .detail-footer span { color: var(--pink); }
+  @media (max-width: 800px) {
+    .capability-hero { display: flex; flex-direction: column; min-height: 0; }
+    .hero-copy { min-height: 520px; padding: 38px 20px 52px; border-right: 0; border-bottom: 1px solid rgba(239,237,227,.35); }
+    h1 { font-size: clamp(3.1rem, 16vw, 6rem); }
+    .hero-signal { min-height: 340px; }
+    .vocabulary { grid-template-columns: 1fr; gap: 18px; padding: 28px 20px; }
+    .paper-note { display: block; width: calc(100% - 20px); margin: 64px 10px; padding: 52px 26px; }
+    .paper-note aside { margin-bottom: 64px; } .paper-note aside p { margin-top: 42px; }
+    .content { font-size: 1rem; }
+    .detail-footer { align-items: flex-start; flex-direction: column; }
   }
-
-  .technologies {
-    display: flex;
-    flex-wrap: wrap;
-    gap: calc(var(--gap) / 2);
-
-    .tech {
-      border: var(--border-width) solid var(--border-color);
-      padding: 0.5rem 1rem;
-      font-size: var(--fs-md);
-      font-weight: 500;
-      background: var(--accent, var(--accent-primary));
-      box-shadow: var(--shadow-brutal);
-      transition: all 0.1s ease;
-
-      &:hover {
-        transform: translate(-2px, -2px);
-        box-shadow: 8px 8px 0 var(--border-color);
-      }
-    }
-  }
-}
-
-.content {
-  padding: calc(var(--gap) * 2);
-  border: var(--border-width) solid var(--border-color);
-  box-shadow: var(--shadow-brutal);
-  background: var(--card-bg);
-  font-size: var(--font-lg);
-  line-height: 1.7;
-
-  :global(p) {
-    margin-bottom: var(--gap);
-  }
-
-  :global(ul) {
-    margin-bottom: var(--gap);
-    padding-left: var(--gap);
-  }
-
-  :global(li) {
-    list-style: square;
-    margin-left: var(--gap);
-    padding-bottom: calc(var(--gap) / 2);
-  }
-
-  :global(h2) {
-    font-family: var(--font-family-display);
-    font-weight: 400;
-    font-size: var(--font-xl);
-    text-transform: uppercase;
-    margin-bottom: var(--gap);
-    margin-top: calc(var(--gap) * 2);
-    padding: 0.4rem 1rem;
-    background: var(--accent-secondary);
-    border: var(--border-width) solid var(--border-color);
-    display: inline-block;
-  }
-}
-
-@media (max-width: 600px) {
-  .header-section {
-    h1 {
-      font-size: var(--font-xl);
-    }
-
-    .technologies .tech {
-      font-size: var(--fs-sm);
-      padding: 0.4rem 0.8rem;
-    }
-  }
-}
 </style>
