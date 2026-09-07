@@ -1,146 +1,422 @@
 ---
-import { getCollection } from 'astro:content';
+import { Picture } from 'astro:assets';
 import Html from '~/components/page/Html.astro';
+import { data } from '~/data/data';
 
-const posts = await getCollection('posts');
-const colors = ['var(--accent-primary)', 'var(--accent-tertiary)', 'var(--accent-lime)', 'var(--accent-lavender)'];
+const posts = await data.posts.getPublished();
+const featured = posts[0];
+const archive = posts.slice(1);
+const formatDate = (date: Date) => new Intl.DateTimeFormat('en', {
+  day: '2-digit',
+  month: 'short',
+  year: 'numeric',
+}).format(date);
+const cardKind = (index: number) => {
+  if (index % 6 === 0 || index % 6 === 5) return 'wide';
+  if (index % 3 === 1) return 'paper';
+  return 'standard';
+};
 ---
 
 <Html
-  title="Morten Olsen's Posts"
-  description='All blog posts'
+  title="Writing — Morten Olsen"
+  description="Essays about software, AI, systems, and the human consequences of technical decisions."
+  themeColor="#0a0a09"
 >
-  <main class="main">
-    <header class="page-header">
-      <h1>All Posts</h1>
-      <div class="count">{posts.length} articles</div>
+  <main class="archive">
+    <svg class="effect-defs" aria-hidden="true">
+      <defs>
+        <filter id="archive-paper-tear" x="-24%" y="-8%" width="148%" height="116%" color-interpolation-filters="sRGB">
+          <feTurbulence type="fractalNoise" baseFrequency=".008 .032" numOctaves="4" seed="47" result="noise" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="22" xChannelSelector="R" yChannelSelector="B" />
+        </filter>
+      </defs>
+    </svg>
+
+    <header class="archive-header">
+      <div class="archive-title">
+        <p class="eyebrow">Independent writing / Copenhagen</p>
+        <h1><span>Field notes</span><strong>From the edge.</strong></h1>
+      </div>
+      <div class="archive-deck">
+        <p>Essays on software, artificial intelligence, and what happens when abstractions meet real people.</p>
+        <div class="archive-meta">
+          <span>{String(posts.length).padStart(2, '0')} published</span>
+          <span>Systems \ humans \ consequences</span>
+        </div>
+      </div>
     </header>
 
-    <ul class="posts">
-      {posts.map((post, index) => (
-        <li class="post" style={`--accent: ${colors[index % colors.length]}`}>
-          <span class="number">{String(index + 1).padStart(2, '0')}</span>
-          <a href={`/posts/${post.id}`}>{post.data.title}</a>
-          <span class="arrow">→</span>
-        </li>
-      ))}
-    </ul>
+    {featured && (
+      <article class="featured-story">
+        <a href={`/posts/${featured.id}`}>
+          <div class="featured-image" aria-hidden="true">
+            <Picture
+              src={featured.data.heroImage}
+              alt=""
+              formats={['avif', 'webp']}
+              widths={[720, 1080, 1600]}
+              sizes="(max-width: 760px) 100vw, 62vw"
+              loading="eager"
+              fetchpriority="high"
+            />
+          </div>
+          <div class="featured-copy">
+            <p class="chapter">Latest dispatch / 01</p>
+            <h2>{featured.data.title}</h2>
+            <p class="description">{featured.data.description}</p>
+            <div class="story-meta">
+              <span>{formatDate(featured.data.pubDate)}</span>
+              <span>{featured.readingTime} min read</span>
+            </div>
+            <span class="story-link">Read the essay <b aria-hidden="true">→</b></span>
+          </div>
+        </a>
+      </article>
+    )}
+
+    <section class="archive-section" aria-labelledby="archive-heading">
+      <header class="section-heading">
+        <h2 id="archive-heading">The archive</h2>
+        <p>Questions worth returning to.</p>
+      </header>
+
+      <ol class="story-grid">
+        {archive.map((post, index) => (
+          <li class:list={['story-card', cardKind(index)]}>
+            <a href={`/posts/${post.id}`}>
+              <div class="story-image" aria-hidden="true">
+                <Picture
+                  src={post.data.heroImage}
+                  alt=""
+                  formats={['avif', 'webp']}
+                  widths={[420, 720, 1080]}
+                  sizes={cardKind(index) === 'wide'
+                    ? '(max-width: 700px) 100vw, 66vw'
+                    : '(max-width: 700px) 100vw, 33vw'}
+                  loading="lazy"
+                />
+              </div>
+              <div class="story-copy">
+                <div class="story-kicker">
+                  <span>{String(index + 2).padStart(2, '0')}</span>
+                  <span>{formatDate(post.data.pubDate)}</span>
+                </div>
+                <h3><span>{post.data.title}</span></h3>
+                <p>{post.data.description}</p>
+                <div class="story-footer">
+                  <span>{post.readingTime} min</span>
+                  <span class="tags">{post.data.tags?.slice(0, 2).join(' / ')}</span>
+                  <b aria-hidden="true">→</b>
+                </div>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <footer class="archive-footer">
+      <p>End of transmission.</p>
+      <a href="/posts/rss.xml">Follow the signal via RSS <span aria-hidden="true">→</span></a>
+    </footer>
   </main>
 </Html>
 
 <style>
-  .main {
-    max-width: var(--content-width);
-    margin: 0 auto;
-    padding: 0 30px calc(var(--gap) * 4);
+  .archive {
+    --ink: #0a0a09;
+    --paper: #efede3;
+    --pink: #f22987;
+    position: relative;
+    overflow: hidden;
+    min-height: 100svh;
+    background:
+      linear-gradient(rgba(239,237,227,.045) 1px, transparent 1px) 0 0 / 46px 46px,
+      linear-gradient(90deg, rgba(239,237,227,.045) 1px, transparent 1px) 0 0 / 46px 46px,
+      var(--ink);
+    color: var(--paper);
   }
 
-  .page-header {
-    padding: calc(var(--gap) * 4) 0 calc(var(--gap) * 3);
-    display: flex;
-    align-items: flex-end;
-    gap: calc(var(--gap) * 2);
+  .effect-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
 
-    h1 {
-      font-family: var(--font-family-display);
-      font-weight: 400;
-      font-size: var(--font-xxl);
-      text-transform: uppercase;
-      background: var(--accent-secondary);
-      padding: 0.6rem 1.5rem;
-      border: var(--border-width) solid var(--border-color);
-      box-shadow: var(--shadow-brutal-lg);
-    }
-
-    .count {
-      font-size: var(--font-lg);
-      font-weight: 500;
-      padding: 0.5rem 1rem;
-      background: var(--c-bg-em);
-      border: var(--border-width) solid var(--border-color);
-    }
+  .archive-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(280px, .7fr);
+    min-height: 350px;
+    border-bottom: 1px solid rgba(239,237,227,.35);
   }
 
-  .posts {
+  .archive-title {
     display: flex;
     flex-direction: column;
-
-    .post {
-      display: flex;
-      align-items: center;
-      gap: var(--gap);
-      border: var(--border-width) solid var(--border-color);
-      border-bottom: none;
-      background: var(--card-bg);
-      transition: all var(--duration-fast) var(--ease-out);
-      position: relative;
-
-      &:last-child {
-        border-bottom: var(--border-width) solid var(--border-color);
-      }
-
-      .number {
-        font-weight: var(--fw-md);
-        font-size: var(--font-lg);
-        padding: calc(var(--gap) * 1.5);
-        background: var(--accent, var(--accent-primary));
-        border-right: var(--border-width) solid var(--border-color);
-        min-width: 70px;
-        text-align: center;
-      }
-
-      a {
-        flex: 1;
-        padding: calc(var(--gap) * 1.5) var(--gap);
-        font-family: var(--font-family-display);
-        font-weight: 400;
-        font-size: var(--font-lg);
-        text-transform: uppercase;
-      }
-
-      .arrow {
-        font-size: var(--font-xl);
-        padding-right: calc(var(--gap) * 1.5);
-        opacity: 0;
-        transform: translateX(-10px);
-        transition: all var(--duration-fast) var(--ease-out);
-      }
-
-      &:hover {
-        background: var(--accent, var(--accent-primary));
-        transform: translateX(-6px);
-        box-shadow: 6px 0 0 var(--border-color);
-
-        .arrow {
-          opacity: 1;
-          transform: translateX(0);
-        }
-      }
-    }
+    justify-content: space-between;
+    padding: clamp(28px, 4vw, 68px);
   }
 
-  @media (max-width: 600px) {
-    .page-header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: var(--gap);
-    }
+  .eyebrow, .chapter, .story-kicker, .story-meta, .archive-meta {
+    font-family: 'VT323', monospace;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
 
-    .posts .post {
-      .number {
-        min-width: 50px;
-        padding: var(--gap);
-        font-size: var(--fs-md);
-      }
+  .eyebrow { color: var(--pink); font-size: 14px; }
 
-      a {
-        font-size: var(--fs-md);
-        padding: var(--gap);
-      }
+  h1 {
+    margin: 0;
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(4.8rem, 9.7vw, 10.5rem);
+    font-weight: 400;
+    letter-spacing: -.07em;
+    line-height: .72;
+    text-transform: uppercase;
+  }
 
-      .arrow {
-        display: none;
-      }
-    }
+  h1 span, h1 strong { display: block; }
+  h1 span {
+    width: max-content;
+    font-family: 'Archivo Narrow', sans-serif;
+    font-weight: 700;
+    letter-spacing: -.035em;
+    transform: scaleX(.92);
+    transform-origin: left center;
+  }
+  h1 strong { color: var(--pink); font-weight: 400; }
+
+  .archive-deck {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 38px;
+    padding: clamp(30px, 4vw, 66px) clamp(24px, 3vw, 48px);
+    border-left: 1px solid rgba(239,237,227,.35);
+    background: rgba(10,10,9,.58);
+  }
+
+  .archive-deck > p { max-width: 30ch; font-size: clamp(1.25rem, 1.7vw, 1.75rem); line-height: 1.08; }
+  .archive-meta { display: grid; gap: 7px; color: #aaa79d; font-size: 12px; }
+  .featured-story { min-height: min(650px, 72svh); background: var(--paper); }
+
+  .featured-story > a {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.55fr) minmax(340px, .75fr);
+    min-height: inherit;
+    color: var(--ink);
+    isolation: isolate;
+  }
+
+  .featured-image { position: relative; min-height: 520px; overflow: hidden; background: #555; }
+  .featured-image::after, .story-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(circle, rgba(10,10,9,.22) 0 1px, transparent 1.3px) 0 0 / 4px 4px,
+      linear-gradient(90deg, transparent 60%, rgba(10,10,9,.28));
+    background-blend-mode: multiply;
+  }
+
+  .featured-image :global(picture), .featured-image :global(img),
+  .story-image :global(picture), .story-image :global(img) { display: block; width: 100%; height: 100%; }
+  .featured-image :global(img), .story-image :global(img) {
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.38);
+    transition: transform 500ms cubic-bezier(.2,.8,.2,1), filter 180ms ease;
+  }
+
+  .featured-copy {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(34px, 5vw, 82px);
+    isolation: isolate;
+  }
+
+  .featured-copy::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: -8px -10px -8px -24px;
+    background: url('/paper-grain.webp') 0 0 / 192px 192px repeat, var(--paper);
+    background-blend-mode: multiply;
+    filter: url('#archive-paper-tear') drop-shadow(-2px 0 rgba(10,10,9,.28));
+  }
+
+  .chapter { margin-bottom: 24px; color: var(--pink); font-size: 14px; }
+  .featured-copy h2 {
+    margin: 0;
+    font: 400 clamp(3rem, 5.2vw, 6.6rem)/.82 'Archivo Black', sans-serif;
+    letter-spacing: -.07em;
+    text-transform: uppercase;
+  }
+  .description { max-width: 38ch; margin: 28px 0; font-size: clamp(1rem, 1.3vw, 1.3rem); line-height: 1.25; }
+  .story-meta { display: flex; gap: 24px; color: #6f6d66; font-size: 12px; }
+  .story-link {
+    align-self: flex-start;
+    margin-top: 34px;
+    padding-bottom: 4px;
+    border-bottom: 2px solid var(--pink);
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  .story-link b { margin-left: 14px; color: var(--pink); }
+  .featured-story:hover .featured-image :global(img), .story-card:hover .story-image :global(img) {
+    transform: scale(1.035);
+    filter: grayscale(1) contrast(1.58);
+  }
+
+  .archive-section { padding: clamp(52px, 6vw, 100px) clamp(20px, 4vw, 68px); }
+  .section-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 28px;
+    margin-bottom: 36px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(239,237,227,.35);
+  }
+  .section-heading h2 {
+    margin: 0;
+    color: var(--pink);
+    font: 400 clamp(2.8rem, 5vw, 5.8rem)/.8 'Archivo Black', sans-serif;
+    letter-spacing: -.06em;
+    text-transform: uppercase;
+  }
+  .section-heading p { color: #aaa79d; font: 14px 'VT323', monospace; letter-spacing: .06em; text-transform: uppercase; }
+
+  .story-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-auto-flow: dense;
+    gap: 18px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .story-card { grid-column: span 4; min-height: 430px; overflow: hidden; background: #181817; }
+  .story-card.wide { grid-column: span 8; }
+  .story-card > a {
+    position: relative;
+    display: block;
+    height: 100%;
+    min-height: inherit;
+    overflow: hidden;
+    color: var(--paper);
+    isolation: isolate;
+  }
+  .story-image { position: absolute; z-index: -2; inset: 0; background: #555; }
+  .story-card:not(.paper) .story-image::after {
+    background:
+      radial-gradient(circle, rgba(10,10,9,.25) 0 1px, transparent 1.3px) 0 0 / 4px 4px,
+      linear-gradient(0deg, rgba(10,10,9,.96) 0, rgba(10,10,9,.68) 46%, rgba(10,10,9,.04) 80%);
+  }
+  .story-copy { display: flex; flex-direction: column; justify-content: flex-end; min-height: inherit; padding: 26px; }
+  .story-kicker { display: flex; justify-content: space-between; gap: 12px; margin-bottom: auto; color: var(--pink); font-size: 12px; }
+  .story-copy h3 {
+    max-width: 14ch;
+    margin: 0 0 14px;
+    font: 400 clamp(2rem, 3vw, 3.55rem)/.84 'Archivo Black', sans-serif;
+    letter-spacing: -.06em;
+    text-transform: uppercase;
+  }
+  .story-copy h3 span {
+    padding: .03em .12em .08em;
+    background: var(--ink);
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    color: var(--paper);
+    line-height: 1.02;
+  }
+  .paper .story-copy h3 span {
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .wide .story-copy h3 { max-width: 13ch; font-size: clamp(2.7rem, 4.5vw, 5.4rem); }
+  .story-copy > p {
+    display: -webkit-box;
+    max-width: 45ch;
+    margin: 0 0 20px;
+    overflow: hidden;
+    color: #d0cec5;
+    font-size: 14px;
+    line-height: 1.3;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+  .story-footer {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: end;
+    gap: 16px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(239,237,227,.36);
+    font: 12px 'VT323', monospace;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+  .story-footer .tags { overflow: hidden; color: #aaa79d; text-overflow: ellipsis; white-space: nowrap; }
+  .story-footer b { color: var(--pink); font: 22px/1 'Space Grotesk', sans-serif; }
+  .paper { background: var(--paper); }
+  .paper > a { color: var(--ink); }
+  .paper .story-image { inset: 0 0 46%; z-index: -1; }
+  .paper .story-copy {
+    justify-content: flex-end;
+    background:
+      linear-gradient(transparent 47%, rgba(239,237,227,.97) 56%),
+      url('/paper-grain.webp') 0 0 / 192px 192px repeat;
+    background-blend-mode: normal, multiply;
+  }
+  .paper .story-kicker { margin-bottom: auto; color: var(--paper); }
+  .paper .story-copy > p, .paper .story-footer .tags { color: #585750; }
+  .paper .story-footer { border-color: rgba(10,10,9,.38); }
+
+  .archive-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    padding: 30px clamp(20px, 4vw, 68px);
+    border-top: 1px solid rgba(239,237,227,.35);
+    color: #aaa79d;
+    font: 13px 'VT323', monospace;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+  }
+  .archive-footer a { color: var(--paper); }
+  .archive-footer span { margin-left: 16px; color: var(--pink); }
+
+  @media (max-width: 1000px) {
+    .archive-header { grid-template-columns: 1fr; }
+    .archive-deck { border-top: 1px solid rgba(239,237,227,.35); border-left: 0; }
+    .featured-story > a { grid-template-columns: 1.15fr .85fr; }
+    .story-card, .story-card.wide { grid-column: span 6; }
+  }
+
+  @media (max-width: 700px) {
+    .archive-header { min-height: 480px; }
+    .archive-title { min-height: 300px; padding: 28px 20px; }
+    h1 { font-size: clamp(4rem, 21vw, 7rem); }
+    h1 span { transform: scaleX(.88); }
+    .archive-deck { gap: 22px; padding: 28px 20px; }
+    .featured-story { min-height: 760px; }
+    .featured-story > a { display: block; }
+    .featured-image { position: absolute; inset: 0 0 43%; min-height: 0; }
+    .featured-copy { position: absolute; inset: auto 0 0; min-height: 48%; padding: 34px 24px 28px; }
+    .featured-copy::before { inset: -16px -8px -8px; }
+    .featured-copy h2 { font-size: clamp(3.2rem, 15vw, 5rem); }
+    .description { margin: 20px 0; }
+    .story-link { margin-top: 24px; }
+    .archive-section { padding: 58px 14px; }
+    .section-heading { align-items: flex-end; }
+    .section-heading p { max-width: 13ch; text-align: right; }
+    .story-grid { display: block; }
+    .story-card, .story-card.wide { min-height: 520px; margin-bottom: 16px; }
+    .story-copy { padding: 24px 20px; }
+    .story-copy h3, .wide .story-copy h3 { font-size: clamp(2.7rem, 12vw, 4.2rem); }
+    .archive-footer { align-items: flex-start; flex-direction: column; }
   }
 </style>

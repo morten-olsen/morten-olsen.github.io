@@ -1,181 +1,268 @@
 ---
-import { render } from "astro:content";
-import Html from "~/components/page/Html.astro";
-import { data } from "~/data/data";
+import { Picture } from 'astro:assets';
+import Html from '~/components/page/Html.astro';
+import { data } from '~/data/data';
 
 const projects = await data.projects.getAll();
+const cardKind = (index: number) => index % 5 === 0 || index % 5 === 3 ? 'wide' : 'standard';
 ---
 
 <Html
-  title="Projects"
-  description="Open source projects by Morten Olsen"
+  title="Projects — Morten Olsen"
+  description="Open source tools and infrastructure built by Morten Olsen."
+  themeColor="#0a0a09"
 >
-  <main class="main">
-    <header class="page-header">
-      <h1 data-accent-bg>Projects</h1>
-      <p>Open source tools and infrastructure I build and maintain.</p>
+  <main class="project-archive">
+    <svg class="effect-defs" aria-hidden="true">
+      <defs>
+        <filter id="project-paper-tear" x="-24%" y="-8%" width="148%" height="116%" color-interpolation-filters="sRGB">
+          <feTurbulence type="fractalNoise" baseFrequency=".01 .038" numOctaves="4" seed="61" result="noise" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="20" xChannelSelector="B" yChannelSelector="R" />
+        </filter>
+      </defs>
+    </svg>
+
+    <header class="project-hero">
+      <div>
+        <p class="eyebrow">Open systems / useful abstractions</p>
+        <h1><span>Working</span><strong>Systems.</strong></h1>
+      </div>
+      <aside>
+        <p>Tools built to clarify work, expose seams, and leave room for the people using them.</p>
+        <span>{String(projects.length).padStart(2, '0')} active transmissions</span>
+      </aside>
     </header>
 
-    <div class="projects">
+    <section class="project-field" aria-label="Open source projects">
       {projects.map((project, index) => (
-        <article
-          class="project"
-          data-fadein
-          style={`--delay: ${index * 0.1}s; --accent: ${['var(--accent-primary)', 'var(--accent-tertiary)', 'var(--accent-lime)', 'var(--accent-lavender)'][index % 4]}`}
-        >
-          <a href={`/projects/${project.id}`} class="project-link">
-            <div class="project-header">
-              <h2 data-accent-bg>{project.data.name}</h2>
-              {project.data.status && (
-                <span class:list={['status', project.data.status]}>{project.data.status}</span>
+        <article class:list={['project-card', cardKind(index)]}>
+          <a href={`/projects/${project.id}`}>
+            <div class="project-art" aria-hidden="true">
+              {project.data.heroImage ? (
+                <Picture
+                  src={project.data.heroImage}
+                  alt=""
+                  formats={['avif', 'webp']}
+                  widths={[480, 840, 1280]}
+                  sizes={cardKind(index) === 'wide'
+                    ? '(max-width: 700px) 100vw, 64vw'
+                    : '(max-width: 700px) 100vw, 36vw'}
+                  loading={index < 2 ? 'eager' : 'lazy'}
+                />
+              ) : (
+                <div class="synthetic-art">
+                  <span></span><span></span><span></span><span></span>
+                  <b>{String(index + 1).padStart(2, '0')}</b>
+                </div>
               )}
             </div>
-            <p class="project-description">{project.data.description}</p>
-            <div class="project-stack">
-              {project.data.stack.map((tech: string) => (
-                <span class="tech">{tech}</span>
-              ))}
+            <div class="project-copy">
+              <div class="project-kicker">
+                <span>Project / {String(index + 1).padStart(2, '0')}</span>
+                {project.data.status && <span class="status">{project.data.status}</span>}
+              </div>
+              <h2>{project.data.name}</h2>
+              <p>{project.data.description}</p>
+              <div class="project-stack">
+                {project.data.stack.slice(0, 5).map((tech: string) => <span>{tech}</span>)}
+              </div>
+              <div class="project-link">Inspect the system <b aria-hidden="true">→</b></div>
             </div>
           </a>
         </article>
       ))}
-    </div>
+    </section>
+
+    <footer class="project-footer">
+      <p>Small tools. Bigger questions.</p>
+      <a href="https://github.com/morten-olsen" target="_blank">More experiments on GitHub <span aria-hidden="true">→</span></a>
+    </footer>
   </main>
 </Html>
 
-<script src="../../scripts/fadein.ts"></script>
-
 <style>
-.main {
-  max-width: var(--content-width);
-  margin: 0 auto;
-  padding: 0 30px calc(var(--gap) * 4);
-}
-
-.page-header {
-  padding: calc(var(--gap) * 3) 0;
-  margin-bottom: calc(var(--gap) * 2);
-
-  h1 {
-    font-family: var(--font-family-display);
-    font-weight: 400;
-    font-size: var(--font-xxl);
-    text-transform: uppercase;
-    background: var(--accent-secondary);
-    padding: 0.5rem 1.5rem;
-    border: var(--border-width) solid var(--on-accent);
-    box-shadow: var(--shadow-brutal-lg);
-    display: inline-block;
-    margin-bottom: var(--gap);
-    color: var(--on-accent);
+  .project-archive {
+    --ink: #0a0a09;
+    --paper: #efede3;
+    --pink: #f22987;
+    position: relative;
+    overflow: hidden;
+    min-height: 100svh;
+    background:
+      linear-gradient(rgba(239,237,227,.045) 1px, transparent 1px) 0 0 / 46px 46px,
+      linear-gradient(90deg, rgba(239,237,227,.045) 1px, transparent 1px) 0 0 / 46px 46px,
+      var(--ink);
+    color: var(--paper);
   }
 
-  p {
-    font-size: var(--font-lg);
-    max-width: 600px;
+  .effect-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+  .project-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(300px, .6fr);
+    min-height: 390px;
+    border-bottom: 1px solid rgba(239,237,227,.35);
   }
-}
-
-.projects {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: calc(var(--gap) * 1.5);
-}
-
-.project {
-  border: var(--border-width) solid var(--border-color);
-  background: var(--card-bg);
-  box-shadow: var(--shadow-brutal);
-  transition: all var(--duration-fast) var(--ease-out), opacity var(--duration-slow) var(--ease-out) var(--delay, 0s), translate var(--duration-slow) var(--ease-out) var(--delay, 0s);
-
-  &.hidden {
-    opacity: 0;
-    translate: 0 30px;
-  }
-
-  &:nth-child(odd) {
-    rotate: -0.5deg;
-  }
-
-  &:nth-child(even) {
-    rotate: 0.5deg;
-  }
-
-  &:hover {
-    transform: translate(-4px, -4px);
-    box-shadow: 10px 10px 0 var(--border-color);
-    rotate: 0deg;
-  }
-
-  .project-link {
+  .project-hero > div {
     display: flex;
     flex-direction: column;
-    gap: var(--gap);
-    padding: calc(var(--gap) * 1.5);
-    height: 100%;
+    justify-content: space-between;
+    padding: clamp(32px, 5vw, 76px);
   }
-
-  .project-header {
-    display: flex;
-    align-items: center;
-    gap: var(--gap);
-
-    h2 {
-      font-family: var(--font-family-display);
-      font-weight: 400;
-      font-size: var(--font-lg);
-      text-transform: uppercase;
-      background: var(--accent, var(--accent-primary));
-      padding: 0.3rem 0.8rem;
-      border: 2px solid var(--on-accent);
-      display: inline-block;
-      color: var(--on-accent);
-    }
-  }
-
-  .status {
-    font-size: 11px;
-    font-weight: 500;
-    padding: 3px 8px;
-    border: 2px solid var(--on-accent);
+  .eyebrow {
+    color: var(--pink);
+    font: 14px 'VT323', monospace;
+    letter-spacing: .08em;
     text-transform: uppercase;
-    color: var(--on-accent);
-
-    &.active { background: var(--accent-lime); }
-    &.alpha { background: var(--accent-primary); }
-    &.archived { background: var(--c-bg-em); color: var(--t-fg); border-color: var(--border-color); }
   }
-
-  .project-description {
-    font-size: var(--fs-md);
-    line-height: 1.5;
-    color: var(--color-text-light);
-    flex: 1;
+  h1 {
+    margin: 0;
+    font: 400 clamp(5.5rem, 11vw, 12rem)/.7 'Archivo Black', sans-serif;
+    letter-spacing: -.075em;
+    text-transform: uppercase;
   }
-
-  .project-stack {
+  h1 span, h1 strong { display: block; }
+  h1 span { width: max-content; font-family: 'Archivo Narrow', sans-serif; font-weight: 700; letter-spacing: -.035em; transform: scaleX(.9); transform-origin: left; }
+  h1 strong { color: var(--pink); font-weight: 400; }
+  .project-hero aside {
     display: flex;
-    flex-wrap: wrap;
-    gap: calc(var(--gap) / 3);
-
-    .tech {
-      font-size: 11px;
-      font-weight: 500;
-      padding: 3px 8px;
-      border: 2px solid var(--border-color);
-      background: var(--c-bg-em);
-      text-transform: uppercase;
-    }
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 48px;
+    padding: clamp(30px, 4vw, 62px);
+    border-left: 1px solid rgba(239,237,227,.35);
   }
-}
+  .project-hero aside p { max-width: 27ch; font-size: clamp(1.2rem, 1.7vw, 1.7rem); line-height: 1.1; }
+  .project-hero aside span { color: #aaa79d; font: 12px 'VT323', monospace; letter-spacing: .08em; text-transform: uppercase; }
 
-@media (max-width: 600px) {
-  .projects {
-    grid-template-columns: 1fr;
+  .project-field {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-auto-flow: dense;
+    gap: 20px;
+    padding: clamp(46px, 6vw, 96px) clamp(20px, 4vw, 68px);
   }
+  .project-card { grid-column: span 5; min-height: 510px; overflow: hidden; background: #171716; }
+  .project-card.wide { grid-column: span 7; }
+  .project-card > a {
+    position: relative;
+    display: block;
+    min-height: inherit;
+    overflow: hidden;
+    color: var(--paper);
+    isolation: isolate;
+  }
+  .project-art { position: absolute; z-index: -2; inset: 0; overflow: hidden; background: #272725; }
+  .project-art::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle, rgba(10,10,9,.25) 0 1px, transparent 1.2px) 0 0 / 4px 4px,
+      linear-gradient(0deg, rgba(10,10,9,.96), rgba(10,10,9,.5) 52%, transparent 84%);
+    background-blend-mode: multiply;
+  }
+  .project-art :global(picture), .project-art :global(img) { display: block; width: 100%; height: 100%; }
+  .project-art :global(img) { object-fit: cover; filter: grayscale(1) contrast(1.35); transition: transform 500ms cubic-bezier(.2,.8,.2,1), filter 180ms ease; }
+  .project-card:hover .project-art :global(img) { transform: scale(1.04); filter: grayscale(1) contrast(1.55); }
 
-  .page-header h1 {
-    font-size: var(--font-xl);
+  .synthetic-art {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 64% 38%, rgba(242,41,135,.6) 0 4px, transparent 5px),
+      repeating-radial-gradient(circle at 64% 38%, transparent 0 34px, rgba(239,237,227,.14) 35px 36px),
+      linear-gradient(135deg, #181817, #4d4b47);
   }
-}
+  .synthetic-art span { position: absolute; left: 20%; top: 20%; width: 70%; height: 1px; background: rgba(239,237,227,.25); transform: rotate(-8deg); }
+  .synthetic-art span:nth-child(2) { top: 37%; transform: rotate(-3deg); }
+  .synthetic-art span:nth-child(3) { top: 54%; transform: rotate(2deg); }
+  .synthetic-art span:nth-child(4) { top: 71%; transform: rotate(7deg); }
+  .synthetic-art b { position: absolute; right: 8%; top: 9%; color: rgba(239,237,227,.24); font: 12rem/.7 'Archivo Black', sans-serif; }
+
+  .project-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: inherit;
+    padding: clamp(24px, 3vw, 44px);
+  }
+  .project-kicker {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: auto;
+    color: var(--pink);
+    font: 12px 'VT323', monospace;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  .project-kicker .status { color: var(--paper); }
+  .project-copy h2 {
+    max-width: 11ch;
+    margin: 0 0 16px;
+    font: 400 clamp(3.2rem, 5.4vw, 6.5rem)/.78 'Archivo Black', sans-serif;
+    letter-spacing: -.07em;
+    text-transform: uppercase;
+  }
+  .standard .project-copy h2 { font-size: clamp(2.8rem, 4vw, 4.8rem); }
+  .project-copy > p { max-width: 46ch; margin: 0 0 24px; color: #d0cec5; font-size: 15px; line-height: 1.3; }
+  .project-stack { display: flex; flex-wrap: wrap; gap: 7px; }
+  .project-stack span { padding: 5px 8px 4px; background: rgba(239,237,227,.1); color: #d0cec5; font: 11px 'VT323', monospace; letter-spacing: .05em; text-transform: uppercase; }
+  .project-link { margin-top: 24px; padding-top: 14px; border-top: 1px solid rgba(239,237,227,.35); font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
+  .project-link b { float: right; color: var(--pink); font-size: 20px; }
+
+  .project-card:nth-child(4n + 2) { background: var(--paper); }
+  .project-card:nth-child(4n + 2) > a { color: var(--ink); }
+  .project-card:nth-child(4n + 2) .project-art { inset: 0 0 45%; }
+  .project-card:nth-child(4n + 2) .project-copy {
+    position: relative;
+    isolation: isolate;
+    background: linear-gradient(transparent 38%, rgba(239,237,227,.96) 49%);
+  }
+  .project-card:nth-child(4n + 2) .project-copy::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: 44% -8px -8px;
+    background: url('/paper-grain.webp') 0 0 / 192px 192px repeat, var(--paper);
+    background-blend-mode: multiply;
+    filter: url('#project-paper-tear');
+  }
+  .project-card:nth-child(4n + 2) .project-copy > p { color: #55534e; }
+  .project-card:nth-child(4n + 2) .project-stack span { background: rgba(10,10,9,.08); color: #45443f; }
+  .project-card:nth-child(4n + 2) .project-link { border-color: rgba(10,10,9,.34); }
+  .project-card:nth-child(4n + 2) .project-kicker .status { color: var(--ink); }
+
+  .project-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    padding: 30px clamp(20px, 4vw, 68px);
+    border-top: 1px solid rgba(239,237,227,.35);
+    color: #aaa79d;
+    font: 13px 'VT323', monospace;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+  }
+  .project-footer a { color: var(--paper); }
+  .project-footer span { margin-left: 14px; color: var(--pink); }
+
+  @media (max-width: 950px) {
+    .project-hero { grid-template-columns: 1fr; }
+    .project-hero aside { border-top: 1px solid rgba(239,237,227,.35); border-left: 0; }
+    .project-card, .project-card.wide { grid-column: span 6; }
+  }
+  @media (max-width: 700px) {
+    .project-hero { min-height: 520px; }
+    .project-hero > div { min-height: 320px; padding: 28px 20px; }
+    h1 { font-size: clamp(5rem, 23vw, 8rem); }
+    h1 strong { width: 133%; transform: scaleX(.75); transform-origin: left; }
+    .project-hero aside { gap: 22px; padding: 28px 20px; }
+    .project-field { display: block; padding: 54px 14px; }
+    .project-card, .project-card.wide { min-height: 560px; margin-bottom: 16px; }
+    .project-copy { padding: 24px 20px; }
+    .project-copy h2, .standard .project-copy h2 { font-size: clamp(3rem, 14vw, 4.7rem); }
+    .project-footer { align-items: flex-start; flex-direction: column; }
+  }
 </style>

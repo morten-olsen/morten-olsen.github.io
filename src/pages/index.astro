@@ -56,7 +56,7 @@ const jsonLd = await profile.getJsonLd();
           <canvas class="technical-grid hero-grid" data-grid="hero" aria-hidden="true"></canvas>
 
           <div class="hero-copy">
-            <p class="issue">Independent engineer / Copenhagen</p>
+            <p class="issue">Senior software engineer / Copenhagen</p>
             <h1 id="manifesto-title">
               <span class="title-line">Manifesto /</span>
               <span class="title-line title-pink">Human context</span>
@@ -558,7 +558,7 @@ const jsonLd = await profile.getJsonLd();
   @media (max-width: 640px) {
     .manifesto-page::after { opacity: .08; }
     .lead { display: block; height: auto; }
-    .hero-panel { min-height: 900px; }
+    .hero-panel { min-height: 720px; }
     .masthead { height: 52px; }
     .wordmark { font-size: 14px; }
     .hero-copy { top: 68px; }
@@ -567,15 +567,28 @@ const jsonLd = await profile.getJsonLd();
     .title-line { width: 160%; transform: scaleX(.59); }
     .title-line:first-child { transform: scaleX(.76); }
     .title-pink { transform: scaleX(.48); }
-    .intro-row { position: absolute; top: 260px; width: min(88vw,390px); grid-template-columns: 1fr; gap: 16px; margin-top: 0; }
-    .scribble { width: 190px; font-size: 13px; }
-    .intro-copy { font-size: 17px; }
-    .portrait { right: 35%; top: 580px; bottom: -1px; width: 80%; height: auto; opacity: .82; }
-    .hero-note { inset: auto 0 0 auto; width: 40%; min-width: 148px; height: 248px; padding: 23px 13px 23px 24px; }
-    .hero-note strong { font-size: 15px; }
-    .hero-note .short-rule { margin: 16px 0 13px; }
-    .hero-note p { font-size: 14px; }
-    .hero-note em { bottom: 12px; font-size: 12px; }
+    .intro-row {
+      position: absolute;
+      top: 260px;
+      right: 0;
+      width: min(55vw, 214px);
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-top: 0;
+      text-align: right;
+    }
+    .scribble { width: 100%; margin-left: auto; font-size: 13px; }
+    .intro-copy { font-size: 16px; }
+    .portrait {
+      right: 35%;
+      bottom: -1px;
+      width: 80%;
+      height: 67%;
+      opacity: .86;
+      -webkit-mask-image: linear-gradient(90deg, #000 0 52%, rgba(0,0,0,.7) 68%, transparent 92%);
+      mask-image: linear-gradient(90deg, #000 0 52%, rgba(0,0,0,.7) 68%, transparent 92%);
+    }
+    .hero-note { display: none; }
     .below-fold { display: block; }
     .quote-panel, .horizon-panel { min-height: 360px; }
     .quote-panel { padding: 42px 24px 24px 17%; }
