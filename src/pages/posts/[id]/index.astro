@@ -162,31 +162,24 @@ const hasToC = tocHeadings.length >= 3;
   }
 
   h1 {
+    position: relative;
     display: flex;
     flex-wrap: wrap;
-    font-family: var(--font-family-display);
-    font-size: 3.2rem;
-    line-height: 1;
+    gap: .08em .16em;
+    margin: -5.5rem 0 var(--gap);
+    padding: 1rem 1.25rem .85rem;
+    background: var(--accent-secondary);
     color: var(--on-accent);
-    text-transform: uppercase;
+    font-family: var(--font-family-display);
+    font-size: clamp(2.6rem, 6vw, 5.4rem);
     font-weight: 400;
-    gap: 0.4rem;
-    margin-bottom: var(--gap);
+    line-height: .84;
+    letter-spacing: -.07em;
+    text-transform: uppercase;
+    clip-path: polygon(0 0, 98% 0, 100% 13%, 98% 25%, 100% 39%, 97% 52%, 100% 67%, 98% 81%, 100% 100%, 0 100%);
 
     span {
       display: inline-block;
-      background: var(--accent-primary);
-      padding: 0.4rem 0.8rem;
-      border: var(--border-width) solid var(--on-accent);
-      box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--on-accent);
-
-      &:nth-child(3n+2) {
-        background: var(--accent-tertiary);
-      }
-
-      &:nth-child(3n) {
-        background: var(--accent-lime);
-      }
     }
   }
 
@@ -256,6 +249,14 @@ const hasToC = tocHeadings.length >= 3;
       margin-bottom: var(--space-lg);
       border: var(--border-width) solid var(--border-color);
       box-shadow: var(--shadow-brutal);
+    }
+
+    table {
+      display: block;
+      max-width: 100%;
+      overflow-x: auto;
+      overscroll-behavior-inline: contain;
+      -webkit-overflow-scrolling: touch;
     }
 
     .content-figure {

@@ -1,67 +1,26 @@
 ---
-import { Picture } from "astro:assets";
-import { data } from "~/data/data";
-
 const currentPath = Astro.url.pathname;
-const { Content, ...profile } = data.profile;
-const currentExperience = await data.experiences.getCurrent()
-const links = {
-  '/': 'index.html',
-  '/projects/': 'projects.html',
-  '/about/': 'about.html',
-  '/cv/': 'cv.pdf',
-}
+const links = [
+  { href: '/', label: 'Home' },
+  { href: '/posts/', label: 'Writings' },
+  { href: '/projects/', label: 'Projects' },
+  { href: '/about/', label: 'About' },
+];
+const isActive = (href: string) => href === '/' ? currentPath === '/' : currentPath.startsWith(href);
 ---
 
 <header class="header">
-  <!-- Browser-window title bar -->
-  <div class="titlebar">
-    <div class="titlebar-inner">
-      <div class="dots" aria-hidden="true">
-        <span class="dot dot-red"></span>
-        <span class="dot dot-amber"></span>
-        <span class="dot dot-green"></span>
-      </div>
-      <div class="title-text">
-        <span class="title-prefix">file://</span>~/morten-olsen/{currentPath.replace(/^\/|\/$/g, '') || 'index.html'}
-      </div>
-      <div class="connection" aria-hidden="true">
-        <span class="led"></span>
-        <span class="connection-text">ONLINE</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Identity strip -->
-  <div class="strip">
-    <div class="strip-inner">
-      <a class="image" href="/">
-        <Picture
-          class="picture"
-          alt='Profile Picture'
-          src={profile.image}
-          fetchpriority="high"
-          formats={['avif', 'webp', 'jpeg']}
-          width={120}
-        />
-      </a>
-      <a class="info" href="/">
-        <div class="name">~{profile.name.toLowerCase().replace(/\s+/g, '_')}</div>
-        {currentExperience && (
-          <div class="work">
-            <span class="prompt">$</span> {currentExperience.data.position.name} @ {currentExperience.data.company.name}
-          </div>
-        )}
-      </a>
-      <nav class="links" aria-label="Primary">
-        {Object.entries(links).map(([target, name]) => (
-          <a class={currentPath === target ? 'link active' : 'link'} href={target}>
-            <span class="link-bullet" aria-hidden="true">{currentPath === target ? '▸' : '·'}</span>
-            <span class="link-label">{name}</span>
-          </a>
-        ))}
-      </nav>
-    </div>
+  <div class="header-inner">
+    <a class="wordmark" href="/" aria-label="Morten Olsen, home">Morten Olsen<span>.pro</span></a>
+    <nav class="links" aria-label="Primary navigation">
+      {links.map((link, index) => (
+        <a class:list={['link', { active: isActive(link.href) }]} href={link.href}>
+          <span class="index">{String(index + 1).padStart(2, '0')}</span>
+          <span class="label">{link.label}</span>
+        </a>
+      ))}
+    </nav>
+    <p class="note">Ideas. Systems. Humans.<i aria-hidden="true"></i></p>
   </div>
 </header>
 
@@ -70,211 +29,97 @@ const links = {
     position: sticky;
     top: 0;
     z-index: 100;
-    background: var(--card-bg);
-    border-bottom: var(--border-width) solid var(--border-color);
-    box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.06);
+    background: url('/paper-grain-light.webp') 0 0 / 192px 192px repeat, #0a0a09;
+    background-blend-mode: screen;
+    color: #efede3;
+    border-bottom: 1px solid rgba(239,237,227,.55);
   }
 
-  /* ---- Title bar (browser chrome) -------------------------- */
-  .titlebar {
-    background: var(--accent-tertiary);
-    border-bottom: 2px solid var(--border-color);
-    --t-fg: var(--on-accent);
-    color: var(--on-accent);
+  .header::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 -7px;
+    height: 8px;
+    background: #0a0a09;
+    clip-path: polygon(0 0,2% 65%,5% 25%,9% 72%,13% 38%,18% 80%,24% 29%,31% 73%,38% 30%,46% 76%,53% 38%,61% 73%,70% 26%,78% 69%,87% 36%,94% 78%,100% 22%,100% 0);
+    pointer-events: none;
   }
 
-  .titlebar-inner {
-    max-width: var(--content-width);
+  .header-inner {
+    min-height: 62px;
+    max-width: 1480px;
     margin: 0 auto;
-    padding: 6px 14px;
-    display: flex;
+    padding: 0 30px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    gap: 14px;
-    font-family: var(--font-family-mono);
-    font-size: 16px;
+    gap: 30px;
   }
 
-  .dots {
-    display: flex;
-    gap: 6px;
-    flex-shrink: 0;
+  .wordmark {
+    color: #efede3;
+    font: 400 17px 'Archivo Black', sans-serif;
+    font-kerning: normal;
+    font-feature-settings: 'kern' 1;
+    letter-spacing: .045em;
+    text-transform: uppercase;
+    text-rendering: optimizeLegibility;
   }
 
-  .dot {
-    width: 11px;
-    height: 11px;
-    border: 1.5px solid var(--on-accent);
-    display: inline-block;
-  }
-
-  .dot-red { background: #ff5f56; }
-  .dot-amber { background: #ffbd2e; }
-  .dot-green { background: #27c93f; }
-
-  .title-text {
-    flex: 1;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    color: var(--on-accent);
-    line-height: 1;
-    letter-spacing: 0.5px;
-  }
-
-  .title-prefix {
-    opacity: 0.6;
-  }
-
-  .connection {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-shrink: 0;
-    font-size: 13px;
-    letter-spacing: 1px;
-  }
-
-  .led {
-    width: 9px;
-    height: 9px;
-    background: var(--accent-blink);
-    border: 1.5px solid var(--on-accent);
-    border-radius: 50%;
-    animation: led-pulse 2s steps(2, jump-none) infinite;
-  }
-
-  @keyframes led-pulse {
-    50% { background: transparent; }
-  }
-
-  /* ---- Identity strip -------------------------------------- */
-  .strip-inner {
-    max-width: var(--content-width);
-    margin: 0 auto;
-    padding: 12px 14px;
-    display: flex;
-    gap: var(--gap);
-    align-items: center;
-  }
-
-  .image {
-    flex-shrink: 0;
-    line-height: 0;
-  }
-
-  img {
-    width: 44px;
-    height: 44px;
-    border: 2px solid var(--border-color);
-    box-shadow: 3px 3px 0 var(--border-color);
-    transform: rotate(-3deg);
-    transition: transform var(--duration-fast) var(--ease-out);
-  }
-
-  .image:hover img {
-    transform: rotate(2deg);
-  }
-
-  .info {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    gap: 0;
-
-    .name {
-      font-family: var(--font-family-display);
-      font-weight: 700;
-      font-size: var(--font-lg);
-      color: var(--t-fg);
-      letter-spacing: 0;
-      line-height: 1.1;
-    }
-
-    .work {
-      font-family: var(--font-family-mono);
-      font-size: 17px;
-      color: var(--color-text-light);
-      line-height: 1.2;
-
-      .prompt {
-        color: var(--accent-secondary);
-        font-weight: 700;
-      }
-    }
+  .wordmark span {
+    margin-left: .035em;
+    letter-spacing: .015em;
   }
 
   .links {
     display: flex;
-    gap: 6px;
-
-    .link {
-      padding: 6px 12px;
-      border: 2px solid var(--border-color);
-      background: var(--c-bg-em);
-      box-shadow: 2px 2px 0 var(--border-color);
-      font-family: var(--font-family-mono);
-      font-size: 17px;
-      letter-spacing: 0.5px;
-      transition: all var(--duration-fast) var(--ease-out);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      line-height: 1;
-
-      .link-bullet {
-        opacity: 0.7;
-      }
-
-      &:hover {
-        transform: translate(-2px, -2px);
-        box-shadow: 4px 4px 0 var(--border-color);
-        background: var(--accent-primary);
-        color: var(--on-accent);
-      }
-
-      &.active {
-        background: var(--accent-secondary);
-        color: var(--on-accent);
-
-        .link-bullet { opacity: 1; }
-      }
-    }
+    gap: clamp(18px,3vw,42px);
   }
 
-  @media (max-width: 700px) {
-    .titlebar-inner {
-      padding: 5px 10px;
-      font-size: 13px;
-      gap: 10px;
-    }
-
-    .connection-text { display: none; }
-    .title-text { font-size: 12px; }
-
-    .info .work {
-      display: none;
-    }
-
-    .links .link {
-      padding: 5px 9px;
-      font-size: 15px;
-
-      .link-bullet { display: none; }
-    }
+  .link {
+    position: relative;
+    display: flex;
+    gap: 5px;
+    padding: 5px 0;
+    color: #efede3;
+    font: 700 13px 'Space Grotesk', sans-serif;
+    letter-spacing: .04em;
+    text-transform: uppercase;
   }
 
-  @media (max-width: 480px) {
-    .strip-inner {
-      gap: 10px;
-      padding: 10px;
-    }
-
-    .info .name { font-size: 1rem; }
+  .link::after {
+    content: '';
+    position: absolute;
+    inset: auto auto 0 0;
+    width: 0;
+    height: 1px;
+    background: currentColor;
+    transition: width 160ms ease;
   }
 
-  @media print {
-    .header {
-      display: none;
-    }
+  .link:hover::after,
+  .link.active::after { width: 100%; }
+  .link.active .index { color: #f22987; }
+
+  .note {
+    justify-self: end;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    color: #efede3;
+    font: 13px 'VT323', monospace;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+
+  .note i { width: 9px; height: 9px; border-radius: 50%; background: #f22987; }
+
+  @media (max-width: 760px) {
+    .header-inner { min-height: 54px; grid-template-columns: 1fr auto; gap: 16px; padding: 0 18px; }
+    .wordmark { font-size: 14px; }
+    .links { gap: 17px; }
+    .label, .note { display: none; }
+    .link { font-size: 14px; }
   }
 </style>

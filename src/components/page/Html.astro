@@ -2,622 +2,217 @@
 import { icons } from '~/assets/images/images.icons';
 import Header from './Header.astro';
 import Footer from './Footer.astro';
-import ThemeToggle from '~/components/base/ThemeToggle.astro';
+import '@fontsource/archivo-black/400.css';
+import '@fontsource/archivo-narrow/700.css';
+import '@fontsource/rock-salt/400.css';
+import '@fontsource/fraunces/700.css';
 import '@fontsource/space-grotesk/400.css';
 import '@fontsource/space-grotesk/500.css';
 import '@fontsource/space-grotesk/700.css';
-import '@fontsource/pixelify-sans/400.css';
-import '@fontsource/pixelify-sans/700.css';
 import '@fontsource/vt323/400.css';
 
 type Props = {
   title: string;
-  description: string
+  description: string;
   jsonLd?: unknown;
   image?: string;
   themeColor?: string;
   hideHeader?: boolean;
+  hideFooter?: boolean;
   type?: 'website' | 'article';
   publishedTime?: Date;
   modifiedTime?: Date;
   author?: string;
   tags?: string[];
-}
+};
 
-const { title, description, jsonLd, themeColor, image, hideHeader, type = 'website', publishedTime, modifiedTime, author, tags }= Astro.props;
+const {
+  title,
+  description,
+  jsonLd,
+  themeColor,
+  image,
+  hideHeader,
+  hideFooter,
+  type = 'website',
+  publishedTime,
+  modifiedTime,
+  author,
+  tags,
+} = Astro.props;
 const schema = JSON.stringify(jsonLd);
 const canonicalUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : Astro.url.pathname;
 const imageUrl = image && Astro.site ? new URL(image, Astro.site).href : image;
 ---
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
-    <meta name='HandheldFriendly' content='True' />
-		<meta name="viewport" content="width=device-width" />
-    <script is:inline>
-      (function() {
-        const stored = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const theme = stored || (prefersDark ? 'dark' : 'light');
-        document.documentElement.setAttribute('data-theme', theme);
-      })();
-    </script>
-		<meta name="generator" content={Astro.generator} />
-    <link rel='sitemap' href='/sitemap-index.xml' />
-    <link rel='manifest' href='/manifest.webmanifest' />
-    <script is:inline defer src="https://umami.olsen.cloud/script.js" data-website-id="3284fd7a-6452-4048-8c8c-19740171b793" />
-    {themeColor && <meta name='theme-color' content={themeColor} />}
-    <link
-      rel='alternate'
-      type='application/rss+xml'
-      title='RSS Feed'
-      href='/articles/rss.xml'
-    />
-    <!-- Primary Meta Tags -->
-    <meta name='description' content={description} />
-    <link rel='canonical' href={canonicalUrl} />
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content={themeColor ?? '#0a0a09'} />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/posts/rss.xml" />
+    <script is:inline defer src="https://umami.olsen.cloud/script.js" data-website-id="3284fd7a-6452-4048-8c8c-19740171b793"></script>
 
-    <!-- Open Graph / Facebook -->
-    <meta property='og:type' content={type} />
-    <meta property='og:url' content={canonicalUrl} />
-    <meta property='og:title' content={title} />
-    <meta property='og:description' content={description} />
-    {imageUrl && <meta property='og:image' content={imageUrl} />}
-    {type === 'article' && publishedTime && (
-      <meta property='article:published_time' content={publishedTime.toISOString()} />
-    )}
-    {type === 'article' && modifiedTime && (
-      <meta property='article:modified_time' content={modifiedTime.toISOString()} />
-    )}
-    {type === 'article' && author && (
-      <meta property='article:author' content={author} />
-    )}
-    {type === 'article' && tags && tags.map(tag => (
-      <meta property='article:tag' content={tag} />
-    ))}
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {imageUrl && <meta property="og:image" content={imageUrl} />}
+    {type === 'article' && publishedTime && <meta property="article:published_time" content={publishedTime.toISOString()} />}
+    {type === 'article' && modifiedTime && <meta property="article:modified_time" content={modifiedTime.toISOString()} />}
+    {type === 'article' && author && <meta property="article:author" content={author} />}
+    {type === 'article' && tags?.map(tag => <meta property="article:tag" content={tag} />)}
 
-    <!-- Twitter -->
-    <meta name='twitter:card' content={imageUrl ? 'summary_large_image' : 'summary'} />
-    <meta name='twitter:url' content={canonicalUrl} />
-    <meta name='twitter:title' content={title} />
-    <meta name='twitter:description' content={description} />
-    {imageUrl && <meta name='twitter:image' content={imageUrl} />}
-
-    <!-- JSON-LD Structured Data -->
-    {
-      jsonLd && (
-        <script type='application/ld+json' is:inline set:html={schema} />
-      )
-    }
-    {
-      icons.pngs.map((icon) => (
-        <link rel='icon' href={icon.src} type='image/png' sizes={icon.size} />
-      ))
-    }
+    <meta name="twitter:card" content={imageUrl ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:url" content={canonicalUrl} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {imageUrl && <meta name="twitter:image" content={imageUrl} />}
+    {jsonLd && <script type="application/ld+json" is:inline set:html={schema} />}
+    {icons.pngs.map(icon => <link rel="icon" href={icon.src} type="image/png" sizes={icon.size} />)}
     <title>{title}</title>
-	</head>
-	<body>
-    <!-- CRT scanline overlay -->
-    <div class="scanlines" aria-hidden="true"></div>
-    <!-- Grain noise overlay -->
-    <svg class="grain-overlay" aria-hidden="true">
-      <filter id="grain-filter">
-        <feTurbulence type="fractalNoise" baseFrequency="0.55" numOctaves="4" stitchTiles="stitch" />
-        <feColorMatrix type="saturate" values="0" />
-      </filter>
-      <rect width="100%" height="100%" filter="url(#grain-filter)" />
-    </svg>
+  </head>
+  <body>
     {!hideHeader && <Header />}
-		<slot />
-    <Footer />
-    <div class="theme-toggle-fixed">
-      <ThemeToggle />
-    </div>
-	</body>
+    <slot />
+    {!hideFooter && <Footer />}
+  </body>
 </html>
 
 <script is:inline>
-const withFadeIn = document.querySelectorAll('[data-fadein]');
-
-withFadeIn.forEach((node) => {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        node.classList.remove('hidden');
-        node.setAttribute('data-shown', 'true')
-      } else if (!node.hasAttribute('data-shown')) {
-        node.classList.add('hidden');
-      }
-    })
-  })
-
-  observer.observe(node);
-})
-
-// ---- Console easter egg ----------------------------------------------------
-// Tongue-in-cheek tech reference: yes, this is hand-typed in a text editor.
-console.log(
-`%c
- ╔══════════════════════════════════════════════════════╗
- ║   M O R T E N . O L S E N                            ║
- ║   ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓   ║
- ║   you found the source. nice.                        ║
- ║   built with HTML, CSS, and stubbornness.            ║
- ║   if you're hiring, the email's on /about/.          ║
- ╚══════════════════════════════════════════════════════╝
-`,
-  'font-family: monospace; color: #ff5cab; line-height: 1.2; font-size: 12px;'
-);
+  document.querySelectorAll('[data-fadein]').forEach((node) => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          node.classList.remove('hidden');
+          node.setAttribute('data-shown', 'true');
+        } else if (!node.hasAttribute('data-shown')) {
+          node.classList.add('hidden');
+        }
+      });
+    });
+    observer.observe(node);
+  });
 </script>
 
 <style is:global>
+  @layer reset, tokens, base, utilities;
 
-/* ============================================================
-   CASCADE ARCHITECTURE
-   ============================================================ */
-@layer reset, tokens, layout, utilities, overrides;
-
-/* ============================================================
-   TYPED DESIGN TOKENS — @property registrations
-   ============================================================ */
-
-/* Accent palette — faded-CRT indie-web hues */
-@property --accent-primary {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: #ffe04b;
-}
-@property --accent-secondary {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: #ff5cab;
-}
-@property --accent-tertiary {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: #4ad8e6;
-}
-@property --accent-lime {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: #b8ff52;
-}
-@property --accent-lavender {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: #c8a8f0;
-}
-@property --accent-blink {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: #00ff66;
-}
-
-/* Surface colors — paper-y indie web feel */
-@property --page-bg {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: #f4ecd8;
-}
-@property --card-bg {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: #fffbf0;
-}
-@property --c-bg-em {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: #ebe2c8;
-}
-
-/* Text colors */
-@property --t-fg {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: #1a1814;
-}
-@property --color-text-light {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: #4a4636;
-}
-@property --on-accent {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: #1a1814;
-}
-
-/* Border system */
-@property --border-color {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: #1a1814;
-}
-@property --border-width {
-  syntax: "<length>";
-  inherits: true;
-  initial-value: 3px;
-}
-@property --shadow-offset {
-  syntax: "<length>";
-  inherits: true;
-  initial-value: 5px;
-}
-
-/* ============================================================
-   RESET LAYER
-   ============================================================ */
-@layer reset {
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    text-indent: 0;
-    list-style-type: none;
+  @layer reset {
+    *, *::before, *::after { box-sizing: border-box; }
+    * { margin: 0; padding: 0; }
+    html { min-width: 320px; scroll-behavior: smooth; overflow-x: hidden; }
+    body { min-height: 100%; overflow-x: clip; }
+    img, picture, svg { max-width: 100%; }
+    ul, ol { list-style: none; }
+    button, input, textarea, select { font: inherit; }
   }
 
-  html,
-  body {
-    width: 100%;
-    height: 100%;
-  }
-
-  html {
-    background-color: var(--page-bg);
-    scroll-behavior: smooth;
-    overflow-x: hidden;
-  }
-
-  body {
-    font-family: var(--font-family);
-    font-size: var(--fs-md);
-    font-weight: var(--fw-df);
-    color: var(--t-fg);
-    background-color: var(--page-bg);
-    background-image: var(--bg-pattern);
-    background-size: 28px 28px;
-    background-attachment: fixed;
-    overflow-x: clip;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-family-heading);
-    font-weight: inherit;
-    font-size: inherit;
-  }
-
-  a {
-    color: var(--t-fg);
-    text-decoration: none;
-  }
-
-  p {
-    line-height: 1.65;
-    margin-bottom: var(--gap);
-  }
-
-  p a {
-    color: var(--t-fg);
-    text-decoration: underline;
-    text-decoration-color: var(--accent-secondary);
-    text-decoration-thickness: 2px;
-    text-underline-offset: 3px;
-    transition: all var(--duration-fast) var(--ease-out);
-    font-weight: 500;
-
-    &:hover {
-      background-color: var(--accent-secondary);
-      text-decoration-color: var(--border-color);
-      color: var(--on-accent);
-    }
-  }
-
-  code, kbd, samp, pre {
-    font-family: var(--font-family-mono);
-  }
-}
-
-/* ============================================================
-   TOKENS LAYER
-   ============================================================ */
-@layer tokens {
-  :root {
-    /* Indie-web shadow */
-    --shadow-brutal: var(--shadow-offset) var(--shadow-offset) 0 var(--border-color);
-    --shadow-brutal-lg: 7px 7px 0 var(--border-color);
-    --radius: 0;
-    --radius-sm: 0;
-
-    /* Layout */
-    --content-width: 1100px;
-    --gap: 16px;
-
-    /* Typography — a 3-voice system */
-    --font-family: 'Space Grotesk', system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    --font-family-display: 'Pixelify Sans', 'Courier New', monospace;
-    --font-family-heading: var(--font-family-display);
-    --font-family-mono: 'VT323', 'Courier New', ui-monospace, monospace;
-    --letter-spacing: 0.5px;
-    --fw-df: 400;
-    --fw-md: 700;
-    --fs-sm: 14px;
-    --fs-md: 16px;
-
-    /* Type scale */
-    --font-xxl: 2.5rem;
-    --font-xl: 1.75rem;
-    --font-lg: 1.25rem;
-    --font-sm: 0.875rem;
-    --font-xs: 0.75rem;
-
-    /* Spacing scale */
-    --space-xs: 0.25rem;
-    --space-sm: 0.5rem;
-    --space-md: 1rem;
-    --space-lg: 2rem;
-    --space-xl: 3rem;
-    --space-xxl: 4rem;
-
-    /* Motion tokens */
-    --duration-fast: 0.1s;
-    --duration-normal: 0.3s;
-    --duration-slow: 0.5s;
-    --duration-glacial: 1s;
-    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-    --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
-
-    /* Link colors */
-    --color-link: #000;
-
-    /* Background tile — tiny plus-signs on paper */
-    --bg-pattern:
-      radial-gradient(circle at 1px 1px, rgba(26, 24, 20, 0.10) 1px, transparent 0),
-      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'><g fill='none' stroke='%231a181420' stroke-width='1'><path d='M14 10 L14 18 M10 14 L18 14'/></g></svg>");
-  }
-
-  /* Reduced motion */
-  @media (prefers-reduced-motion: reduce) {
+  @layer tokens {
     :root {
-      --duration-fast: 0s;
-      --duration-normal: 0s;
-      --duration-slow: 0s;
-      --duration-glacial: 0s;
+      --page-bg: #efede3;
+      --card-bg: #efede3;
+      --c-bg-em: #d7d5cd;
+      --t-fg: #0a0a09;
+      --color-text-light: #5f5d57;
+      --color-link: #0a0a09;
+      --border-color: #0a0a09;
+      --on-accent: #0a0a09;
+      --accent-primary: #f22987;
+      --accent-secondary: #f22987;
+      --accent-tertiary: #b9b7af;
+      --accent-lime: #efede3;
+      --accent-lavender: #aaa8a1;
+      --accent-blink: #f22987;
+      --border-width: 1px;
+      --shadow-offset: 4px;
+      --shadow-brutal: 4px 4px 0 #0a0a09;
+      --shadow-brutal-lg: 7px 7px 0 #0a0a09;
+      --radius: 0;
+      --radius-sm: 0;
+      --content-width: 1180px;
+      --gap: 16px;
+      --font-family: 'Space Grotesk', system-ui, sans-serif;
+      --font-family-display: 'Archivo Black', Impact, sans-serif;
+      --font-family-heading: var(--font-family-display);
+      --font-family-mono: 'VT323', ui-monospace, monospace;
+      --letter-spacing: .02em;
+      --fw-df: 400;
+      --fw-md: 700;
+      --fs-sm: 14px;
+      --fs-md: 16px;
+      --font-xxl: clamp(3rem, 8vw, 7rem);
+      --font-xl: clamp(1.8rem, 4vw, 3.2rem);
+      --font-lg: 1.25rem;
+      --font-sm: .875rem;
+      --font-xs: .75rem;
+      --space-xs: .25rem;
+      --space-sm: .5rem;
+      --space-md: 1rem;
+      --space-lg: 2rem;
+      --space-xl: 3rem;
+      --space-xxl: 4rem;
+      --duration-fast: .14s;
+      --duration-normal: .3s;
+      --duration-slow: .5s;
+      --duration-glacial: .8s;
+      --ease-out: cubic-bezier(.16,1,.3,1);
+      --ease-bounce: cubic-bezier(.34,1.56,.64,1);
     }
   }
 
-  /* Dark mode — terminal/CRT vibes, neon-shifted */
-  [data-theme="dark"] {
-    --page-bg: #0d0e14;
-    --card-bg: #181a24;
-    --t-fg: #f4ecd8;
-    --border-color: #f4ecd8;
-    --shadow-brutal: var(--shadow-offset) var(--shadow-offset) 0 #02030a;
-    --shadow-brutal-lg: 7px 7px 0 #02030a;
-    --c-bg-em: #232636;
-    --color-text-light: #a8a89c;
-    --color-link: #f4ecd8;
-
-    /* Boosted accents — neon CRT */
-    --accent-primary: #ffe600;
-    --accent-secondary: #ff4eaa;
-    --accent-tertiary: #00e5ff;
-    --accent-lime: #c8ff00;
-    --accent-lavender: #d8b4fe;
-    --accent-blink: #39ff14;
-
-    --on-accent: #0d0e14;
-
-    --bg-pattern:
-      radial-gradient(circle at 1px 1px, rgba(244, 236, 216, 0.06) 1px, transparent 0),
-      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'><g fill='none' stroke='%23f4ecd815' stroke-width='1'><path d='M14 10 L14 18 M10 14 L18 14'/></g></svg>");
-  }
-
-  /* Smooth theme transition */
-  html {
-    transition:
-      --page-bg var(--duration-normal) var(--ease-out),
-      --card-bg var(--duration-normal) var(--ease-out),
-      --t-fg var(--duration-normal) var(--ease-out),
-      --border-color var(--duration-normal) var(--ease-out),
-      --c-bg-em var(--duration-normal) var(--ease-out),
-      --color-text-light var(--duration-normal) var(--ease-out);
-  }
-
-  [data-accent-bg] {
-    color: var(--on-accent);
-  }
-}
-
-/* ============================================================
-   LAYOUT LAYER
-   ============================================================ */
-@layer layout {
-  [data-fadein] {
-    transition: all var(--duration-glacial);
-  }
-
-  .hidden {
-    opacity: 0;
-  }
-
-  /* CRT scanlines — fixed overlay, very faint */
-  .scanlines {
-    position: fixed;
-    inset: 0;
-    z-index: 9998;
-    pointer-events: none;
-    background-image: repeating-linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.04) 0,
-      rgba(0, 0, 0, 0.04) 1px,
-      transparent 1px,
-      transparent 3px
-    );
-    mix-blend-mode: multiply;
-    opacity: 0.7;
-  }
-
-  [data-theme="dark"] .scanlines {
-    background-image: repeating-linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0.025) 0,
-      rgba(255, 255, 255, 0.025) 1px,
-      transparent 1px,
-      transparent 3px
-    );
-    mix-blend-mode: screen;
-    opacity: 0.6;
-  }
-
-  .grain-overlay {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 9999;
-    pointer-events: none;
-    opacity: 0.28;
-    mix-blend-mode: multiply;
-  }
-
-  [data-theme="dark"] .grain-overlay {
-    opacity: 0.12;
-    mix-blend-mode: screen;
-  }
-
-  .theme-toggle-fixed {
-    position: fixed;
-    bottom: var(--gap);
-    right: var(--gap);
-    z-index: 1000;
-  }
-}
-
-/* ============================================================
-   UTILITIES LAYER
-   ============================================================ */
-@layer utilities {
-  .brutal-border {
-    border: var(--border-width) solid var(--border-color);
-  }
-
-  .brutal-shadow {
-    box-shadow: var(--shadow-brutal);
-    transition: box-shadow var(--duration-fast) var(--ease-out),
-                transform var(--duration-fast) var(--ease-out);
-
-    &:hover {
-      box-shadow: calc(var(--shadow-offset) + 2px) calc(var(--shadow-offset) + 2px) 0 var(--border-color);
-      transform: translate(-2px, -2px);
+  @layer base {
+    body {
+      position: relative;
+      background: var(--page-bg);
+      color: var(--t-fg);
+      font: var(--fw-df) var(--fs-md)/1.55 var(--font-family);
     }
-  }
 
-  /* Blink — sparingly, with reduced-motion respect */
-  .blink {
-    animation: blink-anim 1.05s steps(2, jump-none) infinite;
-  }
-
-  @keyframes blink-anim {
-    50% { opacity: 0.15; }
-  }
-
-  /* Rainbow HR — the classic */
-  .rainbow-hr {
-    height: 6px;
-    border: 0;
-    background: linear-gradient(
-      90deg,
-      #ff5cab 0%,
-      #ffe04b 25%,
-      #b8ff52 50%,
-      #4ad8e6 75%,
-      #c8a8f0 100%
-    );
-    margin: calc(var(--gap) * 1.5) 0;
-  }
-}
-
-/* ============================================================
-   OVERRIDES LAYER
-   ============================================================ */
-@layer overrides {
-  @view-transition {
-    navigation: auto;
-  }
-
-  ::view-transition-old(root) {
-    animation: brutal-wipe-out var(--duration-normal) ease-in both;
-  }
-
-  ::view-transition-new(root) {
-    animation: brutal-wipe-in var(--duration-normal) ease-out 0.15s both;
-  }
-
-  @keyframes brutal-wipe-out {
-    from {
-      clip-path: inset(0);
-      opacity: 1;
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      pointer-events: none;
+      opacity: .68;
+      background: url('/paper-grain.webp') 0 0 / 192px 192px repeat;
+      mix-blend-mode: multiply;
     }
-    to {
-      clip-path: inset(0 0 0 100%);
-      opacity: 0.5;
-    }
+
+    h1, h2, h3, h4, h5, h6 { font-family: var(--font-family-heading); font-weight: 400; letter-spacing: -.045em; }
+    a { color: inherit; text-decoration: none; }
+    p { margin-bottom: var(--gap); }
+    p a { text-decoration: underline; text-decoration-color: var(--accent-secondary); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+    p a:hover { background: var(--accent-secondary); color: var(--on-accent); }
+    code, kbd, samp, pre { font-family: var(--font-family-mono); }
+    img { filter: grayscale(1) contrast(1.12); }
+    ::selection { background: var(--accent-secondary); color: var(--on-accent); }
+    :focus-visible { outline: 3px solid var(--accent-secondary); outline-offset: 3px; }
+    [data-fadein] { transition: opacity var(--duration-glacial), transform var(--duration-glacial); }
+    [data-fadein].hidden { opacity: 0; transform: translateY(12px); }
   }
 
-  @keyframes brutal-wipe-in {
-    from {
-      clip-path: inset(0 100% 0 0);
-      opacity: 0.5;
-    }
-    to {
-      clip-path: inset(0);
-      opacity: 1;
-    }
+  @layer utilities {
+    .brutal-border { border: var(--border-width) solid var(--border-color); }
+    .brutal-shadow { box-shadow: var(--shadow-brutal); }
+    [data-accent-bg] { color: var(--on-accent); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   }
 
   @media print {
-    @page {
-      size: A4;
-      margin: 2cm 1.5cm;
-    }
-
-    body {
-      font-family: Georgia, 'Times New Roman', serif;
-      font-size: 11pt;
-      line-height: 1.4;
-      color: #000;
-      background-image: none;
-    }
-
-    header.header {
-      display: none !important;
-    }
-
-    a {
-      text-decoration: none;
-      color: #000;
-    }
-
-    .brutal-shadow {
-      box-shadow: none;
-    }
-
-    .brutal-border {
-      border-width: 1px;
-    }
-
-    [data-fadein] {
-      opacity: 1 !important;
-    }
-
-    .theme-toggle-fixed,
-    .scanlines,
-    .grain-overlay {
-      display: none !important;
-    }
+    body { background: #fff; color: #000; font-family: Georgia, serif; }
+    body::before, header.header, footer.footer { display: none !important; }
   }
-}
-
 </style>
