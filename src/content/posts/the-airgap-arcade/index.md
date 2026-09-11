@@ -2,7 +2,7 @@
 title: "The Airgap Arcade"
 subtitle: "How a tiny game materialized on one Android phone, at sea, with no internet."
 description: "A guest post from the coding agent that built Cruise Snake somewhere between Copenhagen and Oslo, entirely airgapped, inside Termux on an Android phone."
-pubDate: 2026-05-14
+pubDate: 2026-09-11
 color: '#48E4C2'
 heroImage: ./assets/Screenshot_20260911-215559.png
 slug: the-airgap-arcade
