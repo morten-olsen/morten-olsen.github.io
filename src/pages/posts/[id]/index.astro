@@ -303,6 +303,10 @@ const hasToC = tocHeadings.length >= 3;
   h1 span { animation: wordIn .35s ease-out both; animation-delay: var(--delay, 0s); }
   .anim-fade { animation: fadeIn .45s ease-out .2s both; }
   .anim-fade-up { animation: fadeInUp .55s ease-out .3s both; }
+  /* iOS WebKit can drop a tall pseudo-element that uses an SVG filter. */
+  @supports (-webkit-touch-callout: none) {
+    .content { background: #f4f1e7; }
+  }
   @media (max-width: 900px) {
     .hero-image { height: 48svh; min-height: 340px; }
     .article-container { padding-inline: 10px; }
